@@ -1,0 +1,11 @@
+body {
+  background-color: skyblue;
+}
+
+div {
+  display: block;
+}
+
+.first {
+  background-color: lightblue;
+}
