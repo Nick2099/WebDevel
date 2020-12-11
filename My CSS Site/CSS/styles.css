@@ -9,19 +9,6 @@ div {
   display: block;
 }
 
-.first {
-  background-color: #9BC3F7;
-}
-
-.second {
-  background-color: #5298F5;
-  }
-
-.third {
-  background-color: #4078C2; /* same color as body */
-  }
-
-
 h1 {
   margin: 0;
   padding: 2rem 1rem 1rem 1rem;
@@ -33,11 +20,11 @@ h3 {
   display: inline-block;
   text-decoration: none;
   font-weight: normal;
-  font-size:  2rem;
+  font-size: 2rem;
   margin: 0;
-  padding: 0rem 1rem 0rem 1rem;
+  padding: 0 1rem 0 1rem;
   position: relative;
-  bottom: 1.5rem;
+  bottom: 1.3rem;
 }
 
 h4 {
@@ -48,19 +35,38 @@ h4 {
   padding: 1rem 1rem 2rem 1rem;
 }
 
-
-.txt {
-  display: inline-block;
-  width: 70%;
-  padding: 1rem;
-}
-
 p {
   font-size: 1rem;
   line-height: 1.5;
   margin: 0;
   padding: 1.5rem;
   text-align: justify;
+}
+
+td {
+  text-align: left;
+  padding: 0 1rem 0 1rem;
+}
+
+.first {
+  background-color: #9BC3F7;
+  padding: 2rem 0 2rem 0;
+}
+
+.second {
+  background-color: #5298F5;
+  padding: 2rem 0 2rem 0;
+}
+
+.third {
+  background-color: #4078C2; /* same color as body */
+  padding: 2rem 0 2rem 0;
+}
+
+.txt {
+  display: inline-block;
+  width: 70%;
+  padding: 1rem;
 }
 
 .icon_left {
@@ -81,23 +87,13 @@ p {
 
 .table_cd {
   display: inline-block;
-  border: dashed 1px black;
-}
-
-td {
-  text-align: left;
-  padding: 0 1rem 0 1rem;
+  padding: 1.5rem 0 1.5rem 0;
   /* border: dashed 1px black; */
 }
-
 
 .vert {
   vertical-align: top;
   line-height: 1.5rem;
-}
-
-.underline {
-  text-decoration: underline;
 }
 
 .bold {
