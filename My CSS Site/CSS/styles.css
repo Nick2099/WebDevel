@@ -66,6 +66,7 @@ td {
 .txt {
   display: inline-block;
   width: 70%;
+  min-width: 800px;
   padding: 1rem;
 }
 
@@ -84,6 +85,25 @@ td {
   height: auto;
   padding: 0;
 }
+
+.photos img {
+  border: 0;
+  display: inline-block;
+  width: 10rem;
+  height: auto;
+  margin: 1rem;
+  opacity: 0.8;
+  transition: all 0.3s;
+}
+
+.photos img:hover {
+  /* display: inline-block; */
+  width: 12rem;
+  height: auto;
+  opacity: 1;
+  margin: 0;
+}
+
 
 .table_cd {
   display: inline-block;
