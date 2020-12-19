@@ -48,6 +48,12 @@ td {
   padding: 0 1rem 0 1rem;
 }
 
+
+.carousel-image {
+  width: 50%;
+  padding: 5%;
+}
+
 .first {
   background-color: #9BC3F7;
   padding: 2rem 0 2rem 0;
