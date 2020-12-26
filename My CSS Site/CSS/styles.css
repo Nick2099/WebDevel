@@ -50,8 +50,9 @@ td {
 
 
 .carousel-image {
-  width: 70%;
-  padding: 5%;
+  width: 35%;
+  min-width: 400px;
+  /* padding: 5%; */
 }
 
 .first {
@@ -102,19 +103,19 @@ td {
 .photos img {
   border: 0;
   display: inline-block;
-  width: 30%;
+  width: 24%;
   height: auto;
-  margin: 10%;
+  padding: 2%;
   opacity: 0.8;
   transition: all 0.3s;
 }
 
 .photos img:hover {
   /* display: inline-block; */
-  width: 35%;
+  width: 24%;
   height: auto;
   opacity: 1;
-  margin: 5%;
+  padding: 0%;
 }
 
 .column_img {
