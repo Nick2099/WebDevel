@@ -1,0 +1,35 @@
+<!-- get window width and height -->
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+
+    <h2>JavaScript addEventListener()</h2>
+
+    <p>This example uses the addEventListener() method on the window object.</p>
+
+    <p>Try resizing this browser window to trigger the "resize" event handler.</p>
+
+    <p id="demo1">Press any key.</p>
+
+    <p id="demo"></p>
+
+    <script>
+
+    window.addEventListener("resize", function(){
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+      document.getElementById("demo").innerHTML = "Width: " + w + "<br>Height: " + h;
+    });
+
+    document.addEventListener("keydown", function(event) {
+      console.log(event);
+    });
+    </script>
+
+  </body>
+</html>

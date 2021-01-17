@@ -22,11 +22,13 @@ for (var i=0; i<numnerOfDrumButtons; i++) {
     // this.style.color = "white";
     var buttonInnerHTML = this.innerHTML;
     makeSound(buttonInnerHTML);
+    buttonAnimation(buttonInnerHTML);
   });
 }
 
 document.addEventListener("keydown", function(event) { // name event can be also something else
   makeSound(event.key);
+  buttonAnimation(event.key);
 })
 
 function makeSound(key) {
@@ -61,4 +63,15 @@ function makeSound(key) {
       break;
     default: console.log(key);
   }
+}
+
+function buttonAnimation(currentKey) {
+
+  var activeButton = document.querySelector("." + currentKey);
+
+  activeButton.classList.add("pressed");
+
+  setTimeout(function() {
+    activeButton.classList.remove("pressed");
+  }, 150);
 }
