@@ -1,0 +1,25 @@
+body {
+  background-color: darkblue;
+}
+
+h2 {
+  font-size: 3rem;
+}
+
+.big-bold {
+  font-size: 4rem;
+  color: orange;
+  font-family: cursive;
+  font-weight: bold;
+}
+
+.big-title {
+  font-size: 4rem;
+  color: yellow;
+  font-family: cursive;
+  font-weight: normal;
+}
+
+.margin-50 {
+  margin: 50px;
+}
