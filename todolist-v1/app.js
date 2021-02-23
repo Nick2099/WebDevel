@@ -8,6 +8,7 @@ let items = ["Buy Food", "Cook Food", "Eat Food"];
 app.set("view engine", "ejs"); //app.set vs app.use ??
 
 app.use(bodyParser.urlencoded({extended: true}));     // necessary for body-parser
+app.use(express.static("public"));                    // necessary to give access to files in that folder
 
 app.get("/", function(req, res) {
   let today = new Date();
