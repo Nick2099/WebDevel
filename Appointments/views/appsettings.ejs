@@ -9,29 +9,103 @@
     <p class="item">Choose durations of visits (multiple choices are possible):</p>
     <form class="" action="/appsettings.php">
       <div class="item">
-        <input type="checkbox" id="duration1" name="duration1" value="15m">
+        <input type="checkbox" name="duration1" value="15m">
         <p for="duration1">15 minutes</p>
       </div>
       <div class="item">
-        <input type="checkbox" id="duration2" name="duration2" value="30m">
+        <input type="checkbox" name="duration2" value="30m">
         <p for="duration2">30 minutes</p><br>
       </div>
       <div class="item">
-        <input type="checkbox" id="duration3" name="duration3" value="45m">
+        <input type="checkbox" name="duration3" value="45m">
         <p for="duration3">45 minutes</p><br>
       </div>
       <div class="item">
-        <input type="checkbox" id="duration4" name="duration4" value="60m">
+        <input type="checkbox" name="duration4" value="60m">
         <p for="duration1">1 hour</p><br>
       </div>
       <div class="item">
-        <input type="checkbox" id="duration5" name="duration5" value="90m">
-        <p for="duration1">1 hour and 30 minutes</p><br>
+        <input type="checkbox" name="duration5" value="90m">
+        <p for="duration5">1 hour and 30 minutes</p><br>
       </div>
       <div class="item">
-        <input type="checkbox" id="duration6" name="duration6" value="120m">
+        <input type="checkbox" name="duration6" value="120m">
         <p for="duration6">2 hours</p><br>
       </div>
+      <br>
+
+      <table>
+        <tr>
+          <% for (var i=0; i<headings.length; i++) { %>
+              <th><%= headings[i] %></th>
+            <% } %>
+        </tr>
+        <tr>
+          <td>Open</td>
+          <% for (var i=1; i<headings.length; i++) { %>
+              <th>
+                <input type="checkbox" name="open_<%= headings[i] %>" value="yes" <% if (i<6) { %>checked<% } %>>
+              </th>
+            <% } %>
+        </tr>
+        <tr>
+          <td>from</td>
+          <% for (var i=1; i<headings.length; i++) { %>
+              <td>
+                <select class="cell middle" name="open_<%= headings[i] %>">
+                  <% for (var j=0; j<workingTime.length; j++) { %>
+                    <option class="cell" value="<%= workingTime[j] %>" ><%= workingTime[j] %></option>
+                  <% } %>
+                </select>
+              </td>
+            <% } %>
+        </tr>
+        <tr>
+          <td>to</td>
+          <% for (var i=1; i<headings.length; i++) { %>
+              <td>
+                <select class="cell middle" name="close_<%= headings[i] %>">
+                  <% for (var j=0; j<workingTime.length; j++) { %>
+                    <option class="cell" value="<%= workingTime[j] %>"><%= workingTime[j] %></option>
+                  <% } %>
+                </select>
+              </td>
+            <% } %>
+        </tr>
+        <tr>
+          <td>Break</td>
+          <% for (var i=1; i<headings.length; i++) { %>
+              <th>
+                <input type="checkbox" name="break_<%= headings[i] %>" value="yes" <% if (i<6) { %>checked<% } %>>
+              </th>
+            <% } %>
+        </tr>
+        <tr>
+          <td>from</td>
+          <% for (var i=1; i<headings.length; i++) { %>
+              <td>
+                <select class="cell" name="breakfrom_<%= headings[i] %>">
+                  <% for (var j=0; j<workingTime.length; j++) { %>
+                    <option class="cell" value="<%= workingTime[j] %>"><%= workingTime[j] %></option>
+                  <% } %>
+                </select>
+              </td>
+            <% } %>
+        </tr>
+        <tr>
+          <td>to</td>
+          <% for (var i=1; i<headings.length; i++) { %>
+              <td>
+                <select class="cell" name="braekto_<%= headings[i] %>">
+                  <% for (var j=0; j<workingTime.length; j++) { %>
+                    <option class="cell" value="<%= workingTime[j] %>"><%= workingTime[j] %></option>
+                  <% } %>
+                </select>
+              </td>
+            <% } %>
+        </tr>
+      </table>
+
       <br>
       <button type="submit" name="">Submit</button>
       <br>
