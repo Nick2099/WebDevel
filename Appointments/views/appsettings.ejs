@@ -1,0 +1,45 @@
+<%- include("header") -%>
+
+  <div class="box" id="heading">
+    <h1>Application settings</h1>
+  </div>
+
+  <div class="box">
+
+    <p class="item">Choose durations of visits (multiple choices are possible):</p>
+    <form class="" action="/appsettings.php">
+      <div class="item">
+        <input type="checkbox" id="duration1" name="duration1" value="15m">
+        <p for="duration1">15 minutes</p>
+      </div>
+      <div class="item">
+        <input type="checkbox" id="duration2" name="duration2" value="30m">
+        <p for="duration2">30 minutes</p><br>
+      </div>
+      <div class="item">
+        <input type="checkbox" id="duration3" name="duration3" value="45m">
+        <p for="duration3">45 minutes</p><br>
+      </div>
+      <div class="item">
+        <input type="checkbox" id="duration4" name="duration4" value="60m">
+        <p for="duration1">1 hour</p><br>
+      </div>
+      <div class="item">
+        <input type="checkbox" id="duration5" name="duration5" value="90m">
+        <p for="duration1">1 hour and 30 minutes</p><br>
+      </div>
+      <div class="item">
+        <input type="checkbox" id="duration6" name="duration6" value="120m">
+        <p for="duration6">2 hours</p><br>
+      </div>
+      <br>
+      <button type="submit" name="">Submit</button>
+      <br>
+      <br>
+    </form>
+
+
+  </div>
+
+
+<%- include("footer") -%>
