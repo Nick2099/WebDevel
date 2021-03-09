@@ -29,7 +29,7 @@
           <td>Open</td>
           <% for (var i=0; i<headings.length; i++) { %>
               <td>
-                <input type="checkbox" name="working_<%= headings[i] %>" value="yes" <% if (workingHours.working[i]) { %>checked<% } %>>
+                <input type="checkbox" name="working<%= i %>" value="yes" <% if (workingHours.working[i]) { %>checked<% } %>>
               </td>
             <% } %>
         </tr>
@@ -37,7 +37,7 @@
           <td>from</td>
           <% for (var i=0; i<headings.length; i++) { %>
               <td>
-                <select class="cell middle" name="open_<%= headings[i] %>">
+                <select class="cell middle" name="open<%= i %>">
                   <% for (var j=0; j<workingTime.length; j++) { %>
                     <option class="cell" value="<%= workingTime[j] %>" <% if (workingHours.open[i]==workingTime[j]) { %>selected<% } %>><%= workingTime[j] %></option>
                   <% } %>
@@ -49,7 +49,7 @@
           <td>to</td>
           <% for (var i=0; i<headings.length; i++) { %>
               <td>
-                <select class="cell middle" name="close_<%= headings[i] %>">
+                <select class="cell middle" name="close<%= i %>">
                   <% for (var j=0; j<workingTime.length; j++) { %>
                     <option class="cell" value="<%= workingTime[j] %>" <% if (workingHours.close[i]==workingTime[j]) { %>selected<% } %>><%= workingTime[j] %></option>
                   <% } %>
@@ -61,7 +61,7 @@
           <td>Break</td>
           <% for (var i=0; i<headings.length; i++) { %>
               <th>
-                <input type="checkbox" name="break_<%= headings[i] %>" value="yes" <% if (workingHours.break[i]) { %>checked<% } %>>
+                <input type="checkbox" name="break<%= i %>" value="yes" <% if (workingHours.break[i]) { %>checked<% } %>>
               </th>
             <% } %>
         </tr>
@@ -69,7 +69,7 @@
           <td>from</td>
           <% for (var i=0; i<headings.length; i++) { %>
               <td>
-                <select class="cell" name="from_<%= headings[i] %>">
+                <select class="cell" name="from<%= i %>">
                   <% for (var j=0; j<workingTime.length; j++) { %>
                     <option class="cell" value="<%= workingTime[j] %>" <% if (workingHours.from[i]==workingTime[j]) { %>selected<% } %>><%= workingTime[j] %></option>
                   <% } %>
@@ -81,7 +81,7 @@
           <td>to</td>
           <% for (var i=0; i<headings.length; i++) { %>
               <td>
-                <select class="cell" name="to_<%= headings[i] %>">
+                <select class="cell" name="to<%= i %>">
                   <% for (var j=0; j<workingTime.length; j++) { %>
                     <option class="cell" value="<%= workingTime[j] %>" <% if (workingHours.to[i]==workingTime[j]) { %>selected<% } %>><%= workingTime[j] %></option>
                   <% } %>

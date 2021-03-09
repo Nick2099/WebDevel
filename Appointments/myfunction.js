@@ -17,4 +17,35 @@ exports.workingHours = function(data) {
   }
   // console.log(times);
   return times;
-}
+};
+
+exports.timeInHours = function(d) { // "12:45" ==> 12.75
+  var h = parseInt(d.substr(0,2));
+  var m = parseInt(d.substr(3,2));
+
+  return h+m/60;
+};
+
+exports.setStartsAndDurations =function(data) {
+  for (i=0; i<data.working.length; i++) {
+    if (data.working[i]) {
+      data.start1[i] = data.open[i];
+      if (data.break[i]) {
+        data.start2[i] = data.to[i];
+        data.dur1[i] = Math.min(this.timeInHours(data.from[i]), this.timeInHours(data.close[i])) - this.timeInHours(data.open[i]);
+        data.dur2[i] = Math.max(this.timeInHours(data.close[i]), this.timeInHours(data.to[i])) - this.timeInHours(data.to[i]);
+      } else {
+        data.start2[i] = data.close[i];
+        data.dur1[i] = this.timeInHours(data.close[i]) - this.timeInHours(data.open[i]);
+        data.dur2[i] = 0;
+      };
+    } else {
+      data.start1[i] = data.open[i];
+      data.start2[i] = data.open[i];
+      data.dur1[i] = 0;
+      data.dur2[i] = 0;
+    };
+  };
+  console.log(data);
+  return data;
+};

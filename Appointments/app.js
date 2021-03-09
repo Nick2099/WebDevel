@@ -18,10 +18,18 @@ let workingHours = {
   close: ["19:00", "19:00", "19:00", "19:00", "19:00", "19:00", "19:00"],
   break: [true, true, true, true, true, false, false],
   from: ["12:00", "12:00", "12:00", "12:00", "12:00", "12:00", "12:00"],
-  to: ["13:00", "13:00", "13:00", "13:00", "13:00", "13:00", "13:00"]
+  to: ["13:00", "13:00", "13:00", "13:00", "13:00", "13:00", "13:00"],
+  start1: ["00:00", "00:00","00:00","00:00","00:00","00:00","00:00"],
+  start2: ["00:00", "00:00","00:00","00:00","00:00","00:00","00:00"],
+  dur1: [0, 0, 0, 0, 0, 0, 0],
+  dur2: [0, 0, 0, 0, 0, 0, 0]
 };
 
+let workingHoursTimes = ["open", "close", "from", "to"];
+
 let workingTime = myfunction.workingHours({from: 8, to: 20, min: 0.5});
+
+myfunction.setStartsAndDurations(workingHours);
 
 app.set("view engine", "ejs");  // setting view engine for express
 
@@ -39,7 +47,6 @@ app.get("/appsettings", function(req, res) {
 });
 
 app.post("/appsettings", function(req, res) {
-  // console.log(possibleDurations);
   for (i=0; i<possibleDurations.text.length; i++) {
     if (req.body["dur"+i]) {                          // dinamical variables
       possibleDurations.use[i] = true;
@@ -49,11 +56,32 @@ app.post("/appsettings", function(req, res) {
   };
   // console.log(possibleDurations);
 
-  // I have to get working_, open_, close_, break_, from_ & to_ for all days
-  
-  res.redirect("appsettings");
-});
+  for (i=0; i<workingHours.working.length; i++) {
+    if (req.body["working"+i]) {                          // dinamical variables
+      workingHours.working[i] = true;
+    } else {
+      workingHours.working[i] = false;
+    };
+    if (req.body["break"+i]) {                          // dinamical variables
+      workingHours.break[i] = true;
+    } else {
+      workingHours.break[i] = false;
+    };
+  };
 
+  workingHoursTimes.forEach(getHours);
+  // console.log(workingHours);
+
+  workingHours= myfunction.setStartsAndDurations(workingHours);
+
+  res.redirect("appsettings");
+
+  function getHours(item) {
+    for (i=0; i<workingHours.working.length; i++) {
+      workingHours[item][i] = req.body[item+i];
+    };
+  };
+});
 
 
 
