@@ -46,6 +46,6 @@ exports.setStartsAndDurations =function(data) {
       data.dur2[i] = 0;
     };
   };
-  console.log(data);
+  // console.log(data);
   return data;
 };

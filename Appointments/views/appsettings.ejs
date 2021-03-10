@@ -38,7 +38,7 @@
           <% for (var i=0; i<headings.length; i++) { %>
               <td>
                 <select class="cell middle" name="open<%= i %>">
-                  <% for (var j=0; j<workingTime.length; j++) { %>
+                  <% for (var j=0; j<workingTime.length-2; j++) { %>
                     <option class="cell" value="<%= workingTime[j] %>" <% if (workingHours.open[i]==workingTime[j]) { %>selected<% } %>><%= workingTime[j] %></option>
                   <% } %>
                 </select>
@@ -50,7 +50,7 @@
           <% for (var i=0; i<headings.length; i++) { %>
               <td>
                 <select class="cell middle" name="close<%= i %>">
-                  <% for (var j=0; j<workingTime.length; j++) { %>
+                  <% for (var j=2; j<workingTime.length; j++) { %>
                     <option class="cell" value="<%= workingTime[j] %>" <% if (workingHours.close[i]==workingTime[j]) { %>selected<% } %>><%= workingTime[j] %></option>
                   <% } %>
                 </select>
@@ -70,7 +70,7 @@
           <% for (var i=0; i<headings.length; i++) { %>
               <td>
                 <select class="cell" name="from<%= i %>">
-                  <% for (var j=0; j<workingTime.length; j++) { %>
+                  <% for (var j=1; j<workingTime.length-2; j++) { %>
                     <option class="cell" value="<%= workingTime[j] %>" <% if (workingHours.from[i]==workingTime[j]) { %>selected<% } %>><%= workingTime[j] %></option>
                   <% } %>
                 </select>
@@ -82,7 +82,7 @@
           <% for (var i=0; i<headings.length; i++) { %>
               <td>
                 <select class="cell" name="to<%= i %>">
-                  <% for (var j=0; j<workingTime.length; j++) { %>
+                  <% for (var j=2; j<workingTime.length-1; j++) { %>
                     <option class="cell" value="<%= workingTime[j] %>" <% if (workingHours.to[i]==workingTime[j]) { %>selected<% } %>><%= workingTime[j] %></option>
                   <% } %>
                 </select>
@@ -90,6 +90,11 @@
             <% } %>
         </tr>
       </table>
+
+      <div class="item">
+        <input type="checkbox" name="generate" value=true <% if (generateAppointments) { %>checked<% } %>>
+        <p for="generate">Generate Appointments</p>
+      </div>
 
       <br>
       <button type="submit" name="">Submit</button>

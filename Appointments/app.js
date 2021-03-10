@@ -12,6 +12,9 @@ let possibleDurations = {
   use: [true, true, true, true, false, false]
 };
 
+let choosenDurations = [];
+let minimumDuration = 0;
+
 let workingHours = {
   working: [true, true, true, true, true, false, false],
   open: ["09:00", "09:00", "09:00", "09:00", "09:00", "09:00", "09:00"],
@@ -31,30 +34,54 @@ let workingTime = myfunction.workingHours({from: 8, to: 20, min: 0.5});
 
 myfunction.setStartsAndDurations(workingHours);
 
+let generateAppointments = true;
+
+let dayData = {
+  date: Date,         // 10.03.2021
+  day: Number,        // 3 = Wednesday
+  working: Boolean,   // true = open
+  open1: Number,      // 8.5 = 08:30
+  open2: Number,      // 15 = 15:00
+  app1: Number,       // number of appointments with minimumDuration
+  app2: Number,
+  rest1: Number,      // number of still possible appointments with minimumDuration
+  rest2: Number,
+};
+
+let dayAppointments = {
+
+};
+
 app.set("view engine", "ejs");  // setting view engine for express
 
 app.use(bodyParser.urlencoded({extended: true}));     // necessary for body-parser
 app.use(express.static("public"));                    // necessary to give access to files in that folder
-
 
 app.get("/appsettings", function(req, res) {
   res.render("appsettings", {
     headings: headings,
     workingTime: workingTime,
     possibleDurations: possibleDurations,
-    workingHours: workingHours
+    workingHours: workingHours,
+    generateAppointments: generateAppointments
   });
 });
 
 app.post("/appsettings", function(req, res) {
+  choosenDurations = [];
+  minimumDuration = 0;
   for (i=0; i<possibleDurations.text.length; i++) {
     if (req.body["dur"+i]) {                          // dinamical variables
       possibleDurations.use[i] = true;
+      choosenDurations.push(possibleDurations.duration[i]);
+      if (minimumDuration == 0) {
+        minimumDuration = possibleDurations.duration[i];
+      };
     } else {
       possibleDurations.use[i] = false;
     };
   };
-  // console.log(possibleDurations);
+  // console.log(minimumDuration, ":", choosenDurations);                   // choosenDurations = [0.25, 0.5, 1, 1.5]
 
   for (i=0; i<workingHours.working.length; i++) {
     if (req.body["working"+i]) {                          // dinamical variables
@@ -73,6 +100,14 @@ app.post("/appsettings", function(req, res) {
   // console.log(workingHours);
 
   workingHours= myfunction.setStartsAndDurations(workingHours);
+
+  if (req.body.generateAppointments) {
+    generateAppointments = true;
+  } else {
+    generateAppointments = false;
+  };
+
+
 
   res.redirect("appsettings");
 
