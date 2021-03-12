@@ -38,7 +38,7 @@ let generateAppointments = true;
 
 let today = new Date();
 let dates = [];
-let numberOfDays = 3;
+let numberOfDays = 20;
 
 function dayData(date) {
   this.date =  date;         // 10.03.2021
@@ -46,9 +46,9 @@ function dayData(date) {
   this.working = false;   // true = open
   this.start1 = 0;      // 8.5 = 08:30
   this.start2 = 0;      // 15 = 15:00
-  this.app1 = 0;       // number of appointments with minimumDuration
-  this.app2 = 0;
-  this.rest1 = 0;      // number of still possible appointments with minimumDuration
+  this.dur1 = 0;       // working hours 1
+  this.dur2 = 0;
+  this.rest1 = 0;      // free from working hours 1
   this.rest2 = 0;
 };
 
@@ -65,6 +65,7 @@ function Appointment() {
 let appointments = [];
 let appointmentNo = 0;
 let currentDay = 0;
+let numberOfPerson = 0;
 
 app.set("view engine", "ejs");  // setting view engine for express
 
@@ -111,7 +112,6 @@ app.post("/appsettings", function(req, res) {
   };
 
   workingHoursTimes.forEach(getHours);
-  // console.log(workingHours);
 
   workingHours= myfunction.setStartsAndDurations(workingHours);
 
@@ -123,14 +123,11 @@ app.post("/appsettings", function(req, res) {
 
   if (generateAppointments) {
     console.log("Generating appointments:");
-    // I have to check if is possible to create voll working hours with minimumDuration
     dates = myfunction.getDates(today, numberOfDays);
-    // console.log("Today: ", today, "dates: ", dates);
     dailyData = [];
     appointmentNo = 0;
     currentDay = 0;
     dates.forEach(getData);
-    // console.log("dailyData:", dailyData);
   };
 
   res.redirect("appsettings");
@@ -142,19 +139,21 @@ app.post("/appsettings", function(req, res) {
   };
 
   function getData(tmpDate) {
+    console.log("tmpDate", tmpDate);
     let newData = new dayData(tmpDate);
     newData.day = tmpDate.getDay();
     newData.working = workingHours.working[newData.day];
     newData.start1 = workingHours.start1[newData.day];
     newData.start2 = workingHours.start2[newData.day];
-    newData.app1 = workingHours.dur1[newData.day]/minimumDuration;
-    newData.app2 = workingHours.dur2[newData.day]/minimumDuration;
-    newData.rest1 = newData.app1;
-    newData.rest2 = newData.app2;
+    newData.dur1 = workingHours.dur1[newData.day];
+    newData.dur2 = workingHours.dur2[newData.day];
+    newData.rest1 = newData.dur1;
+    newData.rest2 = newData.dur2;
 
     let newAppointment = new Appointment();
+    let appointments = [];
 
-    console.log("newData", newData);
+    console.log("newData: ", newData);
 
     if (newData.working) {
       if (currentDay<Math.floor(numberOfDays/1)) {
@@ -163,23 +162,46 @@ app.post("/appsettings", function(req, res) {
           newAppointment.no = appointmentNo;
 
           maxDuration = myfunction.maximumDuration(newData.rest1, choosenDurations);
-          console.log("maxDuration: ", maxDuration);
           newDurations = myfunction.newDurations(maxDuration, choosenDurations);
-          console.log("newDurations: ", newDurations);
           newAppointment.duration = myfunction.randomDuration(newDurations);
-          console.log("newAppointment.duration: ", newAppointment.duration);
 
+          newAppointment.start = myfunction.timeInHours(newData.start1) + newData.dur1 - newData.rest1;
 
-          newData.rest1 = newData.rest1 - newAppointment.duration/minimumDuration;
-          console.log("newData.rest1: ", newData.rest1, "newAppointment", newAppointment);
+          newData.rest1 = newData.rest1 - newAppointment.duration;
 
+          newAppointment.persnoNo = myfunction.randomPerson(numberOfPerson);
+          if (newAppointment.persnoNo>numberOfPerson) {
+            numberOfPerson = newAppointment.persnoNo;
+          };
+
+          console.log(newAppointment);
+
+          appointments.push(newAppointment);
           appointmentNo++;
         };
-        currentDay++;
-        console.log(currentDay);
+        while (newData.rest2 > 0) {
+          newAppointment.no = appointmentNo;
+
+          maxDuration = myfunction.maximumDuration(newData.rest2, choosenDurations);
+          newDurations = myfunction.newDurations(maxDuration, choosenDurations);
+          newAppointment.duration = myfunction.randomDuration(newDurations);
+
+          newAppointment.start = myfunction.timeInHours(newData.start2) + newData.dur2 - newData.rest2;
+
+          newData.rest2 = newData.rest2 - newAppointment.duration;
+
+          newAppointment.persnoNo = myfunction.randomPerson(numberOfPerson);
+          if (newAppointment.persnoNo>numberOfPerson) {
+            numberOfPerson = newAppointment.persnoNo;
+          };
+
+          console.log(newAppointment);
+
+          appointments.push(newAppointment);
+          appointmentNo++;
+        };
       };
     };
-
 
     dailyData.push(newData);
     currentDay++;

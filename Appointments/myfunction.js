@@ -53,11 +53,10 @@ exports.setStartsAndDurations =function(data) {
 exports.getDates = function(startDate, noOfDays) {
   var dateArray = new Array();
   var date = startDate;
-  date.setDate(date.getDate() + 1);
 
   for (i=0; i<noOfDays; i++) {
-    dateArray.push(new Date (date));
     date.setDate(date.getDate() + 1);
+    dateArray.push(new Date (date));
   };
 
   return dateArray;
@@ -70,27 +69,43 @@ exports.maximumDuration = function(rest, durations) {
   return max;
 
   function check(item) {
-    let newDurations = [];
-    if (rest => item) {
-      // console.log("rst: ", rest, "item: ", item);
+    if (rest >= item) {
       max = item;
-      newDurations.push[item];
+      // console.log("rest: ", rest, "item: ", item, "max: ", max);
     };
   };
 };
 
 exports.newDurations = function(max, durations) {
   let newDurations = [];
-  durations.forEach(function(item) {
-    if (max=>item) {
+  durations.forEach(check);
+  return newDurations;
+
+  function check(item) {
+    if (item<=max) {
       newDurations.push(item);
     };
-  });
-  return newDurations;
+    // console.log("max: ", max, "item: ", item, "newDurations: ", newDurations);
+  };
 };
 
 exports.randomDuration = function(durations) {
-  let rndm = Math.floor(Math.random() * durations.length) + 1;
-  console.log("durations: ", durations, "rndm: ", rndm, "choosen: ", durations[rndm]);
+  let rndm = Math.floor(Math.random() * durations.length);
+  // console.log("durations: ", durations, "rndm: ", rndm, "choosen: ", durations[rndm]);
   return durations[rndm];
+};
+
+exports.randomPerson = function(no) {
+  if (no<10) {
+    no++;
+  } else {
+    let rndm = Math.random();
+    if (((rndm<0.1) && (no<20)) || ((rndm<0.2) && (no=>20))) {
+      let rndmm = Math.floor(Math.random() * no) + 1;
+      no = rndmm;
+    } else {
+      no++;
+    };
+  };
+  return no;
 };
