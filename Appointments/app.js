@@ -38,7 +38,7 @@ let generateAppointments = true;
 
 let today = new Date();
 let dates = [];
-let numberOfDays = 10;
+let numberOfDays = 3;
 
 function dayData(date) {
   this.date =  date;         // 10.03.2021
@@ -122,6 +122,7 @@ app.post("/appsettings", function(req, res) {
   };
 
   if (generateAppointments) {
+    console.log("Generating appointments:");
     // I have to check if is possible to create voll working hours with minimumDuration
     dates = myfunction.getDates(today, numberOfDays);
     // console.log("Today: ", today, "dates: ", dates);
@@ -130,9 +131,6 @@ app.post("/appsettings", function(req, res) {
     currentDay = 0;
     dates.forEach(getData);
     // console.log("dailyData:", dailyData);
-
-    // dailyAppointments = randomAppointments(today, )
-
   };
 
   res.redirect("appsettings");
@@ -156,9 +154,30 @@ app.post("/appsettings", function(req, res) {
 
     let newAppointment = new Appointment();
 
-    if (currentDay<Math.floor(numberOfDays/3)) {
-      maxDuration = maximumDuration(newData.rest1, choosenDurations);
+    console.log("newData", newData);
 
+    if (newData.working) {
+      if (currentDay<Math.floor(numberOfDays/1)) {
+        newAppointment = [];
+        while (newData.rest1 > 0) {
+          newAppointment.no = appointmentNo;
+
+          maxDuration = myfunction.maximumDuration(newData.rest1, choosenDurations);
+          console.log("maxDuration: ", maxDuration);
+          newDurations = myfunction.newDurations(maxDuration, choosenDurations);
+          console.log("newDurations: ", newDurations);
+          newAppointment.duration = myfunction.randomDuration(newDurations);
+          console.log("newAppointment.duration: ", newAppointment.duration);
+
+
+          newData.rest1 = newData.rest1 - newAppointment.duration/minimumDuration;
+          console.log("newData.rest1: ", newData.rest1, "newAppointment", newAppointment);
+
+          appointmentNo++;
+        };
+        currentDay++;
+        console.log(currentDay);
+      };
     };
 
 
@@ -167,32 +186,6 @@ app.post("/appsettings", function(req, res) {
   };
 });
 
-function maximumDuration(rest, durations) {
-  let max = 0;
-  durations.forEach(check);
-  // console.log("rest: ", rest, "duration: ", durations, "max: ", max);
-  return max;
-
-  function check(item) {
-    if (rest => item) {
-      // console.log("rst: ", rest, "item: ", item);
-      max = item;
-    };
-  };
-};
-
-function randomDuration(max, durations) {
-  let tmp = [];
-  durations.forEach(check);
-  let rndm = Math.floor(Math.random() * tmp.length) + 1;
-  return durations[rndm];
-
-  function check(item) {
-    if (item <= max) {
-      tmp.push(item);
-    };
-  };
-};
 
 // function Appointment {
 //   this.no = 0;

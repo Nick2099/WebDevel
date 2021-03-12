@@ -62,3 +62,35 @@ exports.getDates = function(startDate, noOfDays) {
 
   return dateArray;
 };
+
+exports.maximumDuration = function(rest, durations) {
+  let max = 0;
+  durations.forEach(check);
+  // console.log("rest: ", rest, "duration: ", durations, "max: ", max);
+  return max;
+
+  function check(item) {
+    let newDurations = [];
+    if (rest => item) {
+      // console.log("rst: ", rest, "item: ", item);
+      max = item;
+      newDurations.push[item];
+    };
+  };
+};
+
+exports.newDurations = function(max, durations) {
+  let newDurations = [];
+  durations.forEach(function(item) {
+    if (max=>item) {
+      newDurations.push(item);
+    };
+  });
+  return newDurations;
+};
+
+exports.randomDuration = function(durations) {
+  let rndm = Math.floor(Math.random() * durations.length) + 1;
+  console.log("durations: ", durations, "rndm: ", rndm, "choosen: ", durations[rndm]);
+  return durations[rndm];
+};
