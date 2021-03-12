@@ -157,7 +157,8 @@ app.post("/appsettings", function(req, res) {
     let newAppointment = new Appointment();
 
     if (currentDay<Math.floor(numberOfDays/3)) {
-      maxDuration = MaximumDuration(newData.rest1, choosenDurations)
+      maxDuration = maximumDuration(newData.rest1, choosenDurations);
+
     };
 
 
@@ -166,16 +167,29 @@ app.post("/appsettings", function(req, res) {
   };
 });
 
-function MaximumDuration(rest, durations) {
+function maximumDuration(rest, durations) {
   let max = 0;
   durations.forEach(check);
-  console.log("rest: ", rest, "duration: ", durations, "max: ", max);
+  // console.log("rest: ", rest, "duration: ", durations, "max: ", max);
   return max;
 
   function check(item) {
-    if (rest > item) {
-      console.log("rst: ", rest, "item: ", item);
+    if (rest => item) {
+      // console.log("rst: ", rest, "item: ", item);
       max = item;
+    };
+  };
+};
+
+function randomDuration(max, durations) {
+  let tmp = [];
+  durations.forEach(check);
+  let rndm = Math.floor(Math.random() * tmp.length) + 1;
+  return durations[rndm];
+
+  function check(item) {
+    if (item <= max) {
+      tmp.push(item);
     };
   };
 };
