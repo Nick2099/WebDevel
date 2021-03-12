@@ -49,3 +49,16 @@ exports.setStartsAndDurations =function(data) {
   // console.log(data);
   return data;
 };
+
+exports.getDates = function(startDate, noOfDays) {
+  var dateArray = new Array();
+  var date = startDate;
+  date.setDate(date.getDate() + 1);
+
+  for (i=0; i<noOfDays; i++) {
+    dateArray.push(new Date (date));
+    date.setDate(date.getDate() + 1);
+  };
+
+  return dateArray;
+};
