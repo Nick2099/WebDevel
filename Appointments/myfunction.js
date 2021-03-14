@@ -1,5 +1,4 @@
 exports.workingHours = function(data) {
-  // console.log(data);
   let times = [];
   for (i=data.from; i<=data.to; i=i+data.min) {
     var tmp1 ="";
@@ -15,14 +14,12 @@ exports.workingHours = function(data) {
     var time = tmp1 + tmp2.toString() + ":" + tmp3 + tmp4.toString();
     times.push(time);
   }
-  // console.log(times);
   return times;
 };
 
 exports.timeInHours = function(d) { // "12:45" ==> 12.75
   var h = parseInt(d.substr(0,2));
   var m = parseInt(d.substr(3,2));
-
   return h+m/60;
 };
 
@@ -46,32 +43,27 @@ exports.setStartsAndDurations =function(data) {
       data.dur2[i] = 0;
     };
   };
-  // console.log(data);
   return data;
 };
 
 exports.getDates = function(startDate, noOfDays) {
   var dateArray = new Array();
-  var date = startDate;
-
+  var date = new Date(startDate);
   for (i=0; i<noOfDays; i++) {
     date.setDate(date.getDate() + 1);
     dateArray.push(new Date (date));
   };
-
   return dateArray;
 };
 
 exports.maximumDuration = function(rest, durations) {
   let max = 0;
   durations.forEach(check);
-  // console.log("rest: ", rest, "duration: ", durations, "max: ", max);
   return max;
 
   function check(item) {
     if (rest >= item) {
       max = item;
-      // console.log("rest: ", rest, "item: ", item, "max: ", max);
     };
   };
 };
@@ -85,13 +77,11 @@ exports.newDurations = function(max, durations) {
     if (item<=max) {
       newDurations.push(item);
     };
-    // console.log("max: ", max, "item: ", item, "newDurations: ", newDurations);
   };
 };
 
 exports.randomDuration = function(durations) {
   let rndm = Math.floor(Math.random() * durations.length);
-  // console.log("durations: ", durations, "rndm: ", rndm, "choosen: ", durations[rndm]);
   return durations[rndm];
 };
 

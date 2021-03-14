@@ -38,7 +38,7 @@ let generateAppointments = true;
 
 let today = new Date();
 let dates = [];
-let numberOfDays = 20;
+let numberOfDays = 3  ;
 
 function dayData(date) {
   this.date =  date;         // 10.03.2021
@@ -123,11 +123,14 @@ app.post("/appsettings", function(req, res) {
 
   if (generateAppointments) {
     console.log("Generating appointments:");
-    dates = myfunction.getDates(today, numberOfDays);
+    dates = [];
     dailyData = [];
+    dates = myfunction.getDates(today, numberOfDays);
     appointmentNo = 0;
     currentDay = 0;
+    numberOfPerson = 0;
     dates.forEach(getData);
+    dailyData.forEach(logData);
   };
 
   res.redirect("appsettings");
@@ -138,8 +141,11 @@ app.post("/appsettings", function(req, res) {
     };
   };
 
+  function logData(item) {
+    console.log(item);
+  }
+
   function getData(tmpDate) {
-    console.log("tmpDate", tmpDate);
     let newData = new dayData(tmpDate);
     newData.day = tmpDate.getDay();
     newData.working = workingHours.working[newData.day];
@@ -152,69 +158,59 @@ app.post("/appsettings", function(req, res) {
 
     let newAppointment = new Appointment();
     let appointments = [];
-
-    console.log("newData: ", newData);
+    let tmpDuration = 0;
 
     if (newData.working) {
-      if (currentDay<Math.floor(numberOfDays/1)) {
-        newAppointment = [];
+      if (currentDay<numberOfDays) {
         while (newData.rest1 > 0) {
-          newAppointment.no = appointmentNo;
-
+          newAppointment = [];
           maxDuration = myfunction.maximumDuration(newData.rest1, choosenDurations);
           newDurations = myfunction.newDurations(maxDuration, choosenDurations);
-          newAppointment.duration = myfunction.randomDuration(newDurations);
-
+          newAppointment.no = appointmentNo;
+          tmpDuration = myfunction.randomDuration(newDurations);
+          if (tmpDuration == undefined) {
+            newAppointment.duration = newData.rest1;
+          } else {
+            newAppointment.duration = myfunction.randomDuration(newDurations);
+          };
           newAppointment.start = myfunction.timeInHours(newData.start1) + newData.dur1 - newData.rest1;
-
           newData.rest1 = newData.rest1 - newAppointment.duration;
-
           newAppointment.persnoNo = myfunction.randomPerson(numberOfPerson);
           if (newAppointment.persnoNo>numberOfPerson) {
             numberOfPerson = newAppointment.persnoNo;
           };
-
-          console.log(newAppointment);
-
           appointments.push(newAppointment);
           appointmentNo++;
         };
         while (newData.rest2 > 0) {
-          newAppointment.no = appointmentNo;
-
+          newAppointment = [];
           maxDuration = myfunction.maximumDuration(newData.rest2, choosenDurations);
           newDurations = myfunction.newDurations(maxDuration, choosenDurations);
-          newAppointment.duration = myfunction.randomDuration(newDurations);
-
+          newAppointment.no = appointmentNo;
+          tmpDuration = myfunction.randomDuration(newDurations);
+          if (tmpDuration == undefined) {
+            newAppointment.duration = newData.rest2;
+          } else {
+            newAppointment.duration = myfunction.randomDuration(newDurations);
+          };
           newAppointment.start = myfunction.timeInHours(newData.start2) + newData.dur2 - newData.rest2;
-
           newData.rest2 = newData.rest2 - newAppointment.duration;
-
           newAppointment.persnoNo = myfunction.randomPerson(numberOfPerson);
           if (newAppointment.persnoNo>numberOfPerson) {
             numberOfPerson = newAppointment.persnoNo;
           };
-
-          console.log(newAppointment);
-
           appointments.push(newAppointment);
           appointmentNo++;
         };
       };
     };
 
+    newData["appointments"] = appointments;
     dailyData.push(newData);
     currentDay++;
   };
 });
 
-
-// function Appointment {
-//   this.no = 0;
-//   this.start = 0;
-//   this.duration = 0;
-//   this.persnoNo = 0;
-//   this.done = 0;      // 0 = not, 1 = yes
 
 
 app.listen(3000, function() {
