@@ -99,3 +99,21 @@ exports.randomPerson = function(no) {
   };
   return no;
 };
+
+exports.getDate = function(tmpdate1) {
+  let tmpdate2 = new Date(tmpdate1);
+  let options = {
+    weekday: "long",  // narrow, short or long
+    day: "2-digit",   // numeric, 2-digit
+    month: "short",    // numeric, 2-digit, narrow, short, long
+    year: "numeric"   //numeric, 2-digit
+  };
+  let day = tmpdate2.toLocaleDateString("en-GB", options);
+  console.log(tmpdate1, tmpdate2, day);
+  return day;
+}
+
+exports.numberToPercentageString = function(data, l) {
+  data = Math.round(data * 100);
+  return data.toString() + "%";
+}

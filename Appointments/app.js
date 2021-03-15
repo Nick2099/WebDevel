@@ -1,5 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const ejs = require("ejs");
+const _ = require("lodash");
 const myfunction = require(__dirname + "/myfunction.js");   // connection to myfunction.js
 
 const app = express();
@@ -38,10 +40,11 @@ let generateAppointments = true;
 
 let today = new Date();
 let dates = [];
-let numberOfDays = 3  ;
+let numberOfDays = 3;
 
 function dayData(date) {
   this.date =  date;         // 10.03.2021
+  this.dateTxt = "";          // "Sunday, 10.03.2021"
   this.day = 0;        // 3 = Wednesday
   this.working = false;   // true = open
   this.start1 = 0;      // 8.5 = 08:30
@@ -50,6 +53,8 @@ function dayData(date) {
   this.dur2 = 0;
   this.rest1 = 0;      // free from working hours 1
   this.rest2 = 0;
+  this.free1 = 0;      // rest1/dur1
+  this.free2 = 0;
 };
 
 let dailyData = [];
@@ -70,7 +75,7 @@ let numberOfPerson = 0;
 app.set("view engine", "ejs");  // setting view engine for express
 
 app.use(bodyParser.urlencoded({extended: true}));     // necessary for body-parser
-app.use(express.static("public"));                    // necessary to give access to files in that folder
+app.use(express.static(__dirname + "/public"));                    // necessary to give access to files in that folder
 
 app.get("/appsettings", function(req, res) {
   res.render("appsettings", {
@@ -126,6 +131,7 @@ app.post("/appsettings", function(req, res) {
     dates = [];
     dailyData = [];
     dates = myfunction.getDates(today, numberOfDays);
+    logData("dates: ", dates)
     appointmentNo = 0;
     currentDay = 0;
     numberOfPerson = 0;
@@ -133,7 +139,7 @@ app.post("/appsettings", function(req, res) {
     dailyData.forEach(logData);
   };
 
-  res.redirect("appsettings");
+  res.redirect("appointments");
 
   function getHours(item) {
     for (i=0; i<workingHours.working.length; i++) {
@@ -143,11 +149,12 @@ app.post("/appsettings", function(req, res) {
 
   function logData(item) {
     console.log(item);
-  }
+  };
 
   function getData(tmpDate) {
     let newData = new dayData(tmpDate);
     newData.day = tmpDate.getDay();
+    newData.dateTxt = myfunction.getDate(newData.date);
     newData.working = workingHours.working[newData.day];
     newData.start1 = workingHours.start1[newData.day];
     newData.start2 = workingHours.start2[newData.day];
@@ -159,6 +166,7 @@ app.post("/appsettings", function(req, res) {
     let newAppointment = new Appointment();
     let appointments = [];
     let tmpDuration = 0;
+    let tmpFree = 0;
 
     if (newData.working) {
       if (currentDay<numberOfDays) {
@@ -205,11 +213,50 @@ app.post("/appsettings", function(req, res) {
       };
     };
 
+    if (newData.dur1 != 0) {
+      tmpFree = newData.rest1/newData.dur1;
+    } else {
+      tmpFree = 0;
+    };
+    newData.free1 = myfunction.numberToPercentageString(tmpFree);
+    if (newData.dur2 != 0) {
+      tmpFree = newData.rest2/newData.dur2;
+    } else {
+      tmpFree = 0;
+    };
+    newData.free2 = myfunction.numberToPercentageString(tmpFree);
+
     newData["appointments"] = appointments;
     dailyData.push(newData);
     currentDay++;
   };
 });
+
+app.get("/appointments", function(req, res) {
+  res.render("appointments", {
+    dailyData: dailyData
+  });
+});
+
+app.get("/appointments/:dateTxt", function(req, res) {
+  const tmpDateTxt = req.params.dateTxt;
+  const dailyDataLenght = dailyData.length;
+  let tmpDailyData = -1;
+  if (dailyDataLenght >= 0) {
+    for (i=0; i<dailyDataLenght; i++) {
+      if (_.lowerCase(tmpDateTxt) === _.lowerCase(dailyData[i].dateTxt)) {
+        tmpDailyData = i;
+        i = dailyDataLenght;
+      };
+    };
+  };
+  let oneDayData = dailyData[tmpDailyData];
+  console.log("oneDayData: ", oneDayData);
+  res.render("dayappointments", {
+    oneDayData: oneDayData
+  });
+});
+
 
 
 

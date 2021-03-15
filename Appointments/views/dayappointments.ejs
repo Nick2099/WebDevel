@@ -1,0 +1,25 @@
+<%- include("partials/header") -%>
+
+  <div class="box" id="heading">
+    <h1>Appointments on <%= oneDayData.dateTxt %></h1>
+  </div>
+
+  <div class="box">
+
+    <form class="" action="/" method="post">
+
+      <% for (i=0; i<oneDayData.appointments.length; i++) { %>
+        <div class="app-item">
+          <p class="app-cell"><%= oneDayData.appointments[i].start %></p>
+          <p class="app-cell-free"><%= oneDayData.appointments[i].persnoNo %></p>
+          <p class="app-cell-free"><%= oneDayData.appointments[i].duration %></p>
+          <p class="app-cell-free"><%= oneDayData.appointments[i].no %></p>
+        </div>
+      <% } %>
+
+    </form>
+
+  </div>
+
+
+<%- include("partials/footer") -%>

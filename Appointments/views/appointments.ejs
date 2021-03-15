@@ -1,0 +1,25 @@
+<%- include("partials/header") -%>
+
+  <div class="box" id="heading">
+    <h1>Appointments</h1>
+  </div>
+
+  <div class="box">
+
+    <form class="" action="/" method="post">
+
+      <% for (i=0; i<dailyData.length; i++) { %>
+        <div class="app-item">
+          <p class="app-cell"><%= dailyData[i].dateTxt %></p>
+          <p class="app-cell-free"><%= dailyData[i].free1 %></p>
+          <p class="app-cell-free"><%= dailyData[i].free2 %></p>
+          <p class="app-cell"><a href="/appointments/<%= dailyData[i].dateTxt %>">Details</a></p>
+        </div>
+      <% } %>
+
+    </form>
+
+  </div>
+
+
+<%- include("partials/footer") -%>

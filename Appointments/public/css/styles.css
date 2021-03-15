@@ -127,3 +127,21 @@ tr:nth-child(even) {
 .middle {
   text-align: center;
 }
+
+.app-item {
+  min-height: 40px;
+  display: flex;
+  border-bottom: 1px solid #F1F1F1;
+}
+
+.app-cell {
+  text-align: left;
+  max-width: 30%;
+  min-width: 300px;
+}
+
+.app-cell-free {
+  text-align: left;
+  max-width: 20%;
+  min-width: 100px;
+}

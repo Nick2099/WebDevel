@@ -26,6 +26,8 @@ app.get("/", function(req, res) {
     tmpPosts.push({title: post.title, content: myfunctions.text_truncate(post.content), link: _.lowerCase(post.title)});
   });
 
+  console.log(tmpPosts);
+
   res.render("home", {
     textContent: homeStartingContent,
     posts: tmpPosts
