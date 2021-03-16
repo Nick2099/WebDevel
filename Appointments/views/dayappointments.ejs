@@ -6,14 +6,15 @@
 
   <div class="box">
 
-    <form class="" action="/" method="post">
+    <form class="" action="/appointments" method="post">
 
       <% for (i=0; i<oneDayData.appointments.length; i++) { %>
         <div class="app-item">
-          <p class="app-cell"><%= oneDayData.appointments[i].start %></p>
+          <p class="app-cell"><%= oneDayData.appointments[i].startTxt %> - <%= oneDayData.appointments[i].endTxt %></p>
           <p class="app-cell-free"><%= oneDayData.appointments[i].persnoNo %></p>
           <p class="app-cell-free"><%= oneDayData.appointments[i].duration %></p>
           <p class="app-cell-free"><%= oneDayData.appointments[i].no %></p>
+          <button type="submit" name="delete" value="<%= oneDayData.appointments[i].no %>">Delete</button>
         </div>
       <% } %>
 

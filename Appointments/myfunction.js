@@ -1,18 +1,8 @@
 exports.workingHours = function(data) {
   let times = [];
   for (i=data.from; i<=data.to; i=i+data.min) {
-    var tmp1 ="";
-    var tmp2 = Math.floor(i);
-    if (i<10) {
-      tmp1="0";
-    };
-    var tmp3 = "";
-    var tmp4 = Math.floor((i-tmp2)*60);
-    if (tmp4<10) {
-      tmp3="0";
-    };
-    var time = tmp1 + tmp2.toString() + ":" + tmp3 + tmp4.toString();
-    times.push(time);
+    var tmp = this.hoursInTime(i);
+    times.push(tmp);
   }
   return times;
 };
@@ -21,6 +11,21 @@ exports.timeInHours = function(d) { // "12:45" ==> 12.75
   var h = parseInt(d.substr(0,2));
   var m = parseInt(d.substr(3,2));
   return h+m/60;
+};
+
+exports.hoursInTime = function(d) {
+  var tmp1 ="";
+  var tmp2 = Math.floor(d);
+  if (tmp2<10) {
+    tmp1="0";
+  };
+  var tmp3 = "";
+  var tmp4 = Math.floor((d-tmp2)*60);
+  if (tmp4<10) {
+    tmp3="0";
+  };
+  var time = tmp1 + tmp2.toString() + ":" + tmp3 + tmp4.toString();
+  return time;
 };
 
 exports.setStartsAndDurations =function(data) {
@@ -116,4 +121,19 @@ exports.getDate = function(tmpdate1) {
 exports.numberToPercentageString = function(data, l) {
   data = Math.round(data * 100);
   return data.toString() + "%";
+}
+
+exports.deleteAppointment = function(data, toDelete) {
+  let dataLenght = data.appointments.length;
+  console.log(dataLenght);
+  let tmpApp = -1;
+  for (i=0; i<dataLenght; i++) {
+    if (toDelete==data.appointments[i].no) {
+      tmpApp = i;
+    };
+  };
+  if (tmpApp=>0) {
+    data.appointments.splice(tmpApp,1);
+  };
+  return data;
 }

@@ -58,6 +58,8 @@ function dayData(date) {
 };
 
 let dailyData = [];
+let oneDayData = "";
+
 
 function Appointment() {
   this.no = 0;
@@ -250,14 +252,27 @@ app.get("/appointments/:dateTxt", function(req, res) {
       };
     };
   };
-  let oneDayData = dailyData[tmpDailyData];
+  oneDayData = dailyData[tmpDailyData];
+  oneDayData.appointments.forEach(addProperties);
   console.log("oneDayData: ", oneDayData);
   res.render("dayappointments", {
     oneDayData: oneDayData
   });
+
+  function addProperties(app) {
+    app.end = app.start + app.duration;
+    app.startTxt = myfunction.hoursInTime(app.start);
+    app.endTxt = myfunction.hoursInTime(app.end);
+  };
 });
 
-
+app.post("/appointments", function(req, res) {
+  const deleteNo = req.body.delete;
+  oneDayData = myfunction.deleteAppointment(oneDayData, deleteNo);
+  res.render("dayappointments", {
+    oneDayData: oneDayData
+  });
+});
 
 
 app.listen(3000, function() {
