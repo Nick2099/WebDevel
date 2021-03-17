@@ -18,11 +18,11 @@ let choosenDurations = [];
 let minimumDuration = 0;
 
 let workingHours = {
-  working: [false, true, true, true, true, true, false],
+  working: [false, true, true, true, true, true, true],
   open: ["09:00", "09:00", "09:00", "09:00", "09:00", "09:00", "09:00"],
-  close: ["19:00", "19:00", "19:00", "19:00", "19:00", "19:00", "19:00"],
+  close: ["19:00", "19:00", "19:00", "19:00", "19:00", "19:00", "13:00"],
   break: [false, true, true, true, true, true, false],
-  from: ["12:00", "12:00", "12:00", "12:00", "12:00", "12:00", "12:00"],
+  from: ["12:00", "12:00", "12:00", "12:00", "12:00", "12:00", "13:00"],
   to: ["13:00", "13:00", "13:00", "13:00", "13:00", "13:00", "13:00"],
   start1: ["00:00", "00:00","00:00","00:00","00:00","00:00","00:00"],
   start2: ["00:00", "00:00","00:00","00:00","00:00","00:00","00:00"],
@@ -70,9 +70,9 @@ function Appointment() {
 };
 
 let appointments = [];
-let appointmentNo = 0;
+let appointmentNo = 1;
 let currentDay = 0;
-let numberOfPerson = 0;
+let numberOfPerson = 1;
 
 app.set("view engine", "ejs");  // setting view engine for express
 
@@ -133,10 +133,10 @@ app.post("/appsettings", function(req, res) {
     dates = [];
     dailyData = [];
     dates = myfunction.getDates(today, numberOfDays);
-    logData("dates: ", dates)
-    appointmentNo = 0;
+    // logData("dates: ", dates)
+    appointmentNo = 1;
     currentDay = 0;
-    numberOfPerson = 0;
+    numberOfPerson = 1;
     dates.forEach(getData);
     dailyData.forEach(logData);
   };
@@ -254,7 +254,6 @@ app.get("/appointments/:dateTxt", function(req, res) {
   };
   oneDayData = dailyData[tmpDailyData];
   oneDayData.appointments.forEach(addProperties);
-  console.log("oneDayData: ", oneDayData);
   res.render("dayappointments", {
     oneDayData: oneDayData
   });
@@ -263,12 +262,15 @@ app.get("/appointments/:dateTxt", function(req, res) {
     app.end = app.start + app.duration;
     app.startTxt = myfunction.hoursInTime(app.start);
     app.endTxt = myfunction.hoursInTime(app.end);
+    app.durationTxt = myfunction.hoursInTime(app.duration);
   };
 });
 
 app.post("/appointments", function(req, res) {
-  const deleteNo = req.body.delete;
-  oneDayData = myfunction.deleteAppointment(oneDayData, deleteNo);
+  const appNo = req.body.delete;
+  // oneDayData = myfunction.deleteAppointment(oneDayData, appNo);
+  oneDayData = myfunction.makeAppointmentFree(oneDayData, appNo);
+  console.log(oneDayData);
   res.render("dayappointments", {
     oneDayData: oneDayData
   });

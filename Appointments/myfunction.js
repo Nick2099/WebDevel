@@ -114,18 +114,16 @@ exports.getDate = function(tmpdate1) {
     year: "numeric"   //numeric, 2-digit
   };
   let day = tmpdate2.toLocaleDateString("en-GB", options);
-  console.log(tmpdate1, tmpdate2, day);
   return day;
-}
+};
 
 exports.numberToPercentageString = function(data, l) {
   data = Math.round(data * 100);
   return data.toString() + "%";
-}
+};
 
 exports.deleteAppointment = function(data, toDelete) {
   let dataLenght = data.appointments.length;
-  console.log(dataLenght);
   let tmpApp = -1;
   for (i=0; i<dataLenght; i++) {
     if (toDelete==data.appointments[i].no) {
@@ -136,4 +134,56 @@ exports.deleteAppointment = function(data, toDelete) {
     data.appointments.splice(tmpApp,1);
   };
   return data;
-}
+};
+
+exports.makeAppointmentFree = function(data, appNo) {
+  let dataLenght = data.appointments.length;
+  let tmpAppNo = -1;
+  let tmpFree = 0;
+  for (i=0; i<dataLenght; i++) {
+    if (appNo == data.appointments[i].no) {
+      data.appointments[i].no = 0;            // 0 = free
+      data.appointments[i].persnoNo = 0;      // 0 = no client
+      tmpAppNo = i;
+      i = dataLenght;
+    };
+  };
+
+  let tmpRest = data.dur1;
+  console.log("tmpRest: ", tmpRest);
+
+  for (i=0; i<dataLenght; i++) {
+    if (data.appointments[i].no>0 & data.appointments[i].start<this.timeInHours(data.start1)+data.dur1) {
+      tmpRest = tmpRest - data.appointments[i].duration;
+      console.log("tmpRest new: ", tmpRest);
+    };
+  };
+  data.rest1 = tmpRest;
+  if (data.dur1 != 0) {
+    tmpFree = data.rest1/data.dur1;
+  } else {
+    tmpFree = 0;
+  };
+  data.free1 = this.numberToPercentageString(tmpFree);
+  console.log(data.rest1, data.free1);
+
+  tmpRest = data.dur2;
+  console.log("tmpRest: ", tmpRest);
+
+  for (i=0; i<dataLenght; i++) {
+    if (data.appointments[i].no>0 & data.appointments[i].start>=this.timeInHours(data.start2)) {
+      tmpRest = tmpRest - data.appointments[i].duration;
+      console.log("tmpRest new: ", tmpRest);
+    };
+  };
+  data.rest2 = tmpRest;
+  if (data.dur2 != 0) {
+    tmpFree = data.rest2/data.dur2;
+  } else {
+    tmpFree = 0;
+  };
+  data.free2 = this.numberToPercentageString(tmpFree);
+  console.log(data.rest2, data.free2);
+
+  return data;
+};

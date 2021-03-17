@@ -8,15 +8,40 @@
 
     <form class="" action="/appointments" method="post">
 
-      <% for (i=0; i<oneDayData.appointments.length; i++) { %>
-        <div class="app-item">
-          <p class="app-cell"><%= oneDayData.appointments[i].startTxt %> - <%= oneDayData.appointments[i].endTxt %></p>
-          <p class="app-cell-free"><%= oneDayData.appointments[i].persnoNo %></p>
-          <p class="app-cell-free"><%= oneDayData.appointments[i].duration %></p>
-          <p class="app-cell-free"><%= oneDayData.appointments[i].no %></p>
-          <button type="submit" name="delete" value="<%= oneDayData.appointments[i].no %>">Delete</button>
-        </div>
-      <% } %>
+      <table>
+        <tr>
+          <th>Time</th>
+          <th>Duration</th>
+          <th>Client</th>
+          <th>App.no.</th>
+          <th>Action</th>
+        </tr>
+
+        <% for (i=0; i<oneDayData.appointments.length; i++) { %>
+          <tr>
+            <td>
+              <p class=""><%= oneDayData.appointments[i].startTxt %> - <%= oneDayData.appointments[i].endTxt %></p>
+            </td>
+            <td>
+              <p class=""><%= oneDayData.appointments[i].durationTxt %></p>
+            </td>
+            <td>
+              <p class=""><%= oneDayData.appointments[i].persnoNo %></p>
+            </td>
+            <td>
+              <p class=""><%= oneDayData.appointments[i].no %></p>
+            </td>
+            <td>
+              <% if (oneDayData.appointments[i].no > 0) { %>
+                <button type="submit" name="delete" value="<%= oneDayData.appointments[i].no %>">Delete</button>
+              <% } else { %>
+                <button type="submit" name="add" value="<%= oneDayData.appointments[i].start %>">Add</button>
+              <% } %>
+            </td>
+          </tr>
+        <% } %>
+
+      </table>
 
     </form>
 
