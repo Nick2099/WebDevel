@@ -40,7 +40,7 @@ let generateAppointments = true;
 
 let today = new Date();
 let dates = [];
-let numberOfDays = 3;
+let numberOfDays = 2;
 
 function dayData(date) {
   this.date =  date;         // 10.03.2021
@@ -129,7 +129,7 @@ app.post("/appsettings", function(req, res) {
   };
 
   if (generateAppointments) {
-    console.log("Generating appointments:");
+    // console.log("Generating appointments:");
     dates = [];
     dailyData = [];
     dates = myfunction.getDates(today, numberOfDays);
@@ -138,7 +138,7 @@ app.post("/appsettings", function(req, res) {
     currentDay = 0;
     numberOfPerson = 1;
     dates.forEach(getData);
-    dailyData.forEach(logData);
+    // dailyData.forEach(logData);
   };
 
   res.redirect("appointments");
@@ -269,11 +269,13 @@ app.get("/appointments/:dateTxt", function(req, res) {
 app.post("/appointments", function(req, res) {
   const appNo = req.body.delete;
   // oneDayData = myfunction.deleteAppointment(oneDayData, appNo);
-  oneDayData = myfunction.makeAppointmentFree(oneDayData, appNo);
-  console.log(oneDayData);
-  res.render("dayappointments", {
-    oneDayData: oneDayData
-  });
+  (async () => {
+    oneDayData = await myfunction.makeAppointmentFree(oneDayData, appNo);
+    oneDayData = await myfunction.concatenateFreeAppointments(oneDayData);
+    res.render("dayappointments", {
+        oneDayData: oneDayData
+    });
+  })();
 });
 
 
