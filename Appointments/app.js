@@ -40,7 +40,7 @@ let generateAppointments = true;
 
 let today = new Date();
 let dates = [];
-let numberOfDays = 2;
+let numberOfDays = 3;
 
 function dayData(date) {
   this.date =  date;         // 10.03.2021
@@ -272,8 +272,9 @@ app.post("/appointments", function(req, res) {
   (async () => {
     oneDayData = await myfunction.makeAppointmentFree(oneDayData, appNo);
     oneDayData = await myfunction.concatenateFreeAppointments(oneDayData);
+    oneDayData = await myfunction.creatingFreeAppointments(oneDayData, minimumDuration, choosenDurations);
     res.render("dayappointments", {
-        oneDayData: oneDayData
+      oneDayData: oneDayData
     });
   })();
 });

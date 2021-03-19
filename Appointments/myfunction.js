@@ -191,25 +191,54 @@ exports.concatenateFreeAppointments = function(data) {
       for (j=i+1; j<dataLenght; j++) {
         if (data.appointments[j].no == 0) {
           lastApp = j;
-        } else {
-          if (lastApp>firstApp) {
-            data.appointments[firstApp].duration = data.appointments[lastApp].start + data.appointments[lastApp].duration - data.appointments[firstApp].start;
-            data.appointments[firstApp].end = data.appointments[firstApp].start + data.appointments[firstApp].duration;
-            data.appointments[firstApp].startTxt = this.hoursInTime(data.appointments[firstApp].start);
-            data.appointments[firstApp].endTxt = this.hoursInTime(data.appointments[firstApp].end);
-            data.appointments[firstApp].durationTxt = this.hoursInTime(data.appointments[firstApp].duration);
-          };
-          i = lastApp;
-          firstApp = -1;
-          lastApp = -1;
+        } else {          // this part is not executing when last app have to be deleted
           j = dataLenght;
         };
       };
+      if (lastApp>firstApp) {
+        data.appointments[firstApp].duration = data.appointments[lastApp].start + data.appointments[lastApp].duration - data.appointments[firstApp].start;
+        data.appointments[firstApp].end = data.appointments[firstApp].start + data.appointments[firstApp].duration;
+        data.appointments[firstApp].startTxt = this.hoursInTime(data.appointments[firstApp].start);
+        data.appointments[firstApp].endTxt = this.hoursInTime(data.appointments[firstApp].end);
+        data.appointments[firstApp].durationTxt = this.hoursInTime(data.appointments[firstApp].duration);
+      };
+      i = lastApp;
+      firstApp = -1;
+      lastApp = -1;
     };
   };
   for (i=dataLenght-2; i>=0; i--) {
     if (data.appointments[i].no == 0 & data.appointments[i+1].no == 0) {
       data.appointments.splice(i+1,1);
+    };
+  };
+  return data;
+};
+
+exports.creatingFreeAppointments = function(data, minimumDuration, choosenDurations) {
+  let dataLenght = data.appointments.length;
+  let tmpApp = -1;
+  let freeStart = 0;
+  let freeEnd = 0;
+  let freeDuration = 0;
+  let tmpStart, tmpEnd, tmpRest, tmpMaxDuration = 0;
+  let tmpNewDuration = [];
+
+  for (i=0; i<dataLenght; i++) {
+    if (data.appointments[i].no == 0) {
+      tmpApp = i;
+      freeStart = data.appointments[i].start;
+      freeEnd = data.appointments[i].end;
+      freeDuration = data.appointments[i].duration;
+      console.log(freeStart, freeEnd, freeDuration, minimumDuration, choosenDurations);
+      for (t=freeStart; t<freeEnd; t=t+freeDuration) {
+        tmpStart = t;
+        tmpEnd = t+freeDuration;
+        tmpRest = freeEnd - tmpStart;
+        tmpMaxDuration = this.maximumDuration(tmpRest, choosenDurations);
+        tmpNewDuration = this.newDurations(tmpMaxDuration, choosenDurations);
+        console.log(tmpStart, tmpEnd, tmpRest, tmpMaxDuration, tmpNewDuration);
+      };
     };
   };
   return data;
