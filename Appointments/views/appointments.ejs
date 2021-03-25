@@ -1,25 +1,44 @@
 <%- include("partials/header") -%>
 
-  <div class="box" id="heading">
-    <h1>Appointments</h1>
-  </div>
+<div class="box" id="heading">
+  <h1>Appointments</h1>
+</div>
 
-  <div class="box">
+<div class="box">
 
-    <form class="" action="/" method="post">
+  <form class="" action="/" method="post">
+
+    <table>
+
+      <tr>
+        <th>Date</th>
+        <th>Free time 1st part</th>
+        <th>Free time 2nd part</th>
+        <th>Link to</th>
+      </tr>
 
       <% for (i=0; i<dailyData.length; i++) { %>
-        <div class="app-item">
-          <p class="app-cell"><%= dailyData[i].dateTxt %></p>
-          <p class="app-cell-free"><%= dailyData[i].free1 %></p>
-          <p class="app-cell-free"><%= dailyData[i].free2 %></p>
-          <p class="app-cell"><a href="/appointments/<%= dailyData[i].dateTxt %>">Details</a></p>
-        </div>
+        <tr>
+          <td>
+            <p class=""><%= dailyData[i].dateTxt %></p>
+          </td>
+          <td>
+            <p class=""><%= dailyData[i].free1 %></p>
+          </td>
+          <td>
+            <p class=""><%= dailyData[i].free2 %></p>
+          </td>
+          <td>
+            <p class=""><a href="/appointments/<%= dailyData[i].dateTxt %>">Details</a></p>
+          </td>
+        </tr>
       <% } %>
 
-    </form>
+    </table>
 
-  </div>
+  </form>
+
+</div>
 
 
 <%- include("partials/footer") -%>

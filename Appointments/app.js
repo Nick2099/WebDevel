@@ -20,7 +20,7 @@ let minimumDuration = 0;
 let workingHours = {
   working: [false, true, true, true, true, true, true],
   open: ["09:00", "09:00", "09:00", "09:00", "09:00", "09:00", "09:00"],
-  close: ["19:00", "19:00", "19:00", "19:00", "19:00", "19:00", "13:00"],
+  close: ["16:00", "16:00", "16:00", "16:00", "16:00", "16:00", "13:00"],
   break: [false, true, true, true, true, true, false],
   from: ["12:00", "12:00", "12:00", "12:00", "12:00", "12:00", "13:00"],
   to: ["13:00", "13:00", "13:00", "13:00", "13:00", "13:00", "13:00"],
@@ -40,7 +40,7 @@ let generateAppointments = true;
 
 let today = new Date();
 let dates = [];
-let numberOfDays = 3;
+let numberOfDays = 5;
 
 function dayData(date) {
   this.date =  date;         // 10.03.2021
@@ -267,16 +267,46 @@ app.get("/appointments/:dateTxt", function(req, res) {
 });
 
 app.post("/appointments", function(req, res) {
+  console.log(req.body);
   const appNo = req.body.delete;
-  // oneDayData = myfunction.deleteAppointment(oneDayData, appNo);
-  (async () => {
-    oneDayData = await myfunction.makeAppointmentFree(oneDayData, appNo);
-    oneDayData = await myfunction.concatenateFreeAppointments(oneDayData);
-    oneDayData = await myfunction.creatingFreeAppointments(oneDayData, minimumDuration, choosenDurations);
+  if (appNo != undefined) {
+    // oneDayData = myfunction.deleteAppointment(oneDayData, appNo);
+    (async () => {
+      oneDayData = await myfunction.makeAppointmentFree(oneDayData, appNo);
+      oneDayData = await myfunction.concatenateFreeAppointments(oneDayData);
+      oneDayData = await myfunction.creatingFreeAppointments(oneDayData, minimumDuration, choosenDurations);
+      res.render("dayappointments", {
+        oneDayData: oneDayData
+      });
+    })();
+  };
+  const startTime = req.body.add;
+  if (startTime != undefined) {
+    let appNr = myfunction.findAppNr(oneDayData, startTime);
+    let appDuration = myfunction.timeInHours(req.body.duration);
+    numberOfPerson++;
+
+    // oneDayData.appointments[appNr].start = ist the same
+    oneDayData.appointments[appNr].no = appointmentNo;
+    oneDayData.appointments[appNr].duration = appDuration;
+    oneDayData.appointments[appNr].end = oneDayData.appointments[appNr].start + appDuration;
+    oneDayData.appointments[appNr].startTxt = myfunction.hoursInTime(oneDayData.appointments[appNr].start);
+    oneDayData.appointments[appNr].endTxt = myfunction.hoursInTime(oneDayData.appointments[appNr].end);
+    oneDayData.appointments[appNr].durationTxt = myfunction.hoursInTime(oneDayData.appointments[appNr].duration);
+    oneDayData.appointments[appNr].newDurations = [];
+    oneDayData.appointments[appNr].persnoNo = numberOfPerson,
+    oneDayData.appointments[appNr].done = 0;
+
+    oneDayData = myfunction.removeSurplusApps(oneDayData, Number(startTime), Number(startTime)+Number(appDuration));
+    oneDayData = myfunction.concatenateFreeAppointments(oneDayData);
+    oneDayData = myfunction.creatingFreeAppointments(oneDayData, minimumDuration, choosenDurations);
+
+    appointmentNo++;
+
     res.render("dayappointments", {
       oneDayData: oneDayData
     });
-  })();
+  };
 });
 
 

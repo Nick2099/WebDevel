@@ -6,46 +6,67 @@
 
   <div class="box">
 
-    <form class="" action="/appointments" method="post">
+    <table>
+      <tr>
+        <th>Time</th>
+        <th>Duration</th>
+        <th>Client</th>
+        <th>App.no.</th>
+        <th>Action</th>
+      </tr>
 
-      <table>
-        <tr>
-          <th>Time</th>
-          <th>Duration</th>
-          <th>Client</th>
-          <th>App.no.</th>
-          <th>Action</th>
-        </tr>
+      <% for (i=0; i<oneDayData.appointments.length; i++) { %>
 
-        <% for (i=0; i<oneDayData.appointments.length; i++) { %>
+        <% if (oneDayData.appointments[i].no > 0) { %>
           <tr>
-            <td>
-              <p class=""><%= oneDayData.appointments[i].startTxt %> - <%= oneDayData.appointments[i].endTxt %></p>
-            </td>
-            <td>
-              <p class=""><%= oneDayData.appointments[i].durationTxt %></p>
-            </td>
-            <td>
-              <p class=""><%= oneDayData.appointments[i].persnoNo %></p>
-            </td>
-            <td>
-              <p class=""><%= oneDayData.appointments[i].no %></p>
-            </td>
-            <td>
-              <% if (oneDayData.appointments[i].no > 0) { %>
+            <form class="" action="/appointments" method="post">
+              <td>
+                <p class=""><%= oneDayData.appointments[i].startTxt %> - <%= oneDayData.appointments[i].endTxt %></p>
+              </td>
+              <td>
+                <p class=""><%= oneDayData.appointments[i].durationTxt %></p>
+              </td>
+              <td>
+                <p class=""><%= oneDayData.appointments[i].persnoNo %></p>
+              </td>
+              <td>
+                <p class=""><%= oneDayData.appointments[i].no %></p>
+              </td>
+              <td>
                 <button type="submit" name="delete" value="<%= oneDayData.appointments[i].no %>">Delete</button>
-              <% } else { %>
-                <button type="submit" name="add" value="<%= oneDayData.appointments[i].start %>">Add</button>
-              <% } %>
-            </td>
+              </td>
+            </form>
+          </tr>
+        <% } else { %>
+          <tr>
+            <form class="" action="/appointments" method="post">
+              <td>
+                <p class=""><%= oneDayData.appointments[i].startTxt %> - <%= oneDayData.appointments[i].endTxt %></p>
+              </td>
+              <td>
+                <select class="cell middle" name="duration">
+                  <% for (var j=0; j<oneDayData.appointments[i].newDurations.length; j++) { %>
+                    <option class="cell" value="<%= oneDayData.appointments[i].newDurations[j] %>"><%= oneDayData.appointments[i].newDurations[j] %></option>
+                  <% } %>
+                </select>
+              </td>
+              <td>
+                <p class=""><%= oneDayData.appointments[i].persnoNo %></p>
+              </td>
+              <td>
+                <p class=""><%= oneDayData.appointments[i].no %></p>
+              </td>
+              <td>
+                <button class="addButton" type="submit" name="add" value="<%= oneDayData.appointments[i].start %>">Add</button>
+              </td>
+            </form>
           </tr>
         <% } %>
 
-      </table>
+      <% } %>
 
-    </form>
+    </table>
 
   </div>
-
 
 <%- include("partials/footer") -%>

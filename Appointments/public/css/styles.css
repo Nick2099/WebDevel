@@ -69,6 +69,10 @@ button {
   border-width: 0;
 }
 
+.addButton {
+  background-color: green;
+}
+
 input[type="text"] {
   text-align: center;
   height: 60px;
