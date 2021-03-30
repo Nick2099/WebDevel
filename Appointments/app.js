@@ -20,7 +20,7 @@ let minimumDuration = 0;
 let workingHours = {
   working: [false, true, true, true, true, true, true],
   open: ["09:00", "09:00", "09:00", "09:00", "09:00", "09:00", "09:00"],
-  close: ["16:00", "16:00", "16:00", "16:00", "16:00", "16:00", "13:00"],
+  close: ["19:00", "19:00", "19:00", "19:00", "19:00", "19:00", "13:00"],
   break: [false, true, true, true, true, true, false],
   from: ["12:00", "12:00", "12:00", "12:00", "12:00", "12:00", "13:00"],
   to: ["13:00", "13:00", "13:00", "13:00", "13:00", "13:00", "13:00"],
@@ -103,7 +103,6 @@ app.post("/appsettings", function(req, res) {
       possibleDurations.use[i] = false;
     };
   };
-  // console.log(minimumDuration, ":", choosenDurations);                   // choosenDurations = [0.25, 0.5, 1, 1.5]
 
   for (i=0; i<workingHours.working.length; i++) {
     if (req.body["working"+i]) {                          // dinamical variables
@@ -129,16 +128,13 @@ app.post("/appsettings", function(req, res) {
   };
 
   if (generateAppointments) {
-    // console.log("Generating appointments:");
     dates = [];
     dailyData = [];
     dates = myfunction.getDates(today, numberOfDays);
-    // logData("dates: ", dates)
     appointmentNo = 1;
     currentDay = 0;
     numberOfPerson = 1;
     dates.forEach(getData);
-    // dailyData.forEach(logData);
   };
 
   res.redirect("appointments");
@@ -267,9 +263,9 @@ app.get("/appointments/:dateTxt", function(req, res) {
 });
 
 app.post("/appointments", function(req, res) {
-  console.log(req.body);
   const appNo = req.body.delete;
   if (appNo != undefined) {
+    console.log("Deleting appointment no: ", appNo);
     // oneDayData = myfunction.deleteAppointment(oneDayData, appNo);
     (async () => {
       oneDayData = await myfunction.makeAppointmentFree(oneDayData, appNo);
@@ -285,8 +281,9 @@ app.post("/appointments", function(req, res) {
     let appNr = myfunction.findAppNr(oneDayData, startTime);
     let appDuration = myfunction.timeInHours(req.body.duration);
     numberOfPerson++;
+    console.log("Adding appointment with startTime = ", startTime, " & appNr = ", appNr);
 
-    // oneDayData.appointments[appNr].start = ist the same
+    // oneDayData.appointments[appNr].start = is the same
     oneDayData.appointments[appNr].no = appointmentNo;
     oneDayData.appointments[appNr].duration = appDuration;
     oneDayData.appointments[appNr].end = oneDayData.appointments[appNr].start + appDuration;
@@ -296,6 +293,13 @@ app.post("/appointments", function(req, res) {
     oneDayData.appointments[appNr].newDurations = [];
     oneDayData.appointments[appNr].persnoNo = numberOfPerson,
     oneDayData.appointments[appNr].done = 0;
+
+    let lastApp = oneDayData.appointments.length -1;
+
+    if (appNr<lastApp) {
+      oneDayData.appointments[appNr+1].start = oneDayData.appointments[appNr].end;
+      oneDayData.appointments[appNr+1].startTxt = myfunction.hoursInTime(oneDayData.appointments[appNr+1].start);
+    };
 
     oneDayData = myfunction.removeSurplusApps(oneDayData, Number(startTime), Number(startTime)+Number(appDuration));
     oneDayData = myfunction.concatenateFreeAppointments(oneDayData);
