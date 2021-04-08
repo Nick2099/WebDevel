@@ -39,6 +39,13 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
+const listSchema = {
+  name: String,
+  items: [itemsSchema]
+};
+
+const List = mongoose.model("List", listSchema);
+
 app.get("/", function(req, res) {
   // let day = date();              // is calling a function within a date.js - there is only one export, as a whole module
   let day = date2.getDate();         // is calling a function within a date2.js - but there are now few functions so it have to be specified
@@ -69,17 +76,22 @@ app.get("/", function(req, res) {
 
 app.post("/", function(req, res) {
   let item = req.body.newItem;
+  let listName = req.body.list;
+
   const newItem = new Item ({
     name: item
   });
 
-  if (req.body.list === "Work") {
-    workItems.push(item);
-    res.redirect("/work");
-  } else {
+  if (listName === "Today") {
     newItem.save();
     res.redirect("/");
-  }
+  } else {
+    List.findOne({name: listName}, function(err, foundList) {
+      foundList.items.push(newItem);
+      foundList.save();
+      res.redirect("/" + listName);
+    });
+  };
 });
 
 app.post("/delete", function(req, res) {
@@ -94,22 +106,32 @@ app.post("/delete", function(req, res) {
   res.redirect("/");
 });
 
-app.get("/work", function(req, res) {
-  res.render("list", {
-    listTitle: "Work List for " + date2.getDay(),
-    newListItems: workItems
+app.get("/:customListName", function(req, res) {
+  console.log(req.params);
+  const tmpListName = req.params.customListName;
+
+  List.findOne({name: tmpListName}, function(err, foundList) {
+    if (!err) {
+      if (!foundList) {
+        const list = new List({
+          name: tmpListName,
+          items: defaultItems
+        });
+        list.save();
+        console.log("saved");
+        res.redirect("/" + tmpListName);
+      } else {
+        console.log("old");
+        res.render("list", {listTitle: foundList.name, newListItems: foundList.items});
+      };
+    };
   });
 });
+
 
 app.get("/about", function(req, res) {
   res.render("about");
 });
-
-// app.post("/work", function(req, res) {
-//   let item = req.body.newItem;
-//   workItems.push(item);
-//   res.redirect("/work");
-// });
 
 
 app.listen(3000, function() {
