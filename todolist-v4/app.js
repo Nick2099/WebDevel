@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const _ = require("lodash");
 const date = require(__dirname + "/date.js");
 const date2 = require(__dirname + "/date2.js");
 
@@ -18,6 +19,8 @@ app.use(express.static("public"));                    // necessary to give acces
 // start mongod.exe and then mongo.exe to be able to use mongoose
 
 mongoose.connect("mongodb://localhost:27017/todolistDB", {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.set('useFindAndModify', false);
+
 
 const itemsSchema = {
   name: String
@@ -96,19 +99,28 @@ app.post("/", function(req, res) {
 
 app.post("/delete", function(req, res) {
   const checkedItemID = req.body.checked;
-  Item.findByIdAndRemove(checkedItemID, function(err) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("Item with id= ", checkedItemID, " deleted!");
-    };
-  });
-  res.redirect("/");
+  const listName = req.body.listName;
+
+  if (listName === "Today") {
+    Item.findByIdAndRemove(checkedItemID, function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Item with id= ", checkedItemID, " deleted!");
+      };
+    });
+    res.redirect("/");
+  } else {
+    List.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItemID}}}, function(err, findList) {
+      if (!err) {
+        res.redirect("/" + listName);
+      };
+    });
+  };
 });
 
 app.get("/:customListName", function(req, res) {
-  console.log(req.params);
-  const tmpListName = req.params.customListName;
+  const tmpListName = _.capitalize(req.params.customListName);
 
   List.findOne({name: tmpListName}, function(err, foundList) {
     if (!err) {
