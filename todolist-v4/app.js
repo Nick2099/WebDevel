@@ -4,6 +4,12 @@ const mongoose = require("mongoose");
 const _ = require("lodash");
 const date = require(__dirname + "/date.js");
 const date2 = require(__dirname + "/date2.js");
+const fs = require("fs");
+
+// reading a password from settings.json
+let rawData = fs.readFileSync("C:/Programming/settings.json");
+let infoLog = JSON.parse(rawData);
+let password = infoLog.mongoDBAtlas.password;
 
 const app = express();
 
@@ -18,7 +24,14 @@ app.use(express.static("public"));                    // necessary to give acces
 
 // start mongod.exe and then mongo.exe to be able to use mongoose
 
-mongoose.connect("mongodb://localhost:27017/todolistDB", {useNewUrlParser: true, useUnifiedTopology: true});
+// working on local machine (laptop):
+// mongoose.connect("mongodb://localhost:27017/todolistDB", {useNewUrlParser: true, useUnifiedTopology: true});
+
+// working on a MongoDB Atlas server:
+mongoose.connect("mongodb+srv://nikica-admin:" + password + "@cluster0.znipb.mongodb.net/todolistDB?retryWrites=true&w=majority", {useNewUrlParser: true, useUnifiedTopology: true});
+
+// mongodb+srv://nikica-admin:<password>@cluster0.znipb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+
 mongoose.set('useFindAndModify', false);
 
 
@@ -62,8 +75,6 @@ app.get("/", function(req, res) {
         Item.insertMany(defaultItems, function(err) {
           if (err) {
             console.log(err);
-          } else {
-            console.log("Items successfully saved!");
           };
         });
         res.redirect("/")
@@ -105,8 +116,6 @@ app.post("/delete", function(req, res) {
     Item.findByIdAndRemove(checkedItemID, function(err) {
       if (err) {
         console.log(err);
-      } else {
-        console.log("Item with id= ", checkedItemID, " deleted!");
       };
     });
     res.redirect("/");
@@ -121,23 +130,22 @@ app.post("/delete", function(req, res) {
 
 app.get("/:customListName", function(req, res) {
   const tmpListName = _.capitalize(req.params.customListName);
-
-  List.findOne({name: tmpListName}, function(err, foundList) {
-    if (!err) {
-      if (!foundList) {
-        const list = new List({
-          name: tmpListName,
-          items: defaultItems
-        });
-        list.save();
-        console.log("saved");
-        res.redirect("/" + tmpListName);
-      } else {
-        console.log("old");
-        res.render("list", {listTitle: foundList.name, newListItems: foundList.items});
+  if (tmpListName !== "Favicon.ico") {
+    List.findOne({name: tmpListName}, function(err, foundList) {
+      if (!err) {
+        if (!foundList) {
+          const list = new List({
+            name: tmpListName,
+            items: defaultItems
+          });
+          list.save();
+          res.redirect("/" + tmpListName);
+        } else {
+          res.render("list", {listTitle: foundList.name, newListItems: foundList.items});
+        };
       };
-    };
-  });
+    });
+  };
 });
 
 
