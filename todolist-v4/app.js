@@ -11,6 +11,9 @@ let rawData = fs.readFileSync("C:/Programming/settings.json");
 let infoLog = JSON.parse(rawData);
 let password = infoLog.mongoDBAtlas.password;
 
+// setting a password manualy
+// let password = "write the password";
+
 const app = express();
 
 // let items = ["Buy Food", "Cook Food", "Eat Food"];
@@ -153,7 +156,11 @@ app.get("/about", function(req, res) {
   res.render("about");
 });
 
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+};
 
-app.listen(3000, function() {
-  console.log("Server is running on http://localhost:3000/");
+app.listen(port, function() {
+  console.log("Server is running");
 });
