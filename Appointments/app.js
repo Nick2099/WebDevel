@@ -40,7 +40,7 @@ let generateAppointments = true;
 
 let today = new Date();
 let dates = [];
-let numberOfDays = 5;
+let numberOfDays = 30;
 
 function dayData(date) {
   this.date =  date;         // 10.03.2021

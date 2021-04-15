@@ -306,6 +306,33 @@ exports.creatingFreeAppointments = function(data, minimumDuration, choosenDurati
       };
     };
   };
+
+  // calculating the rest1, rest2, free1 & free2
+  dataLenght = data.appointments.length;
+  let rest1 = 0;
+  let rest2 = 0;
+  for (i = 0; i < dataLenght; i++) {
+    if (data.appointments[i].no == 0) {
+      if (data.appointments[i].start<this.timeInHours(data.start2)) {
+        rest1 = rest1 + data.appointments[i].duration;
+      } else {
+        rest2 = rest2 + data.appointments[i].duration;
+      };
+    };
+  };
+  data.rest1 = rest1;
+  data.rest2 = rest2;
+  if (data.dur1 !== 0) {
+    data.free1 = this.numberToPercentageString(data.rest1/data.dur1);
+  } else {
+    data.free1 = 0;
+  };
+  if (data.dur2 !== 0) {
+    data.free2 = this.numberToPercentageString(data.rest2/data.dur2);
+  } else {
+    data.free2 = 0;
+  };
+
   return data;
 };
 
