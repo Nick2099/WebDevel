@@ -12,6 +12,7 @@
 
       <tr>
         <th>Date</th>
+        <th>Working</th>
         <th>Free time 1st part</th>
         <th>Free time 2nd part</th>
         <th>Link to</th>
@@ -21,6 +22,13 @@
         <tr>
           <td>
             <p class=""><%= dailyData[i].dateTxt %></p>
+          </td>
+          <td>
+            <% if (dailyData[i].working) { %>
+              <p>Open</p>
+            <% } else { %>
+              <p>Closed</p>
+            <% } %>
           </td>
           <td>
             <p class=""><%= dailyData[i].free1 %></p>
