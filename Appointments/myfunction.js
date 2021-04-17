@@ -268,7 +268,15 @@ exports.creatingFreeAppointments = function(data, minimumDuration, choosenDurati
       if (i == dataLenght - 1) {
         freeEnd = endOfDay;
       } else {
-        freeEnd = data.appointments[i+1].start;
+        if (freeStart >= this.timeInHours(data.start2)) {
+          freeEnd = data.appointments[i+1].start;
+        } else {
+          if (data.appointments[i+1].start < this.timeInHours(data.start1) + data.dur1) {
+            freeEnd = data.appointments[i+1].start;
+          } else {
+            freeEnd = this.timeInHours(data.start1) + data.dur1;
+          };
+        };
       };
       freeDuration = freeEnd - freeStart;
       let rt = 0;
@@ -325,12 +333,12 @@ exports.creatingFreeAppointments = function(data, minimumDuration, choosenDurati
   if (data.dur1 !== 0) {
     data.free1 = this.numberToPercentageString(data.rest1/data.dur1);
   } else {
-    data.free1 = 0;
+    data.free1 = "0%";
   };
   if (data.dur2 !== 0) {
     data.free2 = this.numberToPercentageString(data.rest2/data.dur2);
   } else {
-    data.free2 = 0;
+    data.free2 = "0%";
   };
 
   return data;

@@ -40,7 +40,8 @@ let generateAppointments = true;
 
 let today = new Date();
 let dates = [];
-let numberOfDays = 30;
+let numberOfDays = 15;
+let numberOfDaysWithNoAppointments = 5;
 
 function dayData(date) {
   this.date =  date;         // 10.03.2021
@@ -53,8 +54,8 @@ function dayData(date) {
   this.dur2 = 0;
   this.rest1 = 0;      // free from working hours 1
   this.rest2 = 0;
-  this.free1 = 0;      // rest1/dur1
-  this.free2 = 0;
+  this.free1 = "0%";      // rest1/dur1
+  this.free2 = "0%";
 };
 
 let dailyData = [];
@@ -78,6 +79,10 @@ app.set("view engine", "ejs");  // setting view engine for express
 
 app.use(bodyParser.urlencoded({extended: true}));     // necessary for body-parser
 app.use(express.static(__dirname + "/public"));                    // necessary to give access to files in that folder
+
+app.get("/", function(req, res) {
+  res.redirect("appsettings");
+  });
 
 app.get("/appsettings", function(req, res) {
   res.render("appsettings", {
@@ -167,7 +172,7 @@ app.post("/appsettings", function(req, res) {
     let tmpFree = 0;
 
     if (newData.working) {
-      if (currentDay<numberOfDays) {
+      if (currentDay<numberOfDays-numberOfDaysWithNoAppointments) {
         while (newData.rest1 > 0) {
           newAppointment = [];
           maxDuration = myfunction.maximumDuration(newData.rest1, choosenDurations);
@@ -208,6 +213,23 @@ app.post("/appsettings", function(req, res) {
           appointments.push(newAppointment);
           appointmentNo++;
         };
+      } else {
+        if (newData.dur1 > 0) {
+          newAppointment = [];
+          newAppointment.no = 0;
+          newAppointment.duration = newData.dur1;
+          newAppointment.start = myfunction.timeInHours(newData.start1);
+          newAppointment.persnoNo = 0;
+          appointments.push(newAppointment);
+        };
+        if (newData.dur2 > 0) {
+          newAppointment = [];
+          newAppointment.no = 0;
+          newAppointment.duration = newData.dur2;
+          newAppointment.start = myfunction.timeInHours(newData.start2);
+          newAppointment.persnoNo = 0;
+          appointments.push(newAppointment);
+        };
       };
     };
 
@@ -225,6 +247,7 @@ app.post("/appsettings", function(req, res) {
     newData.free2 = myfunction.numberToPercentageString(tmpFree);
 
     newData["appointments"] = appointments;
+    newData = myfunction.creatingFreeAppointments(newData, minimumDuration, choosenDurations);
     dailyData.push(newData);
     currentDay++;
   };
@@ -297,8 +320,10 @@ app.post("/appointments", function(req, res) {
     let lastApp = oneDayData.appointments.length -1;
 
     if (appNr<lastApp) {
-      oneDayData.appointments[appNr+1].start = oneDayData.appointments[appNr].end;
-      oneDayData.appointments[appNr+1].startTxt = myfunction.hoursInTime(oneDayData.appointments[appNr+1].start);
+      if (oneDayData.appointments[appNr+1].start < oneDayData.appointments[appNr].end) {
+        oneDayData.appointments[appNr+1].start = oneDayData.appointments[appNr].end;
+        oneDayData.appointments[appNr+1].startTxt = myfunction.hoursInTime(oneDayData.appointments[appNr+1].start);
+      };
     };
 
     oneDayData = myfunction.removeSurplusApps(oneDayData, Number(startTime), Number(startTime)+Number(appDuration));
@@ -313,6 +338,10 @@ app.post("/appointments", function(req, res) {
   };
 });
 
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+};
 
 app.listen(3000, function() {
   console.log("Server is running on http://localhost:3000/");
