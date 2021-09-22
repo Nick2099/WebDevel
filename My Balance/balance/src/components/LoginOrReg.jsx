@@ -15,6 +15,12 @@ export default function Login(props) {
 
   function handleSubmit(event) {
     event.preventDefault();
+    const data = new FormData(event.target);
+    console.log(data);
+    fetch('./Home', {
+      method: 'POST',
+      body: data,
+    });
   }
 
   function handleChangeLogOrReg(event) {
@@ -40,7 +46,7 @@ export default function Login(props) {
           <Form.Control
             type="password"
             value={password}
-            autocomplete="false"
+            autoComplete="false"
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
@@ -50,7 +56,7 @@ export default function Login(props) {
           <Form.Control
             type="password"
             value={repeatPassword}
-            autocomplete="false"
+            autoComplete="false"
             onChange={(e) => setRepeatPassword(e.target.value)}
           />
         </Form.Group>
