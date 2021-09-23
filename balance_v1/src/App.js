@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Hello from './seyHello';
 import Tweet, {Tweet2} from "./tweet";
 import './App.css';
@@ -14,13 +14,14 @@ function App() {
     {name: "Jo", age: 33, like: ["Motorsport", "Girls"]}
   ]);
 
-  function Increment() {
-    console.log("1: ", counter);
-    setCounter(counter + 1);
+  useEffect(() => { //finaly is working//
     if (counter > 9) {
       setIsRed(true);
-    };
-    console.log("2: ", counter);
+    }
+  }, [counter]) // the const that will trigger the function!!! //
+
+  function Increment() {
+    setCounter(counter + 1);
   }
 
   return (
