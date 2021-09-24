@@ -13,14 +13,14 @@ function Tweet(props){
 
 export default Tweet;
 
-function Tweet2({name, age, likes}){
+function Tweet2({name, age, likes, id}){
     return (
         <div className="tweet">
             <h2>Name: {name}</h2>
             <p>Age: {age}</p>
             <h3>Like:</h3>
             {likes.map(like => (
-                <p>{like}</p>
+                <p key={name+like+id}>{like}</p>
             ))}
         </div>
     );
