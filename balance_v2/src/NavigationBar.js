@@ -1,27 +1,25 @@
-import React from "react";
+import React, {useContext} from "react";
 import './App.css';
+import {TmpUserContext} from "./TmpUserContext";
+
 
 function NavigationBar({email, name, id, logedin}) {
+    const [tmpUser, setTmpUser] = useContext(TmpUserContext);
 
-    function Greetings(props) {
-        if (!props.logged) {
-            return(
-                <p>Login</p>
-            );
-        } else {
-            return(
-                <p>Hello {name}</p>
-            );
-        }
+    const logButton = (e) => {
+        console.log(e);
+        if (e.target.value==="true") {
+            setTmpUser({logedin: false});
+        };
     }
 
     return(
         <div className="NavigationBar">
             <div className="left">
-                <h2>Balance my way</h2>
+                <h2>Balance my way, {tmpUser.id}, {tmpUser.logedin}</h2>
             </div>
             <div className="right">
-                <Greetings logged={logedin} />
+                <button onClick={logButton} value={tmpUser.logedin}>{tmpUser.logedin ? "Logout" : "Login"}</button>
             </div>
         </div>
     );

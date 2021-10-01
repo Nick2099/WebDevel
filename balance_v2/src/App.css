@@ -31,20 +31,20 @@
 .NavigationBar {
   display: flex;
   height: 5rem;
-  line-height: 3rem;
   background-color: royalblue;
 }
 
 .NavigationBar .left {
+  margin: 10px;
   flex: 1;
   text-align: left;
-  padding: 10px;
   border: 1px solid black;
+  line-height: 1rem;
 }
 .NavigationBar .right {
+  margin: 10px;
   flex: 1;
   text-align: right;
-  padding: 10px;
   border: 1px solid black;
 }
 
