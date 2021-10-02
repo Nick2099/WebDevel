@@ -4,10 +4,10 @@ export const TmpUserContext = createContext();
 
 export const TmpUserProvider = (props) => {
     const [tmpUser, setTmpUser] = useState({
-        email: "some@email.com",
-        name: "John",
-        id: "1",
-        logedin: true   
+        email: "",
+        name: "",
+        id: "0",
+        logedin: false   
         }
     );
     return(
