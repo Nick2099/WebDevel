@@ -9,8 +9,6 @@ import {PageContentContext} from "./PageContentContext";
 function App() {
   const [page, setPage] = useContext(PageContentContext);
 
-  console.log("page: ", page);
-
   function ShowLoginArea(props) {
     if (props.show==="true") {
         return(

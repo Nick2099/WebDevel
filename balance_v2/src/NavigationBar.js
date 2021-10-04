@@ -9,12 +9,18 @@ function NavigationBar({email, name, id, logedin}) {
     const [page, setPage] = useContext(PageContentContext);
 
     const logButton = (e) => {
-        console.log(e.target.value);
         if (e.target.value==="false") {
-            let tmpPage = {};
-            tmpPage.showLogin = true;
-            tmpPage.showHome = page.showHome;
-            setPage(tmpPage);
+            if (page.showLogin) {
+                let tmpPage = {};
+                tmpPage.showLogin = false;
+                tmpPage.showHome = page.showHome;
+                setPage(tmpPage);    
+            } else {
+                let tmpPage = {};
+                tmpPage.showLogin = true;
+                tmpPage.showHome = page.showHome;
+                setPage(tmpPage);    
+            };
         } else {
             let tmpPage = {};
             tmpPage.showLogin = false;
@@ -28,6 +34,7 @@ function NavigationBar({email, name, id, logedin}) {
         <div className="NavigationBar">
             <div className="left">
                 <h2>Balance my way, {page.showLogin.toString()}, {page.showHome.toString()}, {tmpUser.logedin ? "T" : "F"}</h2>
+                <p>{tmpUser.email} {tmpUser.id}</p>
             </div>
             <div className="right">
                 <button onClick={logButton} value={tmpUser.logedin}>{tmpUser.logedin ? "Logout" : page.showLogin ? "Hide Login" : "Login"}</button>

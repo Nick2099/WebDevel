@@ -29,7 +29,7 @@ function LoginArea() {
         tmpPage.showLogin = false;
         tmpPage.showHome = page.showHome;
         setPage(tmpPage);
-        console.log("tmpUser: ",tmpUser);
+        console.log("tmpUser: ", tmpUser);
     }
 
     /*
