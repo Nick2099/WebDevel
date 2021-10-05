@@ -30,13 +30,14 @@
 
 .NavigationBar {
   display: flex;
-  height: 5rem;
   background-color: royalblue;
+  margin: 0;
+  padding: 0;
 }
 
 .NavigationBar .left {
   margin: 10px;
-  flex: 1;
+  flex: 3;
   text-align: left;
   border: 1px solid black;
   line-height: 1rem;
@@ -50,8 +51,17 @@
 
 .Login {
   background-color: darkblue;
-  display: flex;
-  flex-direction: column;
+  display:block;
+}
+
+.Hidden {
+  display:none;
+  visibility:hidden;
+}
+
+.Show-block {
+  display:inline;
+  visibility:visible;
 }
 
 @keyframes App-logo-spin {

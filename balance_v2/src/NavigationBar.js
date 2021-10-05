@@ -33,8 +33,8 @@ function NavigationBar({email, name, id, logedin}) {
     return(
         <div className="NavigationBar">
             <div className="left">
-                <h2>Balance my way, {page.showLogin.toString()}, {page.showHome.toString()}, {tmpUser.logedin ? "T" : "F"}</h2>
-                <p>{tmpUser.email} {tmpUser.id}</p>
+                <h2>Balance my way</h2>
+                <p>showLogin {page.showLogin.toString()}, showHome {page.showHome.toString()}, tmpUser.logedin {tmpUser.logedin ? "T" : "F"}, {tmpUser.email} {tmpUser.id}</p>
             </div>
             <div className="right">
                 <button onClick={logButton} value={tmpUser.logedin}>{tmpUser.logedin ? "Logout" : page.showLogin ? "Hide Login" : "Login"}</button>

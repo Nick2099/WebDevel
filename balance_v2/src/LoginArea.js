@@ -9,6 +9,7 @@ function LoginArea() {
     const [password, setPassword] = useState('');
     const [tmpUser, setTmpUser] = useContext(TmpUserContext);
     const [page, setPage] = useContext(PageContentContext);
+    const [register, setRegister] = useState(false);
 
     const updateEmail = (e) => {
         setEmail(e.target.value);
@@ -17,6 +18,10 @@ function LoginArea() {
     const updatePassword = (e) => {
         setPassword(e.target.value);
     };
+
+    const registerChange = (e) => {
+        setRegister(!register);
+    }
 
     const formSubmit = e => {
         e.preventDefault();
@@ -49,11 +54,13 @@ function LoginArea() {
                 <input type='text' name='email' value={email} onChange={updateEmail}></input>
                 <label>Password</label>
                 <input type='text' name='password' value={password} onChange={updatePassword}></input>
-                <button>Login</button>
+                <label className={register ? "Show-Block" : "Hidden"}>Repeat password</label>
+                <input className={register ? "Show-Block" : "Hidden"} type='text' name='repeat' value={password} onChange={updatePassword}></input>
+                <button type="submit">{register ? "Register" : "Login"}</button>
                 <div>
-                    <button>Login as a guest</button>
-                    <button>Register</button>
-                </div>
+                <button>Login as a guest</button>
+                <button type="button" onClick={registerChange}>{register ? "Login" : "Register"}</button>
+            </div>
             </form>            
         </div>
     );
