@@ -4,10 +4,17 @@ export const TmpUserContext = createContext();
 
 export const TmpUserProvider = (props) => {
     const [tmpUser, setTmpUser] = useState({
+        id: 0,
         email: "",
+        pass: "",
+        mode: false,    //true - premium user, false - basic-free user
+        demoonly: false,    // when demo is true then mode: true
+        confirmed: false,   // true - user is confirmed by e-mail
         name: "",
-        id: "0",
-        logedin: false   
+        created: "",
+        lastlogin: "",
+        lastlogout: "",
+        logedin: false  // not in users table
         }
     );
     return(

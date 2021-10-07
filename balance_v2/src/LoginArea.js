@@ -6,7 +6,9 @@ import {PageContentContext} from "./PageContentContext";
 
 function LoginArea() {
     const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
     const [password, setPassword] = useState('');
+    const [repeat, setRepeat] = useState('');
     const [tmpUser, setTmpUser] = useContext(TmpUserContext);
     const [page, setPage] = useContext(PageContentContext);
     const [register, setRegister] = useState(false);
@@ -15,18 +17,36 @@ function LoginArea() {
         setEmail(e.target.value);
     };
 
+    const updateName = (e) => {
+        setName(e.target.value);
+    };
+
     const updatePassword = (e) => {
         setPassword(e.target.value);
+    };
+
+    const updateRepeat = (e) => {
+        setRepeat(e.target.value);
     };
 
     const registerChange = (e) => {
         setRegister(!register);
     }
 
+    function createuser(props) {        
+        setTmpUser(old => ({...old, 
+            name:name, email: email, pass: password, mode: true,
+            demoonly: false, confirmed: true, logedin: true}))
+    }
+
     const formSubmit = e => {
         e.preventDefault();
         if (tmpUser.logedin===false) {
-            setTmpUser({email: email, name: password, logedin: true, id: 2});
+            if (register) {
+                createuser();
+            } else {
+                setTmpUser({email: email, name: name, pass: password, logedin: true, id: 2});
+            }
         } else {
             setTmpUser({email: "", name: "", logedin: false, id: 0});
         };
@@ -34,7 +54,7 @@ function LoginArea() {
         tmpPage.showLogin = false;
         tmpPage.showHome = page.showHome;
         setPage(tmpPage);
-        console.log("tmpUser: ", tmpUser);
+        console.log(email, name, password, repeat);
     }
 
     /*
@@ -52,16 +72,22 @@ function LoginArea() {
             <form onSubmit={formSubmit}>
                 <label>E-mail address</label>
                 <input type='text' name='email' value={email} onChange={updateEmail}></input>
+                <label className={register ? "Show-Block" : "Hidden"}>Name</label>
+                <input className={register ? "Show-Block" : "Hidden"} type='text' name='name' value={name} onChange={updateName}></input>
                 <label>Password</label>
                 <input type='text' name='password' value={password} onChange={updatePassword}></input>
                 <label className={register ? "Show-Block" : "Hidden"}>Repeat password</label>
-                <input className={register ? "Show-Block" : "Hidden"} type='text' name='repeat' value={password} onChange={updatePassword}></input>
+                <input className={register ? "Show-Block" : "Hidden"} type='text' name='repeat' value={repeat} onChange={updateRepeat}></input>
                 <button type="submit">{register ? "Register" : "Login"}</button>
                 <div>
-                <button>Login as a guest</button>
-                <button type="button" onClick={registerChange}>{register ? "Login" : "Register"}</button>
+                    <button>Login as a guest</button>
+                    <button type="button" onClick={registerChange}>{register ? "Login" : "Register"}</button>
+                </div>
+            </form>           
+            <div>
+                <p>Loging in as s guest</p>
+                <p>Register to...</p>
             </div>
-            </form>            
         </div>
     );
 }
