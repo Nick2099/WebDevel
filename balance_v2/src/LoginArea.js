@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import './App.css';
 import {TmpUserContext} from "./TmpUserContext";
 import {PageContentContext} from "./PageContentContext";
@@ -9,6 +9,7 @@ function LoginArea() {
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [repeat, setRepeat] = useState('');
+    const [repeatTxt, setRepeatTxt] = useState('');
     const [tmpUser, setTmpUser] = useContext(TmpUserContext);
     const [page, setPage] = useContext(PageContentContext);
     const [register, setRegister] = useState(false);
@@ -57,6 +58,16 @@ function LoginArea() {
         console.log(email, name, password, repeat);
     }
 
+    useEffect(() => {
+        if (!(password===repeat)) {
+            setRepeatTxt(" is not the same as Password!");
+        } else {
+            setRepeatTxt(" - OK");
+        }
+        return () => {
+        }
+    }, [password, repeat])
+
     /*
     var bcrypt = require('bcryptjs');
     bcrypt.genSalt(10, function(err, salt) {
@@ -69,20 +80,20 @@ function LoginArea() {
 
     return(
         <div className="Login">
-            <form onSubmit={formSubmit}>
+            <form className="Login" onSubmit={formSubmit}>
+                <div>
+                    <button>Login as a guest</button>
+                    <button type="button" onClick={registerChange}>{register ? "Login" : "Register"}</button>
+                </div>
                 <label>E-mail address</label>
                 <input type='text' name='email' value={email} onChange={updateEmail}></input>
                 <label className={register ? "Show-Block" : "Hidden"}>Name</label>
                 <input className={register ? "Show-Block" : "Hidden"} type='text' name='name' value={name} onChange={updateName}></input>
                 <label>Password</label>
                 <input type='text' name='password' value={password} onChange={updatePassword}></input>
-                <label className={register ? "Show-Block" : "Hidden"}>Repeat password</label>
+                <label className={register ? "Show-Block" : "Hidden"}>Repeat password {repeatTxt}</label>
                 <input className={register ? "Show-Block" : "Hidden"} type='text' name='repeat' value={repeat} onChange={updateRepeat}></input>
-                <button type="submit">{register ? "Register" : "Login"}</button>
-                <div>
-                    <button>Login as a guest</button>
-                    <button type="button" onClick={registerChange}>{register ? "Login" : "Register"}</button>
-                </div>
+                <button className='main' type="submit">{register ? "Register" : "Login"}</button>
             </form>           
             <div>
                 <p>Loging in as s guest</p>

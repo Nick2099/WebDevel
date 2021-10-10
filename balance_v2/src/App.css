@@ -1,6 +1,22 @@
 .App {
   text-align: center;
+  font-size: 1rem;
 }
+
+button {
+  margin: 10px;
+  font-size: 1rem;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+button.main {
+  font-size: 1.2rem;
+  background-color: aqua;
+}
+
 
 .App-logo {
   height: 40vmin;
@@ -50,8 +66,17 @@
 }
 
 .Login {
-  background-color: darkblue;
-  display:block;
+  background-color: rgb(42, 42, 224);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.Login input {
+  width: 300px;
+  font-size: 1rem;
+  margin: 5px;
 }
 
 .Hidden {
