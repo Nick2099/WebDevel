@@ -5,7 +5,7 @@ const mysql = require('mysql');
 const connection = mysql.createPool({
   host     : 'localhost',
   user     : 'root',
-  password : 'prelude',
+  password : 'pass',
   database : 'mybalance'
 });
 
