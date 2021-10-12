@@ -1,0 +1,17 @@
+import React, {useState, createContext} from "react";
+
+export const PageContentContext = createContext();
+
+export const PageContentProvider = (props) => {
+    const [page, setPage] = useState({
+        showLogin: false,
+        showHome: true,
+        setPage: () => {}
+        }
+    );
+    return(
+        <PageContentContext.Provider value={[page, setPage]}>
+            {props.children}
+        </PageContentContext.Provider>
+    );
+};

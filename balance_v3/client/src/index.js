@@ -2,11 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {PageContentProvider} from "./PageContentContext";
+
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <PageContentProvider>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  </PageContentProvider>,
   document.getElementById('root')
 );
 
