@@ -40,14 +40,21 @@ function LoginArea() {
             demoonly: false, confirmed: true, logedin: true
           }).then(function (response) {
               console.log(response.statusText);
-              getUserID(email, password);
+              getUserID();
           })              
     }
 
-    const getUserID = (email, password) => {
-        Axios.get('http://localhost:3001/userid', {email: email, password: password}).then(resp => {
-        console.log(resp.data);
-    });
+    function getUserID() {   // tu sam stao .... ovo treba proraditi
+        console.log("Pocetak getUserID");
+        Axios.get('http://localhost:3001/userid', {
+            params: {
+                email: email,
+                password: password
+            }
+        }).then(resp => {
+            console.log(resp.data.length);
+            console.log(resp.data[0]);
+        });
     }
 
     const formSubmit = e => {
@@ -57,7 +64,8 @@ function LoginArea() {
                 createUser();
                 getUserID();
             } else {
-                setTmpUser({email: email, name: name, pass: password, logedin: true, id: 2});
+                getUserID();
+                // setTmpUser({email: email, name: name, pass: password, logedin: true, id: 2});
             }
         } else {
             setTmpUser({email: "", name: "", logedin: false, id: 0});

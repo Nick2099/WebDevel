@@ -1,10 +1,10 @@
-import Express, {json} from 'express';
+import Express from 'express';
 const app = Express();
 import Mysql from 'mysql';
 import Cors from 'cors';
 
 app.use(Cors());	// allows to make request from frontend to the backend
-app.use(json());
+app.use(Express.json());
 
 const db = Mysql.createConnection({
 	user: 'root',
@@ -34,8 +34,18 @@ app.post('/register', (req, res) => {
     )}
 );
 
-app.get('/userID', (req, res) => {
-	console.log("getID", req.body);
+app.get('/userid', (req, res) => {
+	db.query(
+		// 'SELECT id, password FROM users WHERE email="nikicadadic@gmail.com"',
+		'SELECT id, password FROM users WHERE email="' + req.query.email + '" AND password="' + req.query.password + '"',
+		(err, result) => {
+			if (err) {
+			  console.log(err);
+			} else {
+			  res.send(result);
+			}
+		})
+	console.log("getID-req: ", req.query);
 })
 
 
