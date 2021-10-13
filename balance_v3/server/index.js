@@ -26,7 +26,7 @@ app.post('/register', (req, res) => {
 	  [name, email, password, mode, demoonly, confirmed],
 	  (err, result) => {
 	    if (err) {
-	      console.log(err);
+	      res.send(err);
 	    } else {
 	      res.send('Values Inserted');
 	    }

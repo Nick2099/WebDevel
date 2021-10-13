@@ -39,9 +39,17 @@ function LoginArea() {
             name:name, email: email, password: password, mode: true,
             demoonly: false, confirmed: true, logedin: true
           }).then(function (response) {
-              console.log(response.statusText);
-              getUserID();
-          })              
+              if (response.data==="Values Insterted") {
+                getUserID();
+                console.log("createUser response: ", response.data);
+                return true;
+              } else {
+                console.log("createUser response Error: ", response.data);
+                return false;
+              }
+          }) /*.catch(error => {
+              console.log("createUser response error: ", error);
+          }) */
     }
 
     function getUserID() {   // tu sam stao .... ovo treba proraditi
@@ -61,8 +69,8 @@ function LoginArea() {
         e.preventDefault();
         if (tmpUser.logedin===false) {
             if (register) {
-                createUser();
-                getUserID();
+                var userCreated = createUser();
+                console.log("user created", userCreated);
             } else {
                 getUserID();
                 // setTmpUser({email: email, name: name, pass: password, logedin: true, id: 2});
