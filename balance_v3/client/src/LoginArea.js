@@ -37,19 +37,19 @@ function LoginArea() {
     function createUser(props) {
         Axios.post('http://localhost:3001/register', {
             name:name, email: email, password: password, mode: true,
-            demoonly: false, confirmed: true, logedin: true
+            demoonly: false, confirmed: true
           }).then(function (response) {
-              if (response.data==="Values Insterted") {
-                getUserID();
-                console.log("createUser response: ", response.data);
-                return true;
+              console.log(response.data, response.data.status);
+              if (response.data.status==="ok") {
+                setTmpUser({email: email, name: name, logedin: true, id: response.data.id});
               } else {
-                console.log("createUser response Error: ", response.data);
-                return false;
+                  if (response.data.error==="ER_DUP_ENTRY") {
+                      alert("User with same e-mail address already exists!")
+                  } else {
+                      alert("Error: " + response.data.error)
+                  }
               }
-          }) /*.catch(error => {
-              console.log("createUser response error: ", error);
-          }) */
+          })
     }
 
     function getUserID() {   // tu sam stao .... ovo treba proraditi
@@ -60,6 +60,7 @@ function LoginArea() {
                 password: password
             }
         }).then(resp => {
+            setTmpUser({email: resp.data[0].email, name: resp.data[0].name, logedin: true, id: resp.data[0].id});
             console.log(resp.data.length);
             console.log(resp.data[0]);
         });
@@ -69,19 +70,29 @@ function LoginArea() {
         e.preventDefault();
         if (tmpUser.logedin===false) {
             if (register) {
-                var userCreated = createUser();
-                console.log("user created", userCreated);
+                if  (password===repeat) {
+                    createUser();
+                    let tmpPage = {};
+                    tmpPage.showLogin = false;
+                    tmpPage.showHome = page.showHome;
+                    setPage(tmpPage);
+                } else {
+                    alert("Password and repeated password are not the same!")
+                }
             } else {
                 getUserID();
-                // setTmpUser({email: email, name: name, pass: password, logedin: true, id: 2});
+                let tmpPage = {};
+                tmpPage.showLogin = false;
+                tmpPage.showHome = page.showHome;
+                setPage(tmpPage);
             }
         } else {
             setTmpUser({email: "", name: "", logedin: false, id: 0});
+            let tmpPage = {};
+            tmpPage.showLogin = false;
+            tmpPage.showHome = page.showHome;
+            setPage(tmpPage);
         };
-        let tmpPage = {};
-        tmpPage.showLogin = false;
-        tmpPage.showHome = page.showHome;
-        setPage(tmpPage);
     }
 
     useEffect(() => {
