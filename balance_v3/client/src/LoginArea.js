@@ -39,7 +39,6 @@ function LoginArea() {
             name:name, email: email, password: password, mode: true,
             demoonly: false, confirmed: true
           }).then(function (response) {
-              console.log(response.data, response.data.status);
               if (response.data.status==="ok") {
                 setTmpUser({email: email, name: name, logedin: true, id: response.data.id});
               } else {
@@ -52,17 +51,18 @@ function LoginArea() {
           })
     }
 
-    function getUserID() {   // tu sam stao .... ovo treba proraditi
-        console.log("Pocetak getUserID");
+    async function getUserID() {   // tu sam stao .... ovo treba proraditi
         Axios.get('http://localhost:3001/userid', {
             params: {
                 email: email,
                 password: password
             }
         }).then(resp => {
-            setTmpUser({email: resp.data[0].email, name: resp.data[0].name, logedin: true, id: resp.data[0].id});
-            console.log(resp.data.length);
-            console.log(resp.data[0]);
+            if (resp.data[0].id>0) {
+                setTmpUser({email: resp.data[0].email, name: resp.data[0].name, logedin: true, id: resp.data[0].id});
+            } else {
+                alert("Such user don't exists or wrong password")
+            }
         });
     }
 
@@ -72,19 +72,11 @@ function LoginArea() {
             if (register) {
                 if  (password===repeat) {
                     createUser();
-                    let tmpPage = {};
-                    tmpPage.showLogin = false;
-                    tmpPage.showHome = page.showHome;
-                    setPage(tmpPage);
                 } else {
                     alert("Password and repeated password are not the same!")
                 }
             } else {
                 getUserID();
-                let tmpPage = {};
-                tmpPage.showLogin = false;
-                tmpPage.showHome = page.showHome;
-                setPage(tmpPage);
             }
         } else {
             setTmpUser({email: "", name: "", logedin: false, id: 0});
@@ -105,15 +97,14 @@ function LoginArea() {
         }
     }, [password, repeat])
 
-    /*
-    var bcrypt = require('bcryptjs');
-    bcrypt.genSalt(10, function(err, salt) {
-        bcrypt.hash("somepass", salt, function(err, hash) {
-            // Store hash in your password DB.
-            console.log(hash);
-        });
-    });
-    */
+    useEffect(() => {
+        if (tmpUser.logedin) {
+            let tmpPage = {};
+            tmpPage.showLogin = false;
+            tmpPage.showHome = page.showHome;
+            setPage(tmpPage);    
+        }
+    }, [tmpUser, setPage, page.showHome]);
 
     return(
         <div className="Login">

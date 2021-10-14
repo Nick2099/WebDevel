@@ -54,11 +54,16 @@ app.get('/userid', (req, res) => {
 		(err, result) => {
 			if (err) {
 			  console.log(err);
+			  // res.send([{id: 0}]);
 			} else {
-			  res.send(result);
+				if (result.length>0) {
+					console.log("result: ", result);
+					res.send(result);
+				} else {
+					res.send([{id: 0}]);
+				}
 			}
 		})
-	console.log("getID-req: ", req.query);
 })
 
 app.listen(3001, () => {
