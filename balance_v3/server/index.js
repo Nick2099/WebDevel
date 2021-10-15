@@ -4,14 +4,16 @@ import Mysql from 'mysql';
 import Cors from 'cors';
 import bcrypt from 'bcryptjs';
 
+import "dotenv/config.js";
+
 app.use(Cors());	// allows to make request from frontend to the backend
 app.use(Express.json());
 
 const db = Mysql.createConnection({
-	host: "localhost", // process.env.DB_HOST,
-	user: "root", // process.env.DB_USER,
-	password: "prelude", // process.env.DB_PASS,
-	database: "mybalance" // process.env.DB_DATA
+	host: process.env.DB_HOST,
+	user: process.env.DB_USER,
+	password: process.env.DB_PASS,
+	database: process.env.DB_DATA
 });
 
 app.get('/', (req,res) => {
