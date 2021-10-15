@@ -30,8 +30,6 @@ app.post('/register', (req, res) => {
 
 	bcrypt.genSalt(10, function(err, salt) {
 		bcrypt.hash(password, salt, function(err, hash) {
-
-			console.log("hash: ", hash);
 			db.query(
 				'INSERT INTO users (name, email, password, mode, demoonly, confirmed) VALUES (?, ?, ?, ?, ?, ?)',
 				[name, email, hash, mode, demoonly, confirmed],
@@ -43,20 +41,18 @@ app.post('/register', (req, res) => {
 						    'SELECT id FROM users WHERE email="' + email + '" AND password="' + hash + '"',
 						    (err, result) => {
 							if (err) {
-								console.log(err);
+								// console.log(err);
 								res.send({status: "error", error: "NOT_FOUND"});
 						  	} else {
-								console.log("result", result[0]);
+								// console.log("result", result[0]);
 								res.send({status: "ok", id: result[0].id});
 						  	}
 					  		})
 				  	}
 				}
 			)
-		  			
 		});
 	})
-
 });
 
 app.get('/userid', (req, res) => { //treba sifrirati password
@@ -64,12 +60,9 @@ app.get('/userid', (req, res) => { //treba sifrirati password
 		'SELECT id, email, password, name FROM users WHERE email="' + req.query.email + '"',
 		(err, result) => {
 			if (err) {
-			  console.log(err);
-			  // res.send([{id: 0}]);
+				res.send([{id: 0, error: err}]);
 			} else {
 				if (result.length>0) {
-					console.log("result: ", result);
-					console.log("result password: ", result[0].password);
 					let ok = bcrypt.compareSync(req.query.password, result[0].password);
 					if (ok) {
 						result[0].password="";
