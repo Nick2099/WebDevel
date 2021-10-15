@@ -1,5 +1,5 @@
 
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
 import NavigationBar from "./NavigationBar";
 import LoginArea from "./LoginArea";
 import HomeArea from './HomeArea';
