@@ -8,10 +8,10 @@ app.use(Cors());	// allows to make request from frontend to the backend
 app.use(Express.json());
 
 const db = Mysql.createConnection({
-	user: 'root',
-	host: 'localhost',
-	password: 'prelude',
-	database: 'mybalance'
+	host: "localhost", // process.env.DB_HOST,
+	user: "root", // process.env.DB_USER,
+	password: "prelude", // process.env.DB_PASS,
+	database: "mybalance" // process.env.DB_DATA
 });
 
 app.get('/', (req,res) => {
@@ -59,7 +59,7 @@ app.post('/register', (req, res) => {
 
 app.get('/userid', (req, res) => { //treba sifrirati password
 	db.query(
-		'SELECT id, email, name FROM users WHERE email="' + req.query.email + '" AND password="' + req.query.password + '"',
+		'SELECT id, email, password, name FROM users WHERE email="' + req.query.email + '"',
 		(err, result) => {
 			if (err) {
 			  console.log(err);
@@ -67,9 +67,16 @@ app.get('/userid', (req, res) => { //treba sifrirati password
 			} else {
 				if (result.length>0) {
 					console.log("result: ", result);
-					res.send(result);
+					console.log("result password: ", result[0].password);
+					let ok = bcrypt.compareSync(req.query.password, result[0].password);
+					if (ok) {
+						result[0].password="";
+						res.send(result);
+					} else {
+						res.send([{id: 0, error: "Wrong password!"}]);
+					}
 				} else {
-					res.send([{id: 0}]);
+					res.send([{id: 0, error: "SUch user doesn't exist."}]);
 				}
 			}
 		})

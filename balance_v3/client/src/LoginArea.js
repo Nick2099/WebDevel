@@ -58,10 +58,11 @@ function LoginArea() {
                 password: password
             }
         }).then(resp => {
+            console.log("resp: ", resp.data);
             if (resp.data[0].id>0) {
                 setTmpUser({email: resp.data[0].email, name: resp.data[0].name, logedin: true, id: resp.data[0].id});
             } else {
-                alert("Such user don't exists or wrong password")
+                alert(resp.data[0].error);
             }
         });
     }
@@ -117,9 +118,9 @@ function LoginArea() {
                 <label className={register ? "Show-Block" : "Hidden"}>Name</label>
                 <input className={register ? "Show-Block" : "Hidden"} type='text' name='name' value={name} onChange={updateName}></input>
                 <label>Password</label>
-                <input type='text' name='password' value={password} onChange={updatePassword}></input>
+                <input type='password' name='password' value={password} onChange={updatePassword}></input>
                 <label className={register ? "Show-Block" : "Hidden"}>Repeat password {repeatTxt}</label>
-                <input className={register ? "Show-Block" : "Hidden"} type='text' name='repeat' value={repeat} onChange={updateRepeat}></input>
+                <input className={register ? "Show-Block" : "Hidden"} type='password' name='repeat' value={repeat} onChange={updateRepeat}></input>
                 <button className='main' type="button" onClick={formSubmit}>{register ? "Register" : "Login"}</button>
             <div>
                 <p>Loging in as s guest</p>
