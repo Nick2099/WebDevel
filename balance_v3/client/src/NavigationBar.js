@@ -24,13 +24,23 @@ function NavigationBar({email, name, id, logedin}) {
         };
     }
 
+    function entryButton() {
+
+    }
+
+    function settingsButton() {
+        
+    }
+
     return(
         <div className="NavigationBar">
             <div className="left">
                 <h2>Balance my way</h2>
             </div>
             <div className="right">
-                <button onClick={logButton} value={tmpUser.logedin}>{tmpUser.logedin ? "Logout" : page.showLogin ? "Hide Login" : "Login"}</button>
+                <button type="button" onClick={entryButton} className={tmpUser.logedin ? "enabled" : "disabled"}>Manage entries</button>
+                <button type="button" onClick={settingsButton} className={tmpUser.logedin ? "enabled" : "disabled"}>Settings</button>
+                <button type="button" onClick={logButton} value={tmpUser.logedin}>{tmpUser.logedin ? "Logout" : page.showLogin ? "Hide Login" : "Login"}</button>
             </div>
         </div>
     );

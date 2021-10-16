@@ -1,11 +1,12 @@
 import React, {useContext} from 'react';
+import './App.css';
+import {TmpUserProvider} from "./TmpUserContext";
+import {PageContentContext} from "./PageContentContext";
 import NavigationBar from "./NavigationBar";
 import LoginArea from "./LoginArea";
 import HomeArea from './HomeArea';
 import EntryArea from './EntryArea';
-import './App.css';
-import {TmpUserProvider} from "./TmpUserContext";
-import {PageContentContext} from "./PageContentContext";
+import SettingsArea from './SettingsArea';
 
 function App() {
   const [page, setPage] = useContext(PageContentContext);
@@ -40,6 +41,16 @@ function App() {
     };
   };
 
+  function ShowSettingsArea(props) {
+    if (props.show==="true") {
+        return(
+          <SettingsArea />
+        );
+    } else {
+      return null;
+    };
+  };
+
   return (
       <TmpUserProvider>
         <div className="App">
@@ -47,6 +58,7 @@ function App() {
           <ShowLoginArea show={page.showLogin.toString()}/>
           <ShowHomeArea show={page.showHome.toString()}/>
           <ShowEntryArea show={page.showEntry.toString()}/>
+          <ShowSettingsArea show={page.showSettings.toString()}/>
         </div>
       </TmpUserProvider>      
   );

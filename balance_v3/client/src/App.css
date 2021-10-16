@@ -6,6 +6,7 @@
 button {
   margin: 10px;
   font-size: 1rem;
+  background-color: lightblue;
 }
 
 button:hover {
@@ -15,6 +16,16 @@ button:hover {
 button.main {
   font-size: 1.2rem;
   background-color: aqua;
+}
+
+.enabled {
+  background-color: lightblue;
+  pointer-events: all;
+}
+
+.disabled {
+  pointer-events: none;
+  background-color: gray;
 }
 
 .App-header {
@@ -41,7 +52,7 @@ button.main {
 
 .NavigationBar .left {
   margin: 10px;
-  flex: 3;
+  flex: 1;
   text-align: left;
   border: 1px solid black;
   line-height: 1rem;
