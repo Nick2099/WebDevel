@@ -6,6 +6,7 @@ export const PageContentProvider = (props) => {
     const [page, setPage] = useState({
         showLogin: false,
         showHome: true,
+        showEntry: false,
         setPage: () => {}
         }
     );

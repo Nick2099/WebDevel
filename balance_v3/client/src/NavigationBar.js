@@ -9,27 +9,18 @@ function NavigationBar({email, name, id, logedin}) {
     const [page, setPage] = useContext(PageContentContext);
 
     console.log("tmpUser: ", tmpUser);
-    console.log("page: ", page);
+    // console.log("page: ", page);
 
     const logButton = (e) => {
         if (e.target.value==="false") {
             if (page.showLogin) {
-                let tmpPage = {};
-                tmpPage.showLogin = false;
-                tmpPage.showHome = page.showHome;
-                setPage(tmpPage);    
+                setPage(prevState => {return{...prevState, showLogin: false}})
             } else {
-                let tmpPage = {};
-                tmpPage.showLogin = true;
-                tmpPage.showHome = page.showHome;
-                setPage(tmpPage);    
+                setPage(prevState => {return{...prevState, showLogin: true}})
             };
         } else {
-            let tmpPage = {};
-            tmpPage.showLogin = false;
-            tmpPage.showHome = page.showHome;
-            setPage(tmpPage);
             setTmpUser({email: "", name: "", logedin: false, id: 0});
+            setPage(prevState => {return{...prevState, showLogin: false}})
         };
     }
 

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {PageContentProvider} from "./PageContentContext";
-
+import './index.css';
 
 ReactDOM.render(
   <PageContentProvider>

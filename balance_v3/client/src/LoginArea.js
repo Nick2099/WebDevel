@@ -41,7 +41,8 @@ function LoginArea() {
           }).then(function (response) {
               if (response.data.status==="ok") {
                 setTmpUser({email: email, name: name, logedin: true, id: response.data.id});
-              } else {
+                setPage(prevState => {return{...prevState, showLogin: false, showEntry: true, showHome: false}})
+            } else {
                   if (response.data.error==="ER_DUP_ENTRY") {
                       alert("User with same e-mail address already exists!")
                   } else {
@@ -58,9 +59,9 @@ function LoginArea() {
                 password: password
             }
         }).then(resp => {
-            console.log("resp: ", resp.data);
             if (resp.data[0].id>0) {
                 setTmpUser({email: resp.data[0].email, name: resp.data[0].name, logedin: true, id: resp.data[0].id});
+                setPage(prevState => {return{...prevState, showLogin: false, showEntry: true, showHome: false}})
             } else {
                 alert(resp.data[0].error);
             }
@@ -81,10 +82,7 @@ function LoginArea() {
             }
         } else {
             setTmpUser({email: "", name: "", logedin: false, id: 0});
-            let tmpPage = {};
-            tmpPage.showLogin = false;
-            tmpPage.showHome = page.showHome;
-            setPage(tmpPage);
+            setPage(prevState => {return{...prevState, showLogin: false}})
         };
     }
 
@@ -100,10 +98,7 @@ function LoginArea() {
 
     useEffect(() => {
         if (tmpUser.logedin) {
-            let tmpPage = {};
-            tmpPage.showLogin = false;
-            tmpPage.showHome = page.showHome;
-            setPage(tmpPage);    
+            setPage(prevState => {return{...prevState, showLogin: false}})
         }
     }, [tmpUser, setPage, page.showHome]);
 
