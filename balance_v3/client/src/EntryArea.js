@@ -9,9 +9,10 @@ function EntryArea() {
   return(
     <div>
       <h2>Enter items</h2>
-      <label>Person</label>
-      <Dropdown id="Person" options={[{value: "1", name:"Jedan"}, {value:"2", name:"Dva"}]} />
+      <div id="Person">
       </div>
+      <Dropdown id="PersonDD" linkto="Person" options={[{value: "1", name:"Jedan"}, {value:"2", name:"Dva"}]} />
+    </div>
   )
 }
 
