@@ -61,7 +61,7 @@ function LoginArea() {
         }).then(resp => {
             if (resp.data[0].id>0) {
                 setTmpUser({email: resp.data[0].email, name: resp.data[0].name, logedin: true, id: resp.data[0].id});
-                setPage(prevState => {return{...prevState, showLogin: false, showEntry: true, showHome: false}})
+                setPage(prevState => {return{...prevState, showLogin: false, showEntry: true, showEntryAdd: true, showHome: false}})
             } else {
                 alert(resp.data[0].error);
             }

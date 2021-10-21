@@ -4,8 +4,8 @@ import {TmpUserContext} from "./TmpUserContext";
 import {Dropdown} from "./Dropdown";
 
 function EntryArea() {
-  const [tmpUser, setTmpUser] = useContext(TmpUserContext);
-
+  // const [tmpUser, setTmpUser] = useContext(TmpUserContext);
+  console.log("dodavanje EntryArea u funkciji");
   return(
     <div>
       <h2>Enter items</h2>

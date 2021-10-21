@@ -7,6 +7,7 @@ export const PageContentProvider = (props) => {
         showLogin: false,
         showHome: true,
         showEntry: false,
+        showEntryAdd: false,
         showSettings: false,
         setPage: () => {}
         }

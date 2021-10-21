@@ -84,7 +84,7 @@ button.main {
 }
 
 .Show-block {
-  display:inline;
+  display:inline-block;
   visibility:visible;
 }
 

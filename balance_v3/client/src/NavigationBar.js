@@ -9,7 +9,7 @@ function NavigationBar({email, name, id, logedin}) {
     const [page, setPage] = useContext(PageContentContext);
 
     console.log("tmpUser: ", tmpUser);
-    // console.log("page: ", page);
+    console.log("page: ", page);
 
     const logButton = (e) => {
         if (e.target.value==="false") {
@@ -20,7 +20,7 @@ function NavigationBar({email, name, id, logedin}) {
             };
         } else {
             setTmpUser({email: "", name: "", logedin: false, id: 0});
-            setPage(prevState => {return{...prevState, showLogin: false}})
+            setPage(prevState => {return{...prevState, showLogin: false, showHome: true}})
         };
     }
 
