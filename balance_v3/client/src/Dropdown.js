@@ -1,18 +1,19 @@
-import React from "react";
+// import React from "react";
 
-export function Dropdown(props) {
-    console.log("props: ",props);
+export function Dropdown(id, linkto, options, width) {
+    console.log("props: ",id, linkto, options);
     var lab = document.createElement('label');
-    lab.id = props.id;
-    lab.innerHTML = props.linkto;
+    lab.id = "label_"+id;
+    lab.innerHTML = linkto;
     var sel = document.createElement('select');
-    sel.setAttribute("id", props.id);
+    sel.id = "select_"+id;
+    sel.id = width;
     lab.appendChild(sel);
     // <label id="Person">Person</label>
-    for(var i = 0; i < props.options.length; i++) {
+    for(var i = 0; i < options.length; i++) {
         var opt = document.createElement('option');
-        opt.innerHTML = props.options[i].name;
-        opt.value = props.options[i].value;
+        opt.innerHTML = options[i].name;
+        opt.value = options[i].value;
         sel.appendChild(opt);
     }
     document.getElementById("EntryArea").appendChild(lab);

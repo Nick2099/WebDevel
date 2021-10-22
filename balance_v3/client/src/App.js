@@ -42,11 +42,9 @@ function App() {
   };
 
   useEffect(() => {
-    console.log("useEffect za page! page: ", page);
     if (page.showEntry) {
       document.getElementById('EntryArea').className = 'Show-Block';
     } else {
-      console.log("Hidding Entry");
       document.getElementById('EntryArea').className = 'Hidden';
     };
     if (page.showEntryAdd) {
@@ -74,9 +72,7 @@ function App() {
         <NavigationBar />
         <ShowLoginArea show={page.showLogin.toString()}/>
         <ShowHomeArea show={page.showHome.toString()}/>
-        <div id="EntryArea">
-          <h2>Enter items</h2>
-        </div>
+        <div id="EntryArea">EntryArea</div>
         <ShowSettingsArea show={page.showSettings.toString()}/>
       </div>
     </TmpUserProvider>      
