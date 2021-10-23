@@ -52,11 +52,27 @@ function LoginArea() {
           })
     }
 
-    async function getUserID() {   // tu sam stao .... ovo treba proraditi
+    async function getUserID() {
         Axios.get('http://localhost:3001/userid', {
             params: {
                 email: email,
                 password: password
+            }
+        }).then(resp => {
+            if (resp.data[0].id>0) {
+                setTmpUser({email: resp.data[0].email, name: resp.data[0].name, logedin: true, id: resp.data[0].id});
+                setPage(prevState => {return{...prevState, showLogin: false, showEntry: true, showEntryAdd: true, showHome: false}})
+            } else {
+                alert(resp.data[0].error);
+            }
+        });
+    }
+
+    async function guestLogin() {
+        Axios.get('http://localhost:3001/userid', {
+            params: {
+                email: "nikicadadic@gmail.com",
+                password: "pass"
             }
         }).then(resp => {
             if (resp.data[0].id>0) {
@@ -105,7 +121,7 @@ function LoginArea() {
     return(
         <div className="Login">
                 <div>
-                    <button>Login as a guest</button>
+                    <button type="button" onClick={guestLogin}>Login as a guest</button>
                     <button type="button" onClick={registerChange}>{register ? "Login" : "Register"}</button>
                 </div>
                 <label>E-mail address</label>

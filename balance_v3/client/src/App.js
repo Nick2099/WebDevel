@@ -31,10 +31,10 @@ function App() {
     };
   };
 
-  function ShowEntryArea(props) {
+  function ShowSettingsArea(props) {
     if (props.show==="true") {
         return(
-          <EntryArea />
+          <SettingsArea />
         );
     } else {
       return null;
@@ -55,16 +55,6 @@ function App() {
     ShowHomeArea(page.showHome.toString);
     ShowSettingsArea(page.showSettings.toString);
   }, [page])
-
-  function ShowSettingsArea(props) {
-    if (props.show==="true") {
-        return(
-          <SettingsArea />
-        );
-    } else {
-      return null;
-    };
-  };
 
   return (
     <TmpUserProvider>
