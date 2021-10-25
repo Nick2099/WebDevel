@@ -1,28 +1,28 @@
-import React from "react";
+// import React from "react";
 
-export function Dropdown(props) {
-    console.log("props: ",props);
+export function Dropdown({id, name, options, width, addto}) {
+    console.log("props: ",id, name, options, width, addto);
     var lab = document.createElement('label');
-    lab.id = props.id;
-    lab.innerHTML = props.linkto;
+    lab.id = "label_"+id;
+    lab.innerHTML = name;
     var sel = document.createElement('select');
-    sel.setAttribute("id", props.id);
+    sel.id = "select_"+id;
+    sel.style.width = width;
     lab.appendChild(sel);
-    // <label id="Person">Person</label>
-    for(var i = 0; i < props.options.length; i++) {
+    for(var i = 0; i < options.length; i++) {
         var opt = document.createElement('option');
-        opt.innerHTML = props.options[i].name;
-        opt.value = props.options[i].value;
+        opt.innerHTML = options[i].name;
+        opt.value = options[i].value;
         sel.appendChild(opt);
     }
-    document.getElementById("EntryArea").appendChild(lab);
+    document.getElementById(addto).appendChild(lab);
     console.log(sel.outerHTML);
     return null;
-    // [sel.outerHTML];
 }
 
-/*
-export function Option(props) {
-  return <StyledOption selected={props.selected}>{props.value}</StyledOption>;
+export function Option(name) {
+  console.log("name: ", "select_"+name);
+  var e = document.getElementById("select_"+name);
+  var strUser = e.value;
+  return strUser;
 }
-*/

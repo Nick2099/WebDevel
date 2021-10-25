@@ -84,8 +84,13 @@ button.main {
 }
 
 .Show-block {
-  display:inline;
+  display:inline-block;
   visibility:visible;
+}
+
+select {
+  font-size: 1rem;
+  margin: 5px;
 }
 
 @keyframes App-logo-spin {
