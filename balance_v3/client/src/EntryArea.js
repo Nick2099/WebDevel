@@ -33,14 +33,14 @@ function EntryArea() {
   var allDays = Functions.allDaysArray(noOfDaysInMonth);
   var allDaysForSelect = Functions.allDaysForSelect(allDays);
   
-  var p2_tmp = document.createElement('p');
+  /* var p2_tmp = document.createElement('p');
   p2_tmp.innerHTML = 'Date: ' + tmpDate +" "+tmpDateNoTime+" "+noOfDaysInMonth + " "+allDays;
-  div_2.appendChild(p2_tmp);
+  div_2.appendChild(p2_tmp); */
 
-  var label_2 = document.createElement('label');
+  /* var label_2 = document.createElement('label');
   label_2.innerHTML = 'Date';
-  div_2.appendChild(label_2);
-  Dropdown({id: "DateDD", name: "Date", optins: allDays, width: "30px", addto:"Date"})
+  div_2.appendChild(label_2); */
+  Dropdown({id: "DateDD", name: "Date", options: allDaysForSelect, width: "30px", addto:"div_date"})
   
   var div_4 = document.createElement('div');
   div_4.id = 'div_button';

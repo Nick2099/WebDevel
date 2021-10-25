@@ -1,7 +1,7 @@
 // import React from "react";
 
-export function Dropdown({id, name, options, width, addto}) {
-    console.log("props: ",id, name, options, width, addto);
+export function Dropdown({id, name, options, width, addto, selected}) {
+    console.log("props: ",id, name, options, width, addto, selected);
     var lab = document.createElement('label');
     lab.id = "label_"+id;
     lab.innerHTML = name;

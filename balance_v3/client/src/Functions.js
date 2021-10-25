@@ -7,7 +7,7 @@ export function NoTimeDate(tmpDate) {
 export function getDaysInMonth(tmpDate) {
     var month = tmpDate.getMonth();
     var year = tmpDate.getFullYear();
-    return new Date(year, month, 0).getDate();
+    return new Date(year, month+1, 0).getDate();
 };    
 
 export function allDaysArray(noOfDays) {
