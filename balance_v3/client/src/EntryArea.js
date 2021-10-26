@@ -19,8 +19,8 @@ function EntryArea() {
 
   Dropdown({
     id: "PersonDD", name: "Person",
-    options: [{value: "1", name:"Jedan"}, {value:"2", name:"Dva"}],
-    width: "200px", addto:"div_person"
+    options: [{value: 1, name:"Jedan"}, {value: 2, name:"Dva"}],
+    width: "200px", addto:"div_person", selected: 2
   });
 
   var div_2 = document.createElement('div');
@@ -28,11 +28,16 @@ function EntryArea() {
   document.getElementById("EntryArea").appendChild(div_2);
   
   var tmpDate = new Date();
+  var tmpDay = tmpDate.getDate();
+  var tmpMonth = tmpDate.getMonth();
+  var tmpYear = tmpDate.getFullYear();
   var tmpDateNoTime = Functions.NoTimeDate(tmpDate);
   var noOfDaysInMonth = Functions.getDaysInMonth(tmpDate);
   var allDays = Functions.allDaysArray(noOfDaysInMonth);
   var allDaysForSelect = Functions.allDaysForSelect(allDays);
-  
+  var allMonths = Functions.allMonthsForSelect();
+  var allYears = Functions.allYearsForSelect(tmpYear);
+  console.log("Date: ", tmpDate, tmpDay, tmpMonth, tmpYear);
   /* var p2_tmp = document.createElement('p');
   p2_tmp.innerHTML = 'Date: ' + tmpDate +" "+tmpDateNoTime+" "+noOfDaysInMonth + " "+allDays;
   div_2.appendChild(p2_tmp); */
@@ -40,7 +45,9 @@ function EntryArea() {
   /* var label_2 = document.createElement('label');
   label_2.innerHTML = 'Date';
   div_2.appendChild(label_2); */
-  Dropdown({id: "DateDD", name: "Date", options: allDaysForSelect, width: "30px", addto:"div_date"})
+  Dropdown({id: "DayDD", name: "Date", options: allDaysForSelect, width: "50px", addto:"div_date", selected: tmpDay});
+  Dropdown({id: "MonthDD", name: "", options: allMonths, width: "60px", addto: "div_date", selected: tmpMonth});
+  Dropdown({id: "YearDD", name: "", options: allYears, width: "75px", addto: "div_date", selected: tmpYear});
   
   var div_4 = document.createElement('div');
   div_4.id = 'div_button';
@@ -53,7 +60,18 @@ function EntryArea() {
   
   function getButton_4value() {
     var selectedPerson = Option('PersonDD');
-    console.log("Option: ", selectedPerson);
+    var selectedMonth = Option('MonthDD');
+    var selectedYear = Option('YearDD');
+    var selectedDay = Option('DayDD');
+    if (tmpMonth!==selectedMonth) {
+      var selectedDate = new Date(selectedYear, selectedMonth, selectedDay);
+      var newNoOfDaysInMonth = Functions.getDaysInMonth(selectedDate);
+      console.log(selectedDate, ":", newNoOfDaysInMonth, " VS. ", noOfDaysInMonth);
+      if (newNoOfDaysInMonth!==noOfDaysInMonth) {
+        console.log("Potrebno ispraviti broj dana u mjesecu", tmpDate, selectedDate);
+      }
+    }
+    console.log("Option: ", selectedPerson, selectedDay+"."+(Number(selectedMonth)+1)+"."+selectedYear);
   }
 
   return null;

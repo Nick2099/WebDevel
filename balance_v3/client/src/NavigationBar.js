@@ -8,8 +8,8 @@ function NavigationBar({email, name, id, logedin}) {
     const [tmpUser, setTmpUser] = useContext(TmpUserContext);
     const [page, setPage] = useContext(PageContentContext);
 
-    console.log("tmpUser: ", tmpUser);
-    console.log("page: ", page);
+    // console.log("tmpUser: ", tmpUser);
+    // console.log("page: ", page);
 
     const logButton = (e) => {
         if (e.target.value==="false") {
