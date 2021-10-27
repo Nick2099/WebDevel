@@ -4,7 +4,7 @@ import './App.css';
 function HomeArea() {
     return(
         <div>
-          <header className="App-header">
+          <header className="Home">
             <h1>Home screen</h1>
           </header>
         </div>

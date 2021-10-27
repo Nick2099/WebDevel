@@ -23,7 +23,6 @@ export function allDaysForSelect(tmp) {
     tmp.forEach(element => {
         tmpSelect.push({value: element, name: String(element)});
     });
-    console.log("Days in month", tmpSelect.length);
     return tmpSelect;
 }
 
@@ -51,4 +50,30 @@ export function allYearsForSelect(tmp) {
         tmpYears.push({value:i, name:String(i)});
     };
     return tmpYears;
+}
+
+export function removeAll(tmp) {
+    while (document.getElementById(tmp).options.length > 0) {
+        document.getElementById(tmp).remove(0);
+    };
+}
+
+export function addAll(tmp, tmpvalues, tmpday) {
+    var sel = document.getElementById(tmp);
+    for(var i = 0; i < tmpvalues.length; i++) {
+        var opt = document.createElement('option');
+        opt.innerHTML = tmpvalues[i].name;
+        opt.value = tmpvalues[i].value;
+        sel.appendChild(opt);
+    }
+    if (tmpday>tmpvalues.length) {
+        sel.value=tmpvalues.length;
+    } else {
+        sel.value=tmpday;
+    }
+}
+
+export function changeNoOfDaysInMonth(tmp) {
+    this.removeAll(tmp.item);
+    this.addAll(tmp.item, tmp.values, tmp.selected);
 }

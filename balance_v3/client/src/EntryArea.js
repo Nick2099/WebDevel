@@ -20,7 +20,7 @@ function EntryArea() {
   Dropdown({
     id: "PersonDD", name: "Person",
     options: [{value: 1, name:"Jedan"}, {value: 2, name:"Dva"}],
-    width: "200px", addto:"div_person", selected: 2
+    labelwidth: "100px", width: "205px", addto:"div_person", selected: 2
   });
 
   var div_2 = document.createElement('div');
@@ -45,9 +45,12 @@ function EntryArea() {
   /* var label_2 = document.createElement('label');
   label_2.innerHTML = 'Date';
   div_2.appendChild(label_2); */
-  Dropdown({id: "DayDD", name: "Date", options: allDaysForSelect, width: "50px", addto:"div_date", selected: tmpDay});
-  Dropdown({id: "MonthDD", name: "", options: allMonths, width: "60px", addto: "div_date", selected: tmpMonth});
-  Dropdown({id: "YearDD", name: "", options: allYears, width: "75px", addto: "div_date", selected: tmpYear});
+  Dropdown({id: "DayDD", name: "Date", options: allDaysForSelect, labelwidth: "100px", width: "50px", addto:"div_date", selected: tmpDay});
+  Dropdown({id: "MonthDD", name: "", options: allMonths, labelwidth: "0px", width: "60px", addto: "div_date", selected: tmpMonth});
+  Dropdown({id: "YearDD", name: "", options: allYears, labelwidth: "0px", width: "75px", addto: "div_date", selected: tmpYear});
+  document.getElementById('select_MonthDD').onchange = getDaysForDateChange;
+  document.getElementById('select_YearDD').onchange = getDaysForDateChange;
+
   
   var div_4 = document.createElement('div');
   div_4.id = 'div_button';
@@ -63,18 +66,23 @@ function EntryArea() {
     var selectedMonth = Option('MonthDD');
     var selectedYear = Option('YearDD');
     var selectedDay = Option('DayDD');
-    if (tmpMonth!==selectedMonth) {
-      var selectedDate = new Date(selectedYear, selectedMonth, selectedDay);
-      var newNoOfDaysInMonth = Functions.getDaysInMonth(selectedDate);
-      console.log(selectedDate, ":", newNoOfDaysInMonth, " VS. ", noOfDaysInMonth);
-      if (newNoOfDaysInMonth!==noOfDaysInMonth) {
-        console.log("Potrebno ispraviti broj dana u mjesecu", tmpDate, selectedDate);
-      }
-    }
-    console.log("Option: ", selectedPerson, selectedDay+"."+(Number(selectedMonth)+1)+"."+selectedYear);
+    return {person: selectedPerson, day: selectedDay, month: selectedMonth, year: selectedYear};
   }
 
+  function getDaysForDateChange() {
+    var dateValues = getButton_4value();
+    var tmpDate = new Date(dateValues.year, dateValues.month, 1);
+    var tmpDays = Functions.getDaysInMonth(tmpDate);
+    if (tmpDays!==document.getElementById("select_DayDD").length) {
+      Functions.changeNoOfDaysInMonth({   // change no of days in select options and set day to less if doesn't exists
+        item: 'select_DayDD',
+        values: Functions.allDaysForSelect(Functions.allDaysArray(tmpDays)),
+        selected: dateValues.day
+      });
+    };
+  };
   return null;
 }
+
 
 export default EntryArea;

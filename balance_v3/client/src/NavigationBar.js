@@ -14,9 +14,9 @@ function NavigationBar({email, name, id, logedin}) {
     const logButton = (e) => {
         if (e.target.value==="false") {
             if (page.showLogin) {
-                setPage(prevState => {return{...prevState, showLogin: false}})
+                setPage(prevState => {return{...prevState, showLogin: false, showHome: true}})
             } else {
-                setPage(prevState => {return{...prevState, showLogin: true}})
+                setPage(prevState => {return{...prevState, showLogin: true, showHome: false}})
             };
         } else {
             setTmpUser({email: "", name: "", logedin: false, id: 0});
@@ -34,13 +34,13 @@ function NavigationBar({email, name, id, logedin}) {
 
     return(
         <div className="NavigationBar">
-            <div className="left">
-                <h2>Balance my way</h2>
-            </div>
             <div className="right">
                 <button type="button" onClick={entryButton} className={tmpUser.logedin ? "enabled" : "disabled"}>Manage entries</button>
                 <button type="button" onClick={settingsButton} className={tmpUser.logedin ? "enabled" : "disabled"}>Settings</button>
                 <button type="button" onClick={logButton} value={tmpUser.logedin}>{tmpUser.logedin ? "Logout" : page.showLogin ? "Hide Login" : "Login"}</button>
+            </div>
+            <div className="center">
+                <h2>Balance my way</h2>
             </div>
         </div>
     );

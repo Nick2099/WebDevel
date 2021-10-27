@@ -1,10 +1,11 @@
 .App {
   text-align: center;
   font-size: 1rem;
+  height: 100vh;
 }
 
 button {
-  margin: 10px;
+  margin: 5px;
   font-size: 1rem;
   background-color: lightblue;
 }
@@ -39,37 +40,58 @@ button.main {
   color: white;
 }
 
+.Home {
+  min-height: 70vh;
+  display:inline-flex;
+  align-items: center;
+  text-align: center;
+}
+
 .App-link {
   color: #61dafb;
 }
 
 .NavigationBar {
-  display: flex;
+  display: block;
   background-color: royalblue;
   margin: 0;
   padding: 0;
 }
 
 .NavigationBar .left {
-  margin: 10px;
-  flex: 1;
+  margin: 0px;
+  width: 100%;
   text-align: left;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   line-height: 1rem;
 }
+
 .NavigationBar .right {
-  margin: 10px;
-  flex: 1;
+  margin: 0px;
   text-align: right;
-  border: 1px solid black;
+  /* border: 1px solid black; */
+}
+
+.NavigationBar .center {
+  margin: 0px;
+  text-align: center;
+  /* border: 1px solid black; */
 }
 
 .Login {
-  background-color: rgb(42, 42, 224);
-  display: flex;
+  /* background-color: rgb(42, 42, 224); */
+  min-height: 70vh;
+  display:inline-flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+
+  /* display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: center; 
+  height: 350px; */
 }
 
 .Login input {
@@ -86,6 +108,11 @@ button.main {
 .Show-block {
   display:inline-block;
   visibility:visible;
+}
+
+label {
+  display:inline-block;
+  text-align: left;
 }
 
 select {

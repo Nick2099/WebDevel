@@ -120,19 +120,19 @@ function LoginArea() {
 
     return(
         <div className="Login">
-                <div>
-                    <button type="button" onClick={guestLogin}>Login as a guest</button>
-                    <button type="button" onClick={registerChange}>{register ? "Login" : "Register"}</button>
-                </div>
-                <label>E-mail address</label>
-                <input type='text' name='email' value={email} onChange={updateEmail}></input>
-                <label className={register ? "Show-Block" : "Hidden"}>Name</label>
-                <input className={register ? "Show-Block" : "Hidden"} type='text' name='name' value={name} onChange={updateName}></input>
-                <label>Password</label>
-                <input type='password' name='password' value={password} onChange={updatePassword}></input>
-                <label className={register ? "Show-Block" : "Hidden"}>Repeat password {repeatTxt}</label>
-                <input className={register ? "Show-Block" : "Hidden"} type='password' name='repeat' value={repeat} onChange={updateRepeat}></input>
-                <button className='main' type="button" onClick={formSubmit}>{register ? "Register" : "Login"}</button>
+            <div>
+                <button type="button" onClick={guestLogin}>Login as a guest</button>
+                <button type="button" onClick={registerChange}>{register ? "Login" : "Register"}</button>
+            </div>
+            <label>E-mail address</label>
+            <input type='text' name='email' value={email} onChange={updateEmail}></input>
+            <label className={register ? "Show-Block" : "Hidden"}>Name</label>
+            <input className={register ? "Show-Block" : "Hidden"} type='text' name='name' value={name} onChange={updateName}></input>
+            <label>Password</label>
+            <input type='password' name='password' value={password} onChange={updatePassword}></input>
+            <label className={register ? "Show-Block" : "Hidden"}>Repeat password {repeatTxt}</label>
+            <input className={register ? "Show-Block" : "Hidden"} type='password' name='repeat' value={repeat} onChange={updateRepeat}></input>
+            <button className='main' type="button" onClick={formSubmit}>{register ? "Register" : "Login"}</button>
             <div>
                 <p>Loging in as s guest</p>
                 <p>Register to...</p>

@@ -1,10 +1,12 @@
 // import React from "react";
 
-export function Dropdown({id, name, options, width, addto, selected}) {
+export function Dropdown({id, name, options, labelwidth, width, addto, selected}) {
     // console.log("props: ",id, name, options, width, addto, selected);
     var lab = document.createElement('label');
     lab.id = "label_"+id;
     lab.innerHTML = name;
+    lab.style.width = labelwidth;
+    document.getElementById(addto).appendChild(lab);
     var sel = document.createElement('select');
     sel.id = "select_"+id;
     sel.style.width = width;
@@ -18,7 +20,7 @@ export function Dropdown({id, name, options, width, addto, selected}) {
         }
         sel.appendChild(opt);
     }
-    document.getElementById(addto).appendChild(lab);
+    document.getElementById(addto).appendChild(sel);
     // console.log(sel.outerHTML);
     return null;
 }
