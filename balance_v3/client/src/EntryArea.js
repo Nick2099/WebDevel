@@ -3,7 +3,7 @@ import './App.css';
 // import {TmpUserContext} from "./TmpUserContext";
 // import {PageContentContext} from "./PageContentContext";
 import {Dropdown, Option} from "./Dropdown";
-import* as Functions from "./Functions";
+// import* as Functions from "./Functions";
 
 function EntryArea() {
   // const [tmpUser, setTmpUser] = useContext(TmpUserContext); // CAN'T BE USED ==> ERROR
@@ -20,37 +20,30 @@ function EntryArea() {
   Dropdown({
     id: "PersonDD", name: "Person",
     options: [{value: 1, name:"Jedan"}, {value: 2, name:"Dva"}],
-    labelwidth: "100px", width: "205px", addto:"div_person", selected: 2
+    labelwidth: "100px", width: "200px", addto:"div_person", selected: 2
   });
 
   var div_2 = document.createElement('div');
   div_2.id = 'div_date';
   document.getElementById("EntryArea").appendChild(div_2);
-  
+  var date_label = document.createElement('label');
+  date_label.id = 'date_label';
+  date_label.style.width = '100px';
+  date_label.innerHTML = "Date";
+  document.getElementById("div_date").appendChild(date_label);
   var tmpDate = new Date();
-  var tmpDay = tmpDate.getDate();
-  var tmpMonth = tmpDate.getMonth();
-  var tmpYear = tmpDate.getFullYear();
-  var tmpDateNoTime = Functions.NoTimeDate(tmpDate);
-  var noOfDaysInMonth = Functions.getDaysInMonth(tmpDate);
-  var allDays = Functions.allDaysArray(noOfDaysInMonth);
-  var allDaysForSelect = Functions.allDaysForSelect(allDays);
-  var allMonths = Functions.allMonthsForSelect();
-  var allYears = Functions.allYearsForSelect(tmpYear);
-  console.log("Date: ", tmpDate, tmpDay, tmpMonth, tmpYear);
-  /* var p2_tmp = document.createElement('p');
-  p2_tmp.innerHTML = 'Date: ' + tmpDate +" "+tmpDateNoTime+" "+noOfDaysInMonth + " "+allDays;
-  div_2.appendChild(p2_tmp); */
-
-  /* var label_2 = document.createElement('label');
-  label_2.innerHTML = 'Date';
-  div_2.appendChild(label_2); */
-  Dropdown({id: "DayDD", name: "Date", options: allDaysForSelect, labelwidth: "100px", width: "50px", addto:"div_date", selected: tmpDay});
-  Dropdown({id: "MonthDD", name: "", options: allMonths, labelwidth: "0px", width: "60px", addto: "div_date", selected: tmpMonth});
-  Dropdown({id: "YearDD", name: "", options: allYears, labelwidth: "0px", width: "75px", addto: "div_date", selected: tmpYear});
-  document.getElementById('select_MonthDD').onchange = getDaysForDateChange;
-  document.getElementById('select_YearDD').onchange = getDaysForDateChange;
-
+  var currentDate = tmpDate.toISOString().substring(0,10);
+  var currentTime = tmpDate.toISOString().substring(11,16);
+  var tmpDateIso = tmpDate.toISOString();
+  var tmpDateIso10 = String(tmpDateIso.slice(0, 10));
+  console.log("tmpDate: ", tmpDate, tmpDateIso, tmpDateIso10);
+  var date_input = document.createElement('input');
+  date_input.id = "date_input";
+  date_input.type = "date";
+  date_input.name = "date_input";
+  date_input.value = currentDate;
+  date_input.style.width = "195px";
+  document.getElementById("div_date").appendChild(date_input);
   
   var div_4 = document.createElement('div');
   div_4.id = 'div_button';
@@ -63,24 +56,11 @@ function EntryArea() {
   
   function getButton_4value() {
     var selectedPerson = Option('PersonDD');
-    var selectedMonth = Option('MonthDD');
-    var selectedYear = Option('YearDD');
-    var selectedDay = Option('DayDD');
-    return {person: selectedPerson, day: selectedDay, month: selectedMonth, year: selectedYear};
+    var selectedDate = document.getElementById("date_input").value;
+    console.log(selectedPerson, selectedDate);
+    return {person: selectedPerson, date: selectedDate};
   }
 
-  function getDaysForDateChange() {
-    var dateValues = getButton_4value();
-    var tmpDate = new Date(dateValues.year, dateValues.month, 1);
-    var tmpDays = Functions.getDaysInMonth(tmpDate);
-    if (tmpDays!==document.getElementById("select_DayDD").length) {
-      Functions.changeNoOfDaysInMonth({   // change no of days in select options and set day to less if doesn't exists
-        item: 'select_DayDD',
-        values: Functions.allDaysForSelect(Functions.allDaysArray(tmpDays)),
-        selected: dateValues.day
-      });
-    };
-  };
   return null;
 }
 
