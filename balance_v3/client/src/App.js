@@ -6,10 +6,21 @@ import NavigationBar from "./NavigationBar";
 import LoginArea from "./LoginArea";
 import HomeArea from './HomeArea';
 import EntryArea from './EntryArea';
+import EntryArea2 from './EntryArea2';
 import SettingsArea from './SettingsArea';
 
 function App() {
   const [page, setPage] = useContext(PageContentContext);
+
+  function ShowEntryArea(props) {
+    if (props.show==="true") {
+        return(
+          <EntryArea2 />
+        );
+    } else {
+      return null;
+    };
+  };
 
   function ShowLoginArea(props) {
     if (props.show==="true") {
@@ -42,7 +53,7 @@ function App() {
   };
 
   useEffect(() => {
-    if (page.showEntry) {
+    /* if (page.showEntry) {
       document.getElementById('EntryArea').className = 'Show-Block';
     } else {
       document.getElementById('EntryArea').className = 'Hidden';
@@ -50,9 +61,10 @@ function App() {
     if (page.showEntryAdd) {
       console.log("dodavanje EntryArea");
       EntryArea();
-    }
+    } */
     ShowLoginArea(page.showLogin.toString);
     ShowHomeArea(page.showHome.toString);
+    ShowEntryArea(page.showEntry.toString);
     ShowSettingsArea(page.showSettings.toString);
   }, [page])
 
@@ -62,7 +74,7 @@ function App() {
         <NavigationBar />
         <ShowLoginArea show={page.showLogin.toString()}/>
         <ShowHomeArea show={page.showHome.toString()}/>
-        <div id="EntryArea"></div>
+        <ShowEntryArea show={page.showEntry.toString()}/>
         <ShowSettingsArea show={page.showSettings.toString()}/>
       </div>
     </TmpUserProvider>      

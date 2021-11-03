@@ -1,12 +1,12 @@
-// import React, {useState, useContext, useEffect} from "react";
+import {useContext} from "react";
 import './App.css';
-// import {TmpUserContext} from "./TmpUserContext";
+import {TmpUserContext} from "./TmpUserContext";
 // import {PageContentContext} from "./PageContentContext";
 import {Dropdown, Option} from "./Dropdown";
 // import* as Functions from "./Functions";
 
 function EntryArea() {
-  // const [tmpUser, setTmpUser] = useContext(TmpUserContext); // CAN'T BE USED ==> ERROR
+  // const [tmpUser, setTmpUser] = useContext(TmpUserContext);  // CAN'T BE USED ==> ERROR
   // const [page] = useContext(PageContentContext);
 
   var h2 = document.createElement('h2');
@@ -19,7 +19,7 @@ function EntryArea() {
 
   Dropdown({
     id: "PersonDD", name: "Person",
-    options: [{value: 1, name:"Jedan"}, {value: 2, name:"Dva"}],
+    options: [{value: 1, name: "Jedan"}, {value: 2, name:"Dva"}],
     labelwidth: "100px", width: "200px", addto:"div_person", selected: 2
   });
 
@@ -43,6 +43,7 @@ function EntryArea() {
   date_input.name = "date_input";
   date_input.value = currentDate;
   date_input.style.width = "195px";
+  // date_input.addEventListener("change", checkDate);
   document.getElementById("div_date").appendChild(date_input);
   
   var div_4 = document.createElement('div');
@@ -53,13 +54,17 @@ function EntryArea() {
   button_4.innerHTML = 'Add';
   button_4.onclick = getButton_4value;
   div_4.appendChild(button_4);
-  
+
   function getButton_4value() {
     var selectedPerson = Option('PersonDD');
     var selectedDate = document.getElementById("date_input").value;
-    console.log(selectedPerson, selectedDate);
-    return {person: selectedPerson, date: selectedDate};
-  }
+    console.log("Add:", selectedPerson, ":", selectedDate, ":", selectedDate.length);
+    if (selectedDate.length===0) {
+      alert("Date is not valid!");
+    } else {
+      return {person: selectedPerson, date: selectedDate};
+    }
+  } 
 
   return null;
 }
