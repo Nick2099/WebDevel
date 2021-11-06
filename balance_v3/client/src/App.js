@@ -5,12 +5,12 @@ import {PageContentContext} from "./PageContentContext";
 import NavigationBar from "./NavigationBar";
 import LoginArea from "./LoginArea";
 import HomeArea from './HomeArea';
-import EntryArea from './EntryArea';
+// import EntryArea from './EntryArea';
 import EntryArea2 from './EntryArea2';
 import SettingsArea from './SettingsArea';
 
 function App() {
-  const [page, setPage] = useContext(PageContentContext);
+  const [page] = useContext(PageContentContext);
 
   function ShowEntryArea(props) {
     if (props.show==="true") {
