@@ -55,6 +55,19 @@ app.post('/register', (req, res) => {
 	})
 });
 
+app.get('/getstandardgroups', (req, res) => {
+	db.query(
+		'SELECT id, name FROM mybalance.groups',
+		(err, result) => {
+			if (err) {
+				res.send([{error: err}]);
+			} else {
+				res.send(result);
+			};
+		});
+});
+
+
 app.get('/userid', (req, res) => { //treba sifrirati password
 	db.query(
 		'SELECT id, email, password, name FROM users WHERE email="' + req.query.email + '"',
@@ -71,7 +84,7 @@ app.get('/userid', (req, res) => { //treba sifrirati password
 						res.send([{id: 0, error: "Wrong password!"}]);
 					}
 				} else {
-					res.send([{id: 0, error: "SUch user doesn't exist."}]);
+					res.send([{id: 0, error: "Such user doesn't exist."}]);
 				}
 			}
 		})

@@ -145,12 +145,18 @@ input {
 
 .width_100 {
   width: 100px;
+  padding: 0;
+  border: 0;
 }
 
 .width_200 {
   width: 200px;
   padding: 0px;
   border: 0px;
+}
+
+.right {
+  text-align: right;
 }
 
 input[type=radio] {
