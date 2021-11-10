@@ -67,6 +67,18 @@ app.get('/getstandardgroups', (req, res) => {
 		});
 });
 
+app.get('/getsubgroups', (req, res) => {
+	db.query(
+		'SELECT id, name FROM mybalance.subgroups WHERE groupid="' + string(req.query.group) + '"',
+		(err, result) => {
+			if (err) {
+				res.send([{error: err}]);
+			} else {
+				console.log("getsubgroups result: ", result);
+				res.send(result);
+			};
+		});
+});
 
 app.get('/userid', (req, res) => { //treba sifrirati password
 	db.query(

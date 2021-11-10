@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect, Component } from "react";
 import "./App.css";
 import Axios from "axios";
 import { TmpUserContext } from "./TmpUserContext";
+import * as Functions from "./Functions";
 // import {PageContentContext} from "./PageContentContext";
 
 function EntryArea2() {
@@ -64,6 +65,12 @@ function EntryArea2() {
     }
   }
 
+  function changeGroup() {
+    Functions.removeAllOptionsFromSelect("select_subgroup")
+    .then(Functions.getSubGroups)
+    .then(value => Functions.fillSubGroups(value));
+}
+
   return (
     <div className="Entry" id="EntryArea">
       <h2>Insert your entries (2)</h2>
@@ -122,7 +129,12 @@ function EntryArea2() {
 
       <div id="div_group">
         <label className="width_100">Group</label>
-        <select className="width_200" id="select_group"></select>
+        <select className="width_200" id="select_group" onChange={changeGroup}></select>
+      </div>
+
+      <div id="div_subgroup">
+        <label className="width_100">Subgroup</label>
+        <select className="width_200" id="select_subgroup"></select>
       </div>
 
       <Child tmpUser={tmpUser} groups={groups}/>
@@ -140,25 +152,11 @@ class Child extends Component {
     var sel = document.getElementById("select_person");
     sel.appendChild(opt);
 
-    const promise1 = new Promise((resolve, reject) => {
-      Axios.get("http://localhost:3001/getstandardgroups", {
-        params: {},
-      }).then((resp) => {
-        resolve(resp.data);
-      });
-    })
-    
-    promise1.then((value) => {
-      for (var i = 0; i < value.length; i++) {
-        var options = document.createElement("option");
-        options.innerHTML = value[i].name;
-        options.value = value[i].value;
-        if (value[i].value === 1) {
-          options.setAttribute("selected", true);
-        }
-        document.getElementById("select_group").appendChild(options);;
-      };
-    })
+    Functions.getGroups()
+      .then(value => Functions.fillGroups(value))
+      .then(Functions.getSubGroups)
+      .then(value => Functions.fillSubGroups(value));
+
   }
 
   componentDidUpdate() {
