@@ -109,7 +109,7 @@ function EntryArea2() {
           defaultValue="0.00"
         ></input>
       </div>
-
+      {/* 
       <div id="div_group" className={showIncome ? "Hidden" : "Show-Block"}>
         <label className="width_100">Group</label>
         <select
@@ -122,6 +122,36 @@ function EntryArea2() {
       <div id="div_subgroup" className={showIncome ? "Hidden" : "Show-Block"}>
         <label className="width_100">Subgroup</label>
         <select className="width_200" id="select_subgroup"></select>
+      </div>
+
+ */}
+      <div id="table" className={showIncome ? "Hidden" : "Show-Block"}>
+        <table className="expenses ">
+          <thead>
+            <tr>
+              <th>Group</th>
+              <th>Subgroup</th>
+              <th>Amount</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <select className="width_200" id="select_group" onChange={changeGroup}></select>
+              </td>
+              <td>
+                <select className="width_200" id="select_subgroup"></select>
+              </td>
+              <td>
+                <input type="number" id="amount" className="width_100 right" defaultValue="0.00"></input>
+              </td>
+              <td>
+                <button className='main' type="button" onClick={addRecord}>Add</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
       <Child tmpUser={tmpUser} groups={groups} />
