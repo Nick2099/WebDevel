@@ -54,6 +54,10 @@ function EntryArea2() {
       .then((value) => Functions.fillSubGroups(value));
   }
 
+  function addRecord() {
+    
+  }
+
   return (
     <div className="Entry" id="EntryArea">
       <h2>Insert your entries (2)</h2>
