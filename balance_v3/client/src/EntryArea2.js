@@ -1,19 +1,11 @@
 import React, { useState, useContext, useEffect, Component } from "react";
 import "./App.css";
-import Axios from "axios";
+// import Axios from "axios";
 import { TmpUserContext } from "./TmpUserContext";
 import * as Functions from "./Functions";
-// import {PageContentContext} from "./PageContentContext";
 
 function EntryArea2() {
-  /* const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
-    const [password, setPassword] = useState('');
-    const [repeat, setRepeat] = useState('');
-    const [repeatTxt, setRepeatTxt] = useState(''); */
   const [tmpUser, setTmpUser] = useContext(TmpUserContext);
-  /* const [page, setPage] = useContext(PageContentContext);
-    const [register, setRegister] = useState(false);    */
   const [showIncome, setShowIncome] = useState(true);
 
   let records = [
@@ -38,12 +30,8 @@ function EntryArea2() {
   var currentDate = tmpDate.toISOString().substring(0, 10);
   var tmpDateValue = "";
 
-  console.log("tmpUser: ", tmpUser);
-  console.log("groups: ", groups);
-
   function incexpChange() {
     var selected = document.querySelector('input[name="incexp"]:checked').id;
-    console.log("selected: ", selected);
     if (selected === "inc") {
       setShowIncome(true);
     } else {
@@ -52,14 +40,9 @@ function EntryArea2() {
   }
 
   function checkDate() {
-    // console.log("Check Date");
     var tmpDate1 = String(document.getElementById("select_date").value);
-    /* var day = tmpDate1.substring(8,10);
-    var month = tmpDate1.substring(5,7);
-    var year = tmpDate1.substring(0,4); */
     if (tmpDate1.length === 0) {
       document.getElementById("select_date").value = tmpDateValue;
-      // console.log("Date was corrected!");
     } else {
       tmpDateValue = tmpDate1;
     }
@@ -67,9 +50,9 @@ function EntryArea2() {
 
   function changeGroup() {
     Functions.removeAllOptionsFromSelect("select_subgroup")
-    .then(Functions.getSubGroups)
-    .then(value => Functions.fillSubGroups(value));
-}
+      .then(Functions.getSubGroups)
+      .then((value) => Functions.fillSubGroups(value));
+  }
 
   return (
     <div className="Entry" id="EntryArea">
@@ -127,17 +110,21 @@ function EntryArea2() {
         ></input>
       </div>
 
-      <div id="div_group">
+      <div id="div_group" className={showIncome ? "Hidden" : "Show-Block"}>
         <label className="width_100">Group</label>
-        <select className="width_200" id="select_group" onChange={changeGroup}></select>
+        <select
+          className="width_200"
+          id="select_group"
+          onChange={changeGroup}
+        ></select>
       </div>
 
-      <div id="div_subgroup">
+      <div id="div_subgroup" className={showIncome ? "Hidden" : "Show-Block"}>
         <label className="width_100">Subgroup</label>
         <select className="width_200" id="select_subgroup"></select>
       </div>
 
-      <Child tmpUser={tmpUser} groups={groups}/>
+      <Child tmpUser={tmpUser} groups={groups} />
     </div>
   );
 }
@@ -153,10 +140,9 @@ class Child extends Component {
     sel.appendChild(opt);
 
     Functions.getGroups()
-      .then(value => Functions.fillGroups(value))
+      .then((value) => Functions.fillGroups(value))
       .then(Functions.getSubGroups)
-      .then(value => Functions.fillSubGroups(value));
-
+      .then((value) => Functions.fillSubGroups(value));
   }
 
   componentDidUpdate() {

@@ -69,12 +69,11 @@ app.get('/getstandardgroups', (req, res) => {
 
 app.get('/getsubgroups', (req, res) => {
 	db.query(
-		'SELECT id, name FROM mybalance.subgroups WHERE groupid="' + string(req.query.group) + '"',
+		'SELECT id, name FROM mybalance.subgroups WHERE groupid="' + String(req.query.group) + '" ORDER BY name',
 		(err, result) => {
 			if (err) {
 				res.send([{error: err}]);
 			} else {
-				console.log("getsubgroups result: ", result);
 				res.send(result);
 			};
 		});
