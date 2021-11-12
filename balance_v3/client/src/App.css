@@ -169,6 +169,9 @@ input[type=radio] {
   
 table.expenses {
   table-layout: auto;
-  width: 90%;  
+  width: 100%;  
 }
 
+td, th {
+  border: 1px solid black;
+}

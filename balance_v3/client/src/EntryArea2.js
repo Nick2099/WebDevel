@@ -8,7 +8,7 @@ function EntryArea2() {
   const [tmpUser, setTmpUser] = useContext(TmpUserContext);
   const [showIncome, setShowIncome] = useState(true);
 
-  let records = [
+  let record = [
     {
       id: 0,
       recid: 0,
@@ -23,6 +23,22 @@ function EntryArea2() {
       group: 0,
       subgroup: 0,
     },
+  ];
+  let records = [
+    {
+      groupid: 1,
+      groupname: "Grupa1",
+      subgroupid: 2,
+      subgroupname: "SubGrupa2",
+      amount: 0
+    },
+    {
+      groupid: 2,
+      groupname: "Grupa2",
+      subgroupid: 4,
+      subgroupname: "SubGrupa4",
+      amount: 0
+    }
   ];
   var groups = [];
 
@@ -136,10 +152,11 @@ function EntryArea2() {
               <th>Group</th>
               <th>Subgroup</th>
               <th>Amount</th>
-              <th></th>
+              <th>Add record/value</th>
+              <th>Delete record</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="records">
             <tr>
               <td>
                 <select className="width_200" id="select_group" onChange={changeGroup}></select>
@@ -153,14 +170,70 @@ function EntryArea2() {
               <td>
                 <button className='main' type="button" onClick={addRecord}>Add</button>
               </td>
+              <td></td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <Child tmpUser={tmpUser} groups={groups} />
+      <Records records={records}/>
     </div>
   );
+}
+
+class Records extends Component {
+  componentDidMount() {
+    let records = this.props.records;
+    console.log("Records: ", records);
+    let no = 0;
+    records.forEach(element => {
+      var tr = document.createElement("tr");
+      var td1 = document.createElement("td");
+      var label1 = document.createElement("label");
+      label1.innerHTML = element.groupname;
+      td1.appendChild(label1);
+      tr.appendChild(td1);
+      var td2 = document.createElement("td");
+      var label2 = document.createElement("label");
+      label2.innerHTML = element.subgroupname;
+      td2.appendChild(label2);
+      tr.appendChild(td2);
+      var td3 = document.createElement("td");
+      var label3 = document.createElement("label");
+      label3.innerHTML = String(element.amount);
+      td3.appendChild(label3);
+      tr.appendChild(td3);
+      var td4 = document.createElement("td");
+      var input = document.createElement("input");
+      input.defaultValue = 0;
+      input.type = "number";
+      input.id = "amount"+String(no);
+      input.className ="width_100 right";
+      td4.appendChild(input);
+      var button1 = document.createElement("button");
+      button1.className="main";
+      button1.type="button";
+      button1.innerHTML="Add";
+      td4.appendChild(button1);
+      tr.appendChild(td4);
+      var td5 = document.createElement("td");
+      var button2 = document.createElement("button");
+      button2.className="main";
+      button2.type="button";
+      button2.innerHTML="Delete";
+      td5.appendChild(button2);
+      tr.appendChild(td5);
+
+      var recs = document.getElementById("records");
+      recs.appendChild(tr);
+      no = no +1;
+      });
+  }
+
+  render() {
+    return null;
+  }
 }
 
 class Child extends Component {
