@@ -55,7 +55,7 @@ app.post('/register', (req, res) => {
 	})
 });
 
-app.get('/getstandardgroups', (req, res) => {
+app.get('/getgroups', (req, res) => {
 	db.query(
 		'SELECT id, name FROM mybalance.groups',
 		(err, result) => {
@@ -69,7 +69,8 @@ app.get('/getstandardgroups', (req, res) => {
 
 app.get('/getsubgroups', (req, res) => {
 	db.query(
-		'SELECT id, name FROM mybalance.subgroups WHERE groupid="' + String(req.query.group) + '" ORDER BY name',
+		// 'SELECT id, name FROM mybalance.subgroups WHERE groupid="' + String(req.query.group) + '" ORDER BY name', //
+		'SELECT id, groupid, name FROM mybalance.subgroups',
 		(err, result) => {
 			if (err) {
 				res.send([{error: err}]);

@@ -2,7 +2,7 @@ import Axios from "axios";
 
 export function getGroups() {
   return new Promise((resolve, reject) => {
-    Axios.get("http://localhost:3001/getstandardgroups", {
+    Axios.get("http://localhost:3001/getgroups", {
       params: {},
     })
       .then((resp) => {
@@ -29,10 +29,10 @@ export function fillGroups(value) {
 
 export function getSubGroups() {
   return new Promise((resolve, reject) => {
-    let tmpValue = String(document.getElementById("select_group").value);
+    // let tmpValue = String(document.getElementById("select_group").value);
     Axios.get("http://localhost:3001/getsubgroups", {
       params: {
-        group: tmpValue,
+        // group: tmpValue,
       },
     })
       .then((resp) => {
@@ -62,4 +62,24 @@ export function removeAllOptionsFromSelect(name) {
     selectBox.remove(0);
   }
   return Promise.resolve("ok");
+}
+
+export function removeSubgroups(props) {
+  let subgroups = props.subgroups;
+  let records = props.records;
+  let newsubgroups = [];
+
+  subgroups.forEach(subgroup => {
+    let inside = false;
+    records.forEach(record => {
+      if (subgroup.id === record.subgroupid) {
+        inside = true;
+      };
+    });
+    if (!inside) {
+      newsubgroups.push(subgroup);
+    }
+  })
+
+  return Promise.resolve(newsubgroups);
 }

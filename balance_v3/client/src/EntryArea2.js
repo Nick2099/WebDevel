@@ -26,22 +26,42 @@ function EntryArea2() {
   ];
   let records = [
     {
-      groupid: 1,
-      groupname: "Grupa1",
-      subgroupid: 2,
-      subgroupname: "SubGrupa2",
-      amount: 0
+      groupid: 7,
+      groupname: "Grupa7",
+      subgroupid: 1,
+      subgroupname: "SubGrupa1",
+      amount: 0,
     },
     {
-      groupid: 2,
-      groupname: "Grupa2",
-      subgroupid: 4,
-      subgroupname: "SubGrupa4",
-      amount: 0
+      groupid: 4,
+      groupname: "Grupa4",
+      subgroupid: 17,
+      subgroupname: "SubGrupa17",
+      amount: 0,
     }
   ];
   var groups = [];
-
+  var subgroups = [];
+  var newsubgroups = [];
+  Functions.getGroups().then((value) => {
+    groups = value;
+    console.log("Groups are loaded: ", groups);
+    Functions.getSubGroups().then((value) => {
+      subgroups = value;
+      console.log("Subgroups are loaded: ", subgroups);
+      Functions.removeSubgroups({subgroups, records}).then((value) => {
+        newsubgroups=value;
+        console.log("Newsubgroups are created: ", newsubgroups);
+        Functions.removeAllOptionsFromSelect("select_group").then(
+          Functions.fillGroups(groups)
+        );
+        Functions.removeAllOptionsFromSelect("select_subgroup").then(
+          Functions.fillSubGroups(newsubgroups)
+        );
+      });
+    });
+  });
+  
   var tmpDate = new Date();
   var currentDate = tmpDate.toISOString().substring(0, 10);
   var tmpDateValue = "";
@@ -65,13 +85,17 @@ function EntryArea2() {
   }
 
   function changeGroup() {
+    /*
     Functions.removeAllOptionsFromSelect("select_subgroup")
       .then(Functions.getSubGroups)
       .then((value) => Functions.fillSubGroups(value));
+    */
   }
 
   function addRecord() {
-    
+    var tmpGroup = document.getElementById("select_group").value;
+    var tmpSubGroup = document.getElementById("select_subgroup").value;
+    console.log(tmpGroup, tmpSubGroup);
   }
 
   return (
@@ -129,22 +153,7 @@ function EntryArea2() {
           defaultValue="0.00"
         ></input>
       </div>
-      {/* 
-      <div id="div_group" className={showIncome ? "Hidden" : "Show-Block"}>
-        <label className="width_100">Group</label>
-        <select
-          className="width_200"
-          id="select_group"
-          onChange={changeGroup}
-        ></select>
-      </div>
 
-      <div id="div_subgroup" className={showIncome ? "Hidden" : "Show-Block"}>
-        <label className="width_100">Subgroup</label>
-        <select className="width_200" id="select_subgroup"></select>
-      </div>
-
- */}
       <div id="table" className={showIncome ? "Hidden" : "Show-Block"}>
         <table className="expenses ">
           <thead>
@@ -159,16 +168,27 @@ function EntryArea2() {
           <tbody id="records">
             <tr>
               <td>
-                <select className="width_200" id="select_group" onChange={changeGroup}></select>
+                <select
+                  className="width_200"
+                  id="select_group"
+                  onChange={changeGroup}
+                ></select>
               </td>
               <td>
                 <select className="width_200" id="select_subgroup"></select>
               </td>
               <td>
-                <input type="number" id="amount" className="width_100 right" defaultValue="0.00"></input>
+                <input
+                  type="number"
+                  id="amount"
+                  className="width_100 right"
+                  defaultValue="0.00"
+                ></input>
               </td>
               <td>
-                <button className='main' type="button" onClick={addRecord}>Add</button>
+                <button className="main" type="button" onClick={addRecord}>
+                  Add
+                </button>
               </td>
               <td></td>
             </tr>
@@ -176,8 +196,8 @@ function EntryArea2() {
         </table>
       </div>
 
-      <Child tmpUser={tmpUser} groups={groups} />
-      <Records records={records}/>
+      <Child tmpUser={tmpUser} groups={groups} subgroups={subgroups} records={records}/>
+      <Records records={records} />
     </div>
   );
 }
@@ -187,7 +207,7 @@ class Records extends Component {
     let records = this.props.records;
     console.log("Records: ", records);
     let no = 0;
-    records.forEach(element => {
+    records.forEach((element) => {
       var tr = document.createElement("tr");
       var td1 = document.createElement("td");
       var label1 = document.createElement("label");
@@ -208,27 +228,27 @@ class Records extends Component {
       var input = document.createElement("input");
       input.defaultValue = 0;
       input.type = "number";
-      input.id = "amount"+String(no);
-      input.className ="width_100 right";
+      input.id = "amount" + String(no);
+      input.className = "width_100 right";
       td4.appendChild(input);
       var button1 = document.createElement("button");
-      button1.className="main";
-      button1.type="button";
-      button1.innerHTML="Add";
+      button1.className = "main";
+      button1.type = "button";
+      button1.innerHTML = "Add";
       td4.appendChild(button1);
       tr.appendChild(td4);
       var td5 = document.createElement("td");
       var button2 = document.createElement("button");
-      button2.className="main";
-      button2.type="button";
-      button2.innerHTML="Delete";
+      button2.className = "main";
+      button2.type = "button";
+      button2.innerHTML = "Delete";
       td5.appendChild(button2);
       tr.appendChild(td5);
 
       var recs = document.getElementById("records");
       recs.appendChild(tr);
-      no = no +1;
-      });
+      no = no + 1;
+    });
   }
 
   render() {
@@ -245,15 +265,17 @@ class Child extends Component {
     opt.setAttribute("selected", true);
     var sel = document.getElementById("select_person");
     sel.appendChild(opt);
-
-    Functions.getGroups()
-      .then((value) => Functions.fillGroups(value))
-      .then(Functions.getSubGroups)
-      .then((value) => Functions.fillSubGroups(value));
   }
 
   componentDidUpdate() {
-    console.log("Child was updated");
+    console.log("Child was updated. Props: ", this.props);
+
+    /*
+    Functions.removeGroupsAndSubgroups(this.props.groups, this.props.subgroups, this.props.records).then((value) => {
+      Functions.fillGroups(this.props.groups);
+      Functions.fillSubGroups(this.props.subgroups);
+    });
+    */
   }
 
   componentWillUnmount() {
