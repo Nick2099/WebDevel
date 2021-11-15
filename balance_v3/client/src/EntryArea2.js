@@ -98,9 +98,14 @@ function EntryArea2() {
 
   function addRecord() {
     var tmpGroup = document.getElementById("select_group").value;
+    var sel1 = document.getElementById("select_group");
+    var tmpGroupName= sel1.options[sel1.selectedIndex].text;
     var tmpSubGroup = document.getElementById("select_subgroup").value;
+    var sel2 = document.getElementById("select_subgroup");
+    var tmpSubGroupName = sel2.options[sel2.selectedIndex].text;
     var lastRecord = records.length;
-    
+    console.log("names: ", tmpGroupName, tmpSubGroupName);
+
     if (lastRecord === 0) {
       record.userid = tmpUser.id;
       let totamount = Number(document.getElementById("totamount").value);
@@ -110,13 +115,43 @@ function EntryArea2() {
       } else {
         record.totinc = 0;
         record.totexp = totamount;
-      };
+      }
       record.locuser = Number(document.getElementById("select_person").value);
       record.date = document.getElementById("select_date").value;
       record.place = document.getElementById("place").value;
-    };
+    }
 
-    records.push({groupid: tmpGroup, subgroupid: tmpSubGroup, amount: document.getElementById("amount").value})
+    records.push({
+      groupid: tmpGroup,
+      subgroupid: tmpSubGroup,
+      amount: document.getElementById("amount").value,
+      groupname: tmpGroupName,
+      subgroupname: tmpSubGroupName
+    });
+
+    lastRecord = records.length - 1;
+    Functions.showNewRecord({ data: records[lastRecord], no: lastRecord });
+    setNewGroupsAndSubgroups();
+  }
+
+  function setNewGroupsAndSubgroups() {
+    Functions.removeSubgroups({ subgroups, records }).then((value) => {
+      newsubgroups = value;
+      console.log("Newsubgroups are created: ", newsubgroups);
+      Functions.removeAllOptionsFromSelect("select_group").then(
+        Functions.fillGroups(groups)
+      );
+      Functions.removeAllOptionsFromSelect("select_subgroup").then(
+        (value) => {
+          let tmpGroup = document.getElementById("select_group").value;
+          Functions.getUsedSubGroups({ newsubgroups, tmpGroup }).then(
+            (value) => {
+              Functions.fillSubGroups(value);
+            }
+          );
+        }
+      );
+    });
   }
 
   function totamountChange() {
