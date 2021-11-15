@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, Component } from "react";
+import React, { useState, useContext, Component } from "react";
 import "./App.css";
 // import Axios from "axios";
 import { TmpUserContext } from "./TmpUserContext";
@@ -8,23 +8,18 @@ function EntryArea2() {
   const [tmpUser, setTmpUser] = useContext(TmpUserContext);
   const [showIncome, setShowIncome] = useState(true);
 
-  let record = [
-    {
-      id: 0,
-      recid: 0,
-      userid: 0,
-      locuser: 0,
-      date: "",
-      place: "",
-      totinc: 0,
-      totexp: 0,
-      inc: 0,
-      exp: 0,
-      group: 0,
-      subgroup: 0,
-    },
-  ];
+  let record = {
+    id: 0,
+    recid: 0,
+    userid: 0,
+    locuser: 0,
+    date: "",
+    place: "",
+    totinc: 0,
+    totexp: 0,
+  };
   let records = [
+    /*
     {
       groupid: 7,
       groupname: "Grupa7",
@@ -38,30 +33,38 @@ function EntryArea2() {
       subgroupid: 17,
       subgroupname: "SubGrupa17",
       amount: 0,
-    }
+    } */
   ];
   var groups = [];
   var subgroups = [];
   var newsubgroups = [];
+
   Functions.getGroups().then((value) => {
     groups = value;
     console.log("Groups are loaded: ", groups);
     Functions.getSubGroups().then((value) => {
       subgroups = value;
       console.log("Subgroups are loaded: ", subgroups);
-      Functions.removeSubgroups({subgroups, records}).then((value) => {
-        newsubgroups=value;
+      Functions.removeSubgroups({ subgroups, records }).then((value) => {
+        newsubgroups = value;
         console.log("Newsubgroups are created: ", newsubgroups);
         Functions.removeAllOptionsFromSelect("select_group").then(
           Functions.fillGroups(groups)
         );
         Functions.removeAllOptionsFromSelect("select_subgroup").then(
-          Functions.fillSubGroups(newsubgroups)
+          (value) => {
+            let tmpGroup = document.getElementById("select_group").value;
+            Functions.getUsedSubGroups({ newsubgroups, tmpGroup }).then(
+              (value) => {
+                Functions.fillSubGroups(value);
+              }
+            );
+          }
         );
       });
     });
   });
-  
+
   var tmpDate = new Date();
   var currentDate = tmpDate.toISOString().substring(0, 10);
   var tmpDateValue = "";
@@ -85,17 +88,46 @@ function EntryArea2() {
   }
 
   function changeGroup() {
-    /*
-    Functions.removeAllOptionsFromSelect("select_subgroup")
-      .then(Functions.getSubGroups)
-      .then((value) => Functions.fillSubGroups(value));
-    */
+    Functions.removeAllOptionsFromSelect("select_subgroup").then((value) => {
+      let tmpGroup = document.getElementById("select_group").value;
+      Functions.getUsedSubGroups({ newsubgroups, tmpGroup }).then((value) => {
+        Functions.fillSubGroups(value);
+      });
+    });
   }
 
   function addRecord() {
     var tmpGroup = document.getElementById("select_group").value;
     var tmpSubGroup = document.getElementById("select_subgroup").value;
-    console.log(tmpGroup, tmpSubGroup);
+    var lastRecord = records.length;
+    
+    if (lastRecord === 0) {
+      record.userid = tmpUser.id;
+      let totamount = Number(document.getElementById("totamount").value);
+      if (showIncome) {
+        record.totinc = totamount;
+        record.totexp = 0;
+      } else {
+        record.totinc = 0;
+        record.totexp = totamount;
+      };
+      record.locuser = Number(document.getElementById("select_person").value);
+      record.date = document.getElementById("select_date").value;
+      record.place = document.getElementById("place").value;
+    };
+
+    records.push({groupid: tmpGroup, subgroupid: tmpSubGroup, amount: document.getElementById("amount").value})
+  }
+
+  function totamountChange() {
+    var tmp = document.getElementById("totamount").value;
+    var tmpElement = document.getElementById("amount");
+    if (records.length === 0) {
+      tmpElement.readOnly = true;
+      tmpElement.value = tmp;
+    } else {
+      tmpElement.readOnly = false;
+    }
   }
 
   return (
@@ -151,6 +183,7 @@ function EntryArea2() {
           id="totamount"
           className="width_100 right"
           defaultValue="0.00"
+          onChange={totamountChange}
         ></input>
       </div>
 
@@ -196,7 +229,12 @@ function EntryArea2() {
         </table>
       </div>
 
-      <Child tmpUser={tmpUser} groups={groups} subgroups={subgroups} records={records}/>
+      <Child
+        tmpUser={tmpUser}
+        groups={groups}
+        subgroups={subgroups}
+        records={records}
+      />
       <Records records={records} />
     </div>
   );
@@ -249,6 +287,14 @@ class Records extends Component {
       recs.appendChild(tr);
       no = no + 1;
     });
+  }
+
+  componentDidUpdate() {
+    console.log("Records were updated");
+  }
+
+  componentWillUnmount() {
+    console.log("Records were Unmounted");
   }
 
   render() {

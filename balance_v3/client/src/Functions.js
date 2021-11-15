@@ -83,3 +83,17 @@ export function removeSubgroups(props) {
 
   return Promise.resolve(newsubgroups);
 }
+
+export function getUsedSubGroups(props) {
+  let subgroups = props.newsubgroups;
+  let groupNo = Number(props.tmpGroup);
+  let newsubgroups = [];
+
+  subgroups.forEach(subgroup => {
+    if (subgroup.groupid === groupNo) {
+      newsubgroups.push(subgroup)
+    }
+  })
+
+  return Promise.resolve(newsubgroups);
+}
