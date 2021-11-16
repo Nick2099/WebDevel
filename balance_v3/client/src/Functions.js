@@ -19,12 +19,12 @@ export function fillGroups(value) {
     var options = document.createElement("option");
     options.innerHTML = value[i].name;
     options.value = value[i].id;
-    if (value[i].id === 4) {
+    if (value[i].id === 0) {
       options.setAttribute("selected", true);
     }
     document.getElementById("select_group").appendChild(options);
   }
-  return Promise.resolve(4);
+  return Promise.resolve(0);
 }
 
 export function getSubGroups() {
@@ -49,11 +49,12 @@ export function fillSubGroups(value) {
     var options = document.createElement("option");
     options.innerHTML = value[i].name;
     options.value = value[i].id;
-    if (value[i].id === 1) {
+    if (value[i].id === 0) {
       options.setAttribute("selected", true);
     }
     document.getElementById("select_subgroup").appendChild(options);
   }
+  return Promise.resolve(0);
 }
 
 export function removeAllOptionsFromSelect(name) {

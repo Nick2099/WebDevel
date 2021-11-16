@@ -5,7 +5,7 @@ import { TmpUserContext } from "./TmpUserContext";
 import * as Functions from "./Functions";
 
 function EntryArea2() {
-  const [tmpUser, setTmpUser] = useContext(TmpUserContext);
+  const [tmpUser] = useContext(TmpUserContext);
   const [showIncome, setShowIncome] = useState(true);
 
   let record = {
@@ -18,23 +18,7 @@ function EntryArea2() {
     totinc: 0,
     totexp: 0,
   };
-  let records = [
-    /*
-    {
-      groupid: 7,
-      groupname: "Grupa7",
-      subgroupid: 1,
-      subgroupname: "SubGrupa1",
-      amount: 0,
-    },
-    {
-      groupid: 4,
-      groupname: "Grupa4",
-      subgroupid: 17,
-      subgroupname: "SubGrupa17",
-      amount: 0,
-    } */
-  ];
+  let records = [];
   var groups = [];
   var subgroups = [];
   var newsubgroups = [];
@@ -97,13 +81,14 @@ function EntryArea2() {
   }
 
   function addRecord() {
-    var tmpGroup = document.getElementById("select_group").value;
+    var tmpGroup = Number(document.getElementById("select_group").value);
     var sel1 = document.getElementById("select_group");
     var tmpGroupName= sel1.options[sel1.selectedIndex].text;
-    var tmpSubGroup = document.getElementById("select_subgroup").value;
+    var tmpSubGroup = Number(document.getElementById("select_subgroup").value);
     var sel2 = document.getElementById("select_subgroup");
     var tmpSubGroupName = sel2.options[sel2.selectedIndex].text;
     var lastRecord = records.length;
+    let isMain = false;
     console.log("names: ", tmpGroupName, tmpSubGroupName);
 
     if (lastRecord === 0) {
@@ -119,6 +104,11 @@ function EntryArea2() {
       record.locuser = Number(document.getElementById("select_person").value);
       record.date = document.getElementById("select_date").value;
       record.place = document.getElementById("place").value;
+      document.getElementById("amount").readOnly=false;
+      document.getElementById("select_date").readOnly=true;
+      document.getElementById("place").readOnly=true;
+      document.getElementById("totamount").readOnly=true;
+      isMain = true;
     }
 
     records.push({
@@ -126,7 +116,8 @@ function EntryArea2() {
       subgroupid: tmpSubGroup,
       amount: document.getElementById("amount").value,
       groupname: tmpGroupName,
-      subgroupname: tmpSubGroupName
+      subgroupname: tmpSubGroupName,
+      main: isMain
     });
 
     lastRecord = records.length - 1;
@@ -277,51 +268,7 @@ function EntryArea2() {
 
 class Records extends Component {
   componentDidMount() {
-    let records = this.props.records;
-    console.log("Records: ", records);
-    let no = 0;
-    records.forEach((element) => {
-      var tr = document.createElement("tr");
-      var td1 = document.createElement("td");
-      var label1 = document.createElement("label");
-      label1.innerHTML = element.groupname;
-      td1.appendChild(label1);
-      tr.appendChild(td1);
-      var td2 = document.createElement("td");
-      var label2 = document.createElement("label");
-      label2.innerHTML = element.subgroupname;
-      td2.appendChild(label2);
-      tr.appendChild(td2);
-      var td3 = document.createElement("td");
-      var label3 = document.createElement("label");
-      label3.innerHTML = String(element.amount);
-      td3.appendChild(label3);
-      tr.appendChild(td3);
-      var td4 = document.createElement("td");
-      var input = document.createElement("input");
-      input.defaultValue = 0;
-      input.type = "number";
-      input.id = "amount" + String(no);
-      input.className = "width_100 right";
-      td4.appendChild(input);
-      var button1 = document.createElement("button");
-      button1.className = "main";
-      button1.type = "button";
-      button1.innerHTML = "Add";
-      td4.appendChild(button1);
-      tr.appendChild(td4);
-      var td5 = document.createElement("td");
-      var button2 = document.createElement("button");
-      button2.className = "main";
-      button2.type = "button";
-      button2.innerHTML = "Delete";
-      td5.appendChild(button2);
-      tr.appendChild(td5);
-
-      var recs = document.getElementById("records");
-      recs.appendChild(tr);
-      no = no + 1;
-    });
+    console.log("Records were mounted!");
   }
 
   componentDidUpdate() {
@@ -350,13 +297,6 @@ class Child extends Component {
 
   componentDidUpdate() {
     console.log("Child was updated. Props: ", this.props);
-
-    /*
-    Functions.removeGroupsAndSubgroups(this.props.groups, this.props.subgroups, this.props.records).then((value) => {
-      Functions.fillGroups(this.props.groups);
-      Functions.fillSubGroups(this.props.subgroups);
-    });
-    */
   }
 
   componentWillUnmount() {
