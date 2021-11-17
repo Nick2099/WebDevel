@@ -1,4 +1,4 @@
-import React, { useState, useContext, Component } from "react";
+import React, { useState, useContext, useEffect, useRef, Component } from "react";
 import "./App.css";
 // import Axios from "axios";
 import { TmpUserContext } from "./TmpUserContext";
@@ -7,6 +7,8 @@ import * as Functions from "./Functions";
 function EntryArea2() {
   const [tmpUser] = useContext(TmpUserContext);
   const [showIncome, setShowIncome] = useState(true);
+  const groups = useRef([]);
+  const subgroups = useRef([]);
 
   let record = {
     id: 0,
@@ -19,21 +21,57 @@ function EntryArea2() {
     totexp: 0,
   };
   let records = [];
-  var groups = [];
-  var subgroups = [];
+  // var groups = [];
+  var newgroups = [];
+  // var subgroups = [];
   var newsubgroups = [];
 
+  var tmpDate = new Date();
+  var currentDate = tmpDate.toISOString().substring(0, 10);
+  var tmpDateValue = "";
+
+  useEffect(() => {
+    Functions.getGroups().then((value) => {
+      groups.current = value;
+      console.log("Groups are loaded: ", groups.current);
+      Functions.getSubGroups().then((value) => {
+        subgroups.current = value;
+        console.log("Subgroups are loaded: ", subgroups.current);
+        let tmp = subgroups.current;
+        Functions.removeSubgroups({ subgroups: tmp, records }).then((value) => {
+          let newsubgroups = value;
+          console.log("Newsubgroups are created: ", newsubgroups);
+          Functions.removeAllOptionsFromSelect("select_group").then(
+            Functions.fillGroups(groups.current)
+          );
+          Functions.removeAllOptionsFromSelect("select_subgroup").then(
+            (value) => {
+              let tmpGroup = document.getElementById("select_group").value;
+              Functions.getUsedSubGroups({ newsubgroups, tmpGroup }).then(
+                (value) => {
+                  Functions.fillSubGroups(value);
+                }
+              );
+            }
+          );
+        });
+      });
+    });
+  
+    }, []); //this should run only once because of empty parameters []
+
+  /*
   Functions.getGroups().then((value) => {
-    groups = value;
+    groups.current = value;
     console.log("Groups are loaded: ", groups);
     Functions.getSubGroups().then((value) => {
       subgroups = value;
       console.log("Subgroups are loaded: ", subgroups);
       Functions.removeSubgroups({ subgroups, records }).then((value) => {
-        newsubgroups = value;
+        let newsubgroups = value;
         console.log("Newsubgroups are created: ", newsubgroups);
         Functions.removeAllOptionsFromSelect("select_group").then(
-          Functions.fillGroups(groups)
+          Functions.fillGroups(groups.current)
         );
         Functions.removeAllOptionsFromSelect("select_subgroup").then(
           (value) => {
@@ -48,10 +86,7 @@ function EntryArea2() {
       });
     });
   });
-
-  var tmpDate = new Date();
-  var currentDate = tmpDate.toISOString().substring(0, 10);
-  var tmpDateValue = "";
+  */
 
   function incexpChange() {
     var selected = document.querySelector('input[name="incexp"]:checked').id;
@@ -60,6 +95,12 @@ function EntryArea2() {
     } else {
       setShowIncome(false);
     }
+    console.log("Pocetni podaci! ");
+    console.log("records: ", records);
+    console.log("groups: ", groups);
+    console.log("newgroups: ", newgroups);
+    console.log("subgroups: ", subgroups);
+    console.log("newsubgroups: ", newsubgroups);
   }
 
   function checkDate() {
@@ -83,13 +124,12 @@ function EntryArea2() {
   function addRecord() {
     var tmpGroup = Number(document.getElementById("select_group").value);
     var sel1 = document.getElementById("select_group");
-    var tmpGroupName= sel1.options[sel1.selectedIndex].text;
+    var tmpGroupName = sel1.options[sel1.selectedIndex].text;
     var tmpSubGroup = Number(document.getElementById("select_subgroup").value);
     var sel2 = document.getElementById("select_subgroup");
     var tmpSubGroupName = sel2.options[sel2.selectedIndex].text;
     var lastRecord = records.length;
     let isMain = false;
-    console.log("names: ", tmpGroupName, tmpSubGroupName);
 
     if (lastRecord === 0) {
       record.userid = tmpUser.id;
@@ -104,10 +144,10 @@ function EntryArea2() {
       record.locuser = Number(document.getElementById("select_person").value);
       record.date = document.getElementById("select_date").value;
       record.place = document.getElementById("place").value;
-      document.getElementById("amount").readOnly=false;
-      document.getElementById("select_date").readOnly=true;
-      document.getElementById("place").readOnly=true;
-      document.getElementById("totamount").readOnly=true;
+      document.getElementById("amount").readOnly = false;
+      document.getElementById("select_date").readOnly = true;
+      document.getElementById("place").readOnly = true;
+      document.getElementById("totamount").readOnly = true;
       isMain = true;
     }
 
@@ -117,7 +157,7 @@ function EntryArea2() {
       amount: document.getElementById("amount").value,
       groupname: tmpGroupName,
       subgroupname: tmpSubGroupName,
-      main: isMain
+      main: isMain,
     });
 
     lastRecord = records.length - 1;
@@ -126,22 +166,24 @@ function EntryArea2() {
   }
 
   function setNewGroupsAndSubgroups() {
-    Functions.removeSubgroups({ subgroups, records }).then((value) => {
+    Functions.removeSubgroups({ subgroups: subgroups.current, records }).then((value) => {
       newsubgroups = value;
-      console.log("Newsubgroups are created: ", newsubgroups);
-      Functions.removeAllOptionsFromSelect("select_group").then(
-        Functions.fillGroups(groups)
-      );
-      Functions.removeAllOptionsFromSelect("select_subgroup").then(
-        (value) => {
-          let tmpGroup = document.getElementById("select_group").value;
-          Functions.getUsedSubGroups({ newsubgroups, tmpGroup }).then(
-            (value) => {
-              Functions.fillSubGroups(value);
-            }
-          );
-        }
-      );
+      Functions.removeGroups({ groups: groups.current, newsubgroups }).then((value) => {
+        newgroups = value;
+        Functions.removeAllOptionsFromSelect("select_group").then(
+          Functions.fillGroups(newgroups)
+        );
+        Functions.removeAllOptionsFromSelect("select_subgroup").then(
+          (value) => {
+            let tmpGroup = document.getElementById("select_group").value;
+            Functions.getUsedSubGroups({ newsubgroups, tmpGroup }).then(
+              (value) => {
+                Functions.fillSubGroups(value);
+              }
+            );
+          }
+        );
+      });
     });
   }
 
@@ -261,7 +303,9 @@ function EntryArea2() {
         subgroups={subgroups}
         records={records}
       />
-      <Records records={records} />
+      {/* 
+      <Records records={records} groups={groups} subgroups={subgroups} />
+      */}
     </div>
   );
 }

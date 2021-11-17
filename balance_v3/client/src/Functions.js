@@ -66,10 +66,10 @@ export function removeAllOptionsFromSelect(name) {
 }
 
 export function removeSubgroups(props) {
+  console.log("==> ", props);
   let subgroups = props.subgroups;
   let records = props.records;
   let newsubgroups = [];
-
   subgroups.forEach(subgroup => {
     let inside = false;
     records.forEach(record => {
@@ -81,8 +81,20 @@ export function removeSubgroups(props) {
       newsubgroups.push(subgroup);
     }
   })
-
   return Promise.resolve(newsubgroups);
+}
+
+export function removeGroups(props) {
+  let subgroups = props.newsubgroups;
+  let groups = props.groups;
+  let newgroups = [];
+  groups.forEach(group => {
+    let inside = subgroups.some(item => item.groupid === group.id);
+    if (inside) {
+      newgroups.push(group);
+    }
+  })
+  return Promise.resolve(newgroups);
 }
 
 export function getUsedSubGroups(props) {
@@ -100,7 +112,6 @@ export function getUsedSubGroups(props) {
 }
 
 export function showNewRecord(props) {
-  console.log("props: ", props);
   var element = props.data;
   var no = props.no;
   var tr = document.createElement("tr");
