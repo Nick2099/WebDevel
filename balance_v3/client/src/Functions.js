@@ -30,12 +30,10 @@ export function fillGroups(value) {
 }
 
 export function setTmpGroup(value) {
-  let optionvalue = 0;
   Array.from(document.querySelector("#select_group").options).forEach(
     function (element) {
       if (element.value===value) {
         element.setAttribute("selected", true);
-        optionvalue = value;
       }
     }
   );
@@ -140,20 +138,22 @@ export function showNewRecord(props) {
   tr.appendChild(td2);
   var td3 = document.createElement("td");
   var label3 = document.createElement("label");
-  label3.innerHTML = String(element.amount);
+  label3.innerHTML = (element.amount).toFixed(2);
+  label3.id = "lab_amount"+String(no);
   td3.appendChild(label3);
   tr.appendChild(td3);
   var td4 = document.createElement("td");
   var input = document.createElement("input");
   input.defaultValue = 0;
   input.type = "number";
-  input.id = "amount" + String(no);
+  input.id = "inp_amount" + String(no);
   input.className = "width_100 right";
   td4.appendChild(input);
   var button1 = document.createElement("button");
   button1.className = "main";
   button1.type = "button";
   button1.innerHTML = "Add";
+  button1.id = "addButton"+String(no);
   td4.appendChild(button1);
   tr.appendChild(td4);
   var td5 = document.createElement("td");
@@ -166,4 +166,6 @@ export function showNewRecord(props) {
 
   var recs = document.getElementById("records");
   recs.appendChild(tr);
+
+  return Promise.resolve("addButton"+String(no));
 }

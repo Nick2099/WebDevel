@@ -133,15 +133,27 @@ function EntryArea() {
     records.push({
       groupid: tmpGroup,
       subgroupid: tmpSubGroup,
-      amount: document.getElementById("amount").value,
+      amount: Number(document.getElementById("amount").value),
       groupname: tmpGroupName,
       subgroupname: tmpSubGroupName,
       main: isMain,
     });
 
     lastRecord = records.length - 1;
-    Functions.showNewRecord({ data: records[lastRecord], no: lastRecord });
+    Functions.showNewRecord({ data: records[lastRecord], no: lastRecord }).then((addButton) => {
+      document.getElementById(addButton).onclick = function(){addAmount(addButton)};
+    });
     setNewGroupsAndSubgroups();
+  }
+
+  function addAmount(props) {
+    let tmpRecord = Number(props.substring(9));
+    let tmpValue = records[tmpRecord].amount;
+    let tmpAddValue = Number(document.getElementById("inp_amount"+String(tmpRecord)).value);
+    console.log(tmpValue, tmpAddValue);
+    records[tmpRecord].amount = tmpValue + tmpAddValue;
+    document.getElementById("lab_amount"+String(tmpRecord)).innerHTML = (records[tmpRecord].amount).toFixed(2);
+    document.getElementById("inp_amount"+String(tmpRecord)).value = 0;
   }
 
   function setNewGroupsAndSubgroups() {
@@ -290,33 +302,12 @@ function EntryArea() {
         subgroups={subgroups}
         records={records}
       />
-      {/* 
-      <Records records={records} groups={groups} subgroups={subgroups} />
-      */}
     </div>
   );
 }
 
-class Records extends Component {
-  componentDidMount() {
-    console.log("Records were mounted!");
-  }
-
-  componentDidUpdate() {
-    console.log("Records were updated");
-  }
-
-  componentWillUnmount() {
-    console.log("Records were Unmounted");
-  }
-
-  render() {
-    return null;
-  }
-}
-
 class Child extends Component {
-  componentDidMount() {
+  componentDidMount() { // I have to move that to useEffect that runs only once!
     console.log("Child was Mounted. Props: ", this.props);
     var opt = document.createElement("option");
     opt.innerHTML = this.props.tmpUser.name;
