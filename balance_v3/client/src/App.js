@@ -6,7 +6,7 @@ import NavigationBar from "./NavigationBar";
 import LoginArea from "./LoginArea";
 import HomeArea from './HomeArea';
 // import EntryArea from './EntryArea';
-import EntryArea2 from './EntryArea2';
+import EntryArea from './EntryArea';
 import SettingsArea from './SettingsArea';
 
 function App() {
@@ -15,7 +15,7 @@ function App() {
   function ShowEntryArea(props) {
     if (props.show==="true") {
         return(
-          <EntryArea2 />
+          <EntryArea />
         );
     } else {
       return null;

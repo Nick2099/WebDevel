@@ -1,78 +1,342 @@
-/*
-
-import {useContext} from "react";
-import './App.css';
-import {TmpUserContext} from "./TmpUserContext";
-// import {PageContentContext} from "./PageContentContext";
-import {Dropdown, Option} from "./Dropdown";
-// import* as Functions from "./Functions";
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useRef,
+  Component,
+} from "react";
+import "./App.css";
+// import Axios from "axios";
+import { TmpUserContext } from "./TmpUserContext";
+import * as Functions from "./Functions";
 
 function EntryArea() {
-  // const [tmpUser, setTmpUser] = useContext(TmpUserContext);  // CAN'T BE USED ==> ERROR
-  // const [page] = useContext(PageContentContext);
+  const [tmpUser] = useContext(TmpUserContext);
+  const [showIncome, setShowIncome] = useState(true);
+  const groups = useRef([]);
+  const subgroups = useRef([]);
+  const newsubgroups = useRef([]);
+  const choosengroup = useRef(0);
 
-  var h2 = document.createElement('h2');
-  h2.id = 'EntryArea_H2';
-  h2.innerHTML = 'Insert your entries';
-  document.getElementById("EntryArea").appendChild(h2);
-  var div_1 = document.createElement('div');
-  div_1.id = 'div_person';
-  document.getElementById("EntryArea").appendChild(div_1);
+  let record = {
+    id: 0,
+    recid: 0,
+    userid: 0,
+    locuser: 0,
+    date: "",
+    place: "",
+    totinc: 0,
+    totexp: 0,
+  };
+  let records = [];
+  // var groups = [];
+  var newgroups = [];
+  // var subgroups = [];
+  // var newsubgroups = [];
 
-  Dropdown({
-    id: "PersonDD", name: "Person",
-    options: [{value: 1, name: "Jedan"}, {value: 2, name:"Dva"}],
-    labelwidth: "100px", width: "200px", addto:"div_person", selected: 2
-  });
-
-  var div_2 = document.createElement('div');
-  div_2.id = 'div_date';
-  document.getElementById("EntryArea").appendChild(div_2);
-  var date_label = document.createElement('label');
-  date_label.id = 'date_label';
-  date_label.style.width = '100px';
-  date_label.innerHTML = "Date";
-  document.getElementById("div_date").appendChild(date_label);
   var tmpDate = new Date();
-  var currentDate = tmpDate.toISOString().substring(0,10);
-  var currentTime = tmpDate.toISOString().substring(11,16);
-  var tmpDateIso = tmpDate.toISOString();
-  var tmpDateIso10 = String(tmpDateIso.slice(0, 10));
-  console.log("tmpDate: ", tmpDate, tmpDateIso, tmpDateIso10);
-  var date_input = document.createElement('input');
-  date_input.id = "date_input";
-  date_input.type = "date";
-  date_input.name = "date_input";
-  date_input.value = currentDate;
-  date_input.style.width = "195px";
-  // date_input.addEventListener("change", checkDate);
-  document.getElementById("div_date").appendChild(date_input);
-  
-  var div_4 = document.createElement('div');
-  div_4.id = 'div_button';
-  document.getElementById("EntryArea").appendChild(div_4);
-  
-  var button_4 = document.createElement('button');
-  button_4.innerHTML = 'Add';
-  button_4.onclick = getButton_4value;
-  div_4.appendChild(button_4);
+  var currentDate = tmpDate.toISOString().substring(0, 10);
+  var tmpDateValue = "";
 
-  function getButton_4value() {
-    var selectedPerson = Option('PersonDD');
-    var selectedDate = document.getElementById("date_input").value;
-    console.log("Add:", selectedPerson, ":", selectedDate, ":", selectedDate.length);
-    if (selectedDate.length===0) {
-      alert("Date is not valid!");
+  useEffect(() => {
+    Functions.getGroups().then((value) => {
+      groups.current = value;
+      console.log("Groups are loaded: ", groups.current);
+      Functions.getSubGroups().then((value) => {
+        subgroups.current = value;
+        console.log("Subgroups are loaded: ", subgroups.current);
+        Functions.removeSubgroups({
+          subgroups: subgroups.current,
+          records,
+        }).then((value) => {
+          newsubgroups.current = value;
+          console.log("Newsubgroups are created: ", newsubgroups.current);
+          Functions.removeAllOptionsFromSelect("select_group").then(
+            Functions.fillGroups(groups.current)
+          );
+          Functions.removeAllOptionsFromSelect("select_subgroup").then(
+            (value) => {
+              let tmpGroup = document.getElementById("select_group").value;
+              Functions.getUsedSubGroups({
+                newsubgroups: newsubgroups.current,
+                tmpGroup,
+              }).then((value) => {
+                Functions.fillSubGroups(value);
+              });
+            }
+          );
+        });
+      });
+    });
+  }, []); //this runs only once because of empty parameters []
+
+  function incexpChange() {
+    var selected = document.querySelector('input[name="incexp"]:checked').id;
+    if (selected === "inc") {
+      setShowIncome(true);
     } else {
-      return {person: selectedPerson, date: selectedDate};
+      setShowIncome(false);
     }
-  } 
+  }
 
-  return null;
+  function checkDate() {
+    var tmpDate1 = String(document.getElementById("select_date").value);
+    if (tmpDate1.length === 0) {
+      document.getElementById("select_date").value = tmpDateValue;
+    } else {
+      tmpDateValue = tmpDate1;
+    }
+  }
+
+  function changeGroup() {
+    Functions.removeAllOptionsFromSelect("select_subgroup").then((value) => {
+      choosengroup.current = document.getElementById("select_group").value;
+      Functions.getUsedSubGroups({
+        newsubgroups: newsubgroups.current,
+        tmpGroup: choosengroup.current,
+      }).then((value) => {
+        Functions.fillSubGroups(value);
+      });
+    });
+  }
+
+  function addRecord() {
+    var tmpGroup = Number(document.getElementById("select_group").value);
+    var sel1 = document.getElementById("select_group");
+    var tmpGroupName = sel1.options[sel1.selectedIndex].text;
+    var tmpSubGroup = Number(document.getElementById("select_subgroup").value);
+    var sel2 = document.getElementById("select_subgroup");
+    var tmpSubGroupName = sel2.options[sel2.selectedIndex].text;
+    var lastRecord = records.length;
+    let isMain = false;
+
+    if (lastRecord === 0) {
+      record.userid = tmpUser.id;
+      let totamount = Number(document.getElementById("totamount").value);
+      if (showIncome) {
+        record.totinc = totamount;
+        record.totexp = 0;
+      } else {
+        record.totinc = 0;
+        record.totexp = totamount;
+      }
+      record.locuser = Number(document.getElementById("select_person").value);
+      record.date = document.getElementById("select_date").value;
+      record.place = document.getElementById("place").value;
+      document.getElementById("amount").readOnly = false;
+      document.getElementById("select_date").readOnly = true;
+      document.getElementById("place").readOnly = true;
+      document.getElementById("totamount").readOnly = true;
+      isMain = true;
+    }
+
+    records.push({
+      groupid: tmpGroup,
+      subgroupid: tmpSubGroup,
+      amount: document.getElementById("amount").value,
+      groupname: tmpGroupName,
+      subgroupname: tmpSubGroupName,
+      main: isMain,
+    });
+
+    lastRecord = records.length - 1;
+    Functions.showNewRecord({ data: records[lastRecord], no: lastRecord });
+    setNewGroupsAndSubgroups();
+  }
+
+  function setNewGroupsAndSubgroups() {
+    Functions.removeSubgroups({ subgroups: subgroups.current, records }).then(
+      (value) => {
+        newsubgroups.current = value;
+        Functions.removeGroups({
+          groups: groups.current,
+          newsubgroups: newsubgroups.current,
+        }).then((value) => {
+          newgroups = value;
+          Functions.removeAllOptionsFromSelect("select_group").then(
+            Functions.fillGroups(newgroups).then(
+              Functions.setTmpGroup(choosengroup.current)
+            )
+          );
+          Functions.removeAllOptionsFromSelect("select_subgroup").then(
+            (value) => {
+              let tmpGroup = document.getElementById("select_group").value;
+              Functions.getUsedSubGroups({
+                newsubgroups: newsubgroups.current,
+                tmpGroup,
+              }).then((value) => {
+                Functions.fillSubGroups(value);
+              });
+            }
+          );
+        });
+      }
+    );
+  }
+
+  function totamountChange() {
+    var tmp = document.getElementById("totamount").value;
+    var tmpElement = document.getElementById("amount");
+    if (records.length === 0) {
+      tmpElement.readOnly = true;
+      tmpElement.value = tmp;
+    } else {
+      tmpElement.readOnly = false;
+    }
+  }
+
+  return (
+    <div className="Entry" id="EntryArea">
+      <h2>Insert your entries</h2>
+      <div id="div_person">
+        <label className="width_100">Person</label>
+        <select className="width_200" id="select_person"></select>
+      </div>
+      <div id="div_radio">
+        <input
+          type="radio"
+          id="inc"
+          name="incexp"
+          value="inc"
+          onChange={incexpChange}
+          defaultChecked
+        ></input>
+        <label>Income</label>
+        <input
+          type="radio"
+          id="exp"
+          name="incexp"
+          value="exp"
+          onChange={incexpChange}
+        ></input>
+        <label>Expense</label>
+      </div>
+      <div id="div_date">
+        <label className="width_100">Date</label>
+        <input
+          id="select_date"
+          className="width_200"
+          type="date"
+          onChange={checkDate}
+          defaultValue={currentDate}
+        ></input>
+      </div>
+
+      <div id="div_entries">
+        <h2>{showIncome ? "Income" : "Expense"}</h2>
+      </div>
+
+      <div id="div_place">
+        <label className="width_100">Place</label>
+        <input type="text" id="place" className="width_200"></input>
+      </div>
+
+      <div id="div_totamount">
+        <label className="width_200">Total amount</label>
+        <input
+          type="number"
+          id="totamount"
+          className="width_100 right"
+          defaultValue="0.00"
+          onChange={totamountChange}
+        ></input>
+      </div>
+
+      <div id="table" className={showIncome ? "Hidden" : "Show-Block"}>
+        <table className="expenses ">
+          <thead>
+            <tr>
+              <th>Group</th>
+              <th>Subgroup</th>
+              <th>Amount</th>
+              <th>Add record/value</th>
+              <th>Delete record</th>
+            </tr>
+          </thead>
+          <tbody id="records">
+            <tr>
+              <td>
+                <select
+                  className="width_200"
+                  id="select_group"
+                  onChange={changeGroup}
+                ></select>
+              </td>
+              <td>
+                <select className="width_200" id="select_subgroup"></select>
+              </td>
+              <td>
+                <input
+                  type="number"
+                  id="amount"
+                  className="width_100 right"
+                  defaultValue="0.00"
+                ></input>
+              </td>
+              <td>
+                <button className="main" type="button" onClick={addRecord}>
+                  Add
+                </button>
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <Child
+        tmpUser={tmpUser}
+        groups={groups}
+        subgroups={subgroups}
+        records={records}
+      />
+      {/* 
+      <Records records={records} groups={groups} subgroups={subgroups} />
+      */}
+    </div>
+  );
 }
 
+class Records extends Component {
+  componentDidMount() {
+    console.log("Records were mounted!");
+  }
+
+  componentDidUpdate() {
+    console.log("Records were updated");
+  }
+
+  componentWillUnmount() {
+    console.log("Records were Unmounted");
+  }
+
+  render() {
+    return null;
+  }
+}
+
+class Child extends Component {
+  componentDidMount() {
+    console.log("Child was Mounted. Props: ", this.props);
+    var opt = document.createElement("option");
+    opt.innerHTML = this.props.tmpUser.name;
+    opt.value = 0;
+    opt.setAttribute("selected", true);
+    var sel = document.getElementById("select_person");
+    sel.appendChild(opt);
+  }
+
+  componentDidUpdate() {
+    console.log("Child was updated. Props: ", this.props);
+  }
+
+  componentWillUnmount() {
+    console.log("Child was Unmounted");
+  }
+
+  render() {
+    return null;
+  }
+}
 
 export default EntryArea;
-
-
-*/

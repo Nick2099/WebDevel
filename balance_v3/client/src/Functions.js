@@ -19,12 +19,26 @@ export function fillGroups(value) {
     var options = document.createElement("option");
     options.innerHTML = value[i].name;
     options.value = value[i].id;
+    /*
     if (value[i].id === 0) {
       options.setAttribute("selected", true);
     }
+*/
     document.getElementById("select_group").appendChild(options);
   }
   return Promise.resolve(0);
+}
+
+export function setTmpGroup(value) {
+  let optionvalue = 0;
+  Array.from(document.querySelector("#select_group").options).forEach(
+    function (element) {
+      if (element.value===value) {
+        element.setAttribute("selected", true);
+        optionvalue = value;
+      }
+    }
+  );
 }
 
 export function getSubGroups() {
@@ -66,21 +80,20 @@ export function removeAllOptionsFromSelect(name) {
 }
 
 export function removeSubgroups(props) {
-  console.log("==> ", props);
   let subgroups = props.subgroups;
   let records = props.records;
   let newsubgroups = [];
-  subgroups.forEach(subgroup => {
+  subgroups.forEach((subgroup) => {
     let inside = false;
-    records.forEach(record => {
+    records.forEach((record) => {
       if (subgroup.id === record.subgroupid) {
         inside = true;
-      };
+      }
     });
     if (!inside) {
       newsubgroups.push(subgroup);
     }
-  })
+  });
   return Promise.resolve(newsubgroups);
 }
 
@@ -88,12 +101,12 @@ export function removeGroups(props) {
   let subgroups = props.newsubgroups;
   let groups = props.groups;
   let newgroups = [];
-  groups.forEach(group => {
-    let inside = subgroups.some(item => item.groupid === group.id);
+  groups.forEach((group) => {
+    let inside = subgroups.some((item) => item.groupid === group.id);
     if (inside) {
       newgroups.push(group);
     }
-  })
+  });
   return Promise.resolve(newgroups);
 }
 
@@ -102,11 +115,11 @@ export function getUsedSubGroups(props) {
   let groupNo = Number(props.tmpGroup);
   let newsubgroups = [];
 
-  subgroups.forEach(subgroup => {
+  subgroups.forEach((subgroup) => {
     if (subgroup.groupid === groupNo) {
-      newsubgroups.push(subgroup)
+      newsubgroups.push(subgroup);
     }
-  })
+  });
 
   return Promise.resolve(newsubgroups);
 }
