@@ -141,19 +141,34 @@ function EntryArea() {
 
     lastRecord = records.length - 1;
     Functions.showNewRecord({ data: records[lastRecord], no: lastRecord }).then((addButton) => {
-      document.getElementById(addButton).onclick = function(){addAmount(addButton)};
+      if (lastRecord!==0) {
+        document.getElementById(addButton).onclick = function(){addAmount(addButton)};
+      }
     });
     setNewGroupsAndSubgroups();
+    recalculateFirstRecordValue();
+    document.getElementById("select_group").focus();
+  }
+
+  function recalculateFirstRecordValue() {
+    let tmpValue = Number(document.getElementById("totamount").value);
+    let noOfRecords = records.length;
+    for (let i=1; i<noOfRecords; i++) {
+      tmpValue = tmpValue - records[i].amount;
+    };
+    records[0].amount = tmpValue;
+    document.getElementById("lab_amount0").innerHTML = tmpValue.toFixed(2);
   }
 
   function addAmount(props) {
     let tmpRecord = Number(props.substring(9));
     let tmpValue = records[tmpRecord].amount;
     let tmpAddValue = Number(document.getElementById("inp_amount"+String(tmpRecord)).value);
-    console.log(tmpValue, tmpAddValue);
     records[tmpRecord].amount = tmpValue + tmpAddValue;
     document.getElementById("lab_amount"+String(tmpRecord)).innerHTML = (records[tmpRecord].amount).toFixed(2);
     document.getElementById("inp_amount"+String(tmpRecord)).value = 0;
+    recalculateFirstRecordValue();
+    document.getElementById("inp_amount"+String(tmpRecord)).focus();
   }
 
   function setNewGroupsAndSubgroups() {
@@ -261,7 +276,7 @@ function EntryArea() {
               <th>Group</th>
               <th>Subgroup</th>
               <th>Amount</th>
-              <th>Add record/value</th>
+              <th>Add record/amount</th>
               <th>Delete record</th>
             </tr>
           </thead>
@@ -287,7 +302,7 @@ function EntryArea() {
               </td>
               <td>
                 <button className="main" type="button" onClick={addRecord}>
-                  Add
+                  Add record
                 </button>
               </td>
               <td></td>

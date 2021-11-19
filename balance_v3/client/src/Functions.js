@@ -143,18 +143,20 @@ export function showNewRecord(props) {
   td3.appendChild(label3);
   tr.appendChild(td3);
   var td4 = document.createElement("td");
-  var input = document.createElement("input");
-  input.defaultValue = 0;
-  input.type = "number";
-  input.id = "inp_amount" + String(no);
-  input.className = "width_100 right";
-  td4.appendChild(input);
-  var button1 = document.createElement("button");
-  button1.className = "main";
-  button1.type = "button";
-  button1.innerHTML = "Add";
-  button1.id = "addButton"+String(no);
-  td4.appendChild(button1);
+  if (no!==0) {
+    var input = document.createElement("input");
+    input.defaultValue = 0;
+    input.type = "number";
+    input.id = "inp_amount" + String(no);
+    input.className = "width_100 right";
+    td4.appendChild(input);
+    var button1 = document.createElement("button");
+    button1.className = "main";
+    button1.type = "button";
+    button1.innerHTML = "Add";
+    button1.id = "addButton"+String(no);
+    td4.appendChild(button1);
+  }
   tr.appendChild(td4);
   var td5 = document.createElement("td");
   var button2 = document.createElement("button");
