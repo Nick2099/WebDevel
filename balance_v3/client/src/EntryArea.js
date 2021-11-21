@@ -157,7 +157,6 @@ function EntryArea() {
   }
 
   function showRecord({data, no}) {
-    console.log("data:", data, " no: ", no);
     Functions.showNewRecord({ data: data, no: no }).then(
       (tmpButton) => {
         if (no !== 0) {
@@ -184,23 +183,34 @@ function EntryArea() {
   }
 
   function delRecord(props) {
-    console.log("Delete record no.", props);
-    console.log("Records:", records);
     let tmpRecords = [];
     for (let i=0; i<records.length; i++) {
-      console.log("i: ", i, "  props: ", props);
       if (i!==Number(props)) {
         tmpRecords.push(records[i]);
       };
     };
-    console.log("tmpRecords:", tmpRecords);
     records = tmpRecords;
-    recalculateFirstRecordValue();
-    // here I have to delete all the rows for records from table
+    if (records.length>0) {
+      recalculateFirstRecordValue();
+    } else {
+      document.getElementById("amount").readOnly = true;
+      let tmpTotAmount = (Number(document.getElementById("totamount").value)).toFixed(2);
+      document.getElementById("amount").value = String(tmpTotAmount);
+      document.getElementById("select_date").readOnly = false;
+      document.getElementById("place").readOnly = false;
+      document.getElementById("totamount").readOnly = false;
+    };
+    removeRows();
+    setNewGroupsAndSubgroups();
     records.forEach((tmpRecord, index) => {
-      console.log("index: ", index, "record: ", tmpRecord);
       showRecord({ data: tmpRecord, no: index }); 
     });
+  }
+
+  function removeRows() {
+    while(document.getElementById("row_record")!=null) {
+      document.getElementById("row_record").remove();
+    };
   }
 
   function addAmount(props) {

@@ -126,6 +126,7 @@ export function showNewRecord(props) {
   var element = props.data;
   var no = props.no;
   var tr = document.createElement("tr");
+  tr.id = "row_record";
   var td1 = document.createElement("td");
   var label1 = document.createElement("label");
   label1.innerHTML = element.groupname;
