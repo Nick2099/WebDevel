@@ -39,6 +39,7 @@ function EntryArea() {
   var tmpDateValue = "";
 
   useEffect(() => {
+    getLocalUsers();
     Functions.getGroups().then((value) => {
       groups.current = value;
       console.log("Groups are loaded: ", groups.current);
@@ -69,6 +70,15 @@ function EntryArea() {
       });
     });
   }, []); //this runs only once because of empty parameters []
+
+  function getLocalUsers() {
+    var opt = document.createElement("option");
+    opt.innerHTML = tmpUser.name;
+    opt.value = 0;
+    opt.setAttribute("selected", true);
+    var sel = document.getElementById("select_person");
+    sel.appendChild(opt);
+  }
 
   function incexpChange() {
     var selected = document.querySelector('input[name="incexp"]:checked').id;
@@ -140,35 +150,76 @@ function EntryArea() {
     });
 
     lastRecord = records.length - 1;
-    Functions.showNewRecord({ data: records[lastRecord], no: lastRecord }).then((addButton) => {
-      if (lastRecord!==0) {
-        document.getElementById(addButton).onclick = function(){addAmount(addButton)};
-      }
-    });
+    showRecord({ data: records[lastRecord], no: lastRecord });
     setNewGroupsAndSubgroups();
     recalculateFirstRecordValue();
     document.getElementById("select_group").focus();
   }
 
+  function showRecord({data, no}) {
+    console.log("data:", data, " no: ", no);
+    Functions.showNewRecord({ data: data, no: no }).then(
+      (tmpButton) => {
+        if (no !== 0) {
+          document.getElementById("addButton" + tmpButton).onclick =
+            function () {
+              addAmount(tmpButton);
+            };
+        };
+        document.getElementById("delButton" + tmpButton).onclick = function () {
+          delRecord(tmpButton);
+        };
+      }
+    );
+  }
+
   function recalculateFirstRecordValue() {
     let tmpValue = Number(document.getElementById("totamount").value);
     let noOfRecords = records.length;
-    for (let i=1; i<noOfRecords; i++) {
+    for (let i = 1; i < noOfRecords; i++) {
       tmpValue = tmpValue - records[i].amount;
-    };
+    }
     records[0].amount = tmpValue;
     document.getElementById("lab_amount0").innerHTML = tmpValue.toFixed(2);
   }
 
-  function addAmount(props) {
-    let tmpRecord = Number(props.substring(9));
-    let tmpValue = records[tmpRecord].amount;
-    let tmpAddValue = Number(document.getElementById("inp_amount"+String(tmpRecord)).value);
-    records[tmpRecord].amount = tmpValue + tmpAddValue;
-    document.getElementById("lab_amount"+String(tmpRecord)).innerHTML = (records[tmpRecord].amount).toFixed(2);
-    document.getElementById("inp_amount"+String(tmpRecord)).value = 0;
+  function delRecord(props) {
+    console.log("Delete record no.", props);
+    console.log("Records:", records);
+    let tmpRecords = [];
+    for (let i=0; i<records.length; i++) {
+      console.log("i: ", i, "  props: ", props);
+      if (i!==Number(props)) {
+        tmpRecords.push(records[i]);
+      };
+    };
+    console.log("tmpRecords:", tmpRecords);
+    records = tmpRecords;
     recalculateFirstRecordValue();
-    document.getElementById("inp_amount"+String(tmpRecord)).focus();
+    // here I have to delete all the rows for records from table
+    records.forEach((tmpRecord, index) => {
+      console.log("index: ", index, "record: ", tmpRecord);
+      showRecord({ data: tmpRecord, no: index }); 
+    });
+  }
+
+  function addAmount(props) {
+    let tmpRecord = Number(props);
+    let tmpValue = records[tmpRecord].amount;
+    let tmpAddValue = Number(
+      document.getElementById("inp_amount" + String(tmpRecord)).value
+    );
+    let tmpRest = Number(document.getElementById("lab_amount0").innerHTML);
+    if (tmpAddValue < tmpRest) {
+      records[tmpRecord].amount = tmpValue + tmpAddValue;
+    } else {
+      records[tmpRecord].amount = tmpValue + tmpRest;
+    }
+    document.getElementById("lab_amount" + String(tmpRecord)).innerHTML =
+      records[tmpRecord].amount.toFixed(2);
+    document.getElementById("inp_amount" + String(tmpRecord)).value = 0;
+    recalculateFirstRecordValue();
+    document.getElementById("inp_amount" + String(tmpRecord)).focus();
   }
 
   function setNewGroupsAndSubgroups() {
@@ -311,25 +362,15 @@ function EntryArea() {
         </table>
       </div>
 
-      <Child
-        tmpUser={tmpUser}
-        groups={groups}
-        subgroups={subgroups}
-        records={records}
-      />
+      <Child tmpUser={tmpUser} />
     </div>
   );
 }
 
 class Child extends Component {
-  componentDidMount() { // I have to move that to useEffect that runs only once!
+  componentDidMount() {
+    // here I can put something that have to be done after component did mount
     console.log("Child was Mounted. Props: ", this.props);
-    var opt = document.createElement("option");
-    opt.innerHTML = this.props.tmpUser.name;
-    opt.value = 0;
-    opt.setAttribute("selected", true);
-    var sel = document.getElementById("select_person");
-    sel.appendChild(opt);
   }
 
   componentDidUpdate() {

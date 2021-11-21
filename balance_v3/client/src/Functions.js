@@ -163,11 +163,12 @@ export function showNewRecord(props) {
   button2.className = "main";
   button2.type = "button";
   button2.innerHTML = "Delete";
+  button2.id = "delButton"+String(no);
   td5.appendChild(button2);
   tr.appendChild(td5);
 
   var recs = document.getElementById("records");
   recs.appendChild(tr);
 
-  return Promise.resolve("addButton"+String(no));
+  return Promise.resolve(String(no));
 }
