@@ -6,7 +6,7 @@ import React, {
   Component,
 } from "react";
 import "./App.css";
-// import Axios from "axios";
+import Axios from "axios";
 import { TmpUserContext } from "./TmpUserContext";
 import * as Functions from "./Functions";
 
@@ -119,57 +119,65 @@ function EntryArea() {
     var tmpSubGroupName = sel2.options[sel2.selectedIndex].text;
     var lastRecord = records.length;
     let isMain = false;
+    let totamount = Number(document.getElementById("totamount").value);
+    document.getElementById("totamount").value = totamount.toFixed(2);
 
-    if (lastRecord === 0) {
-      record.userid = tmpUser.id;
-      let totamount = Number(document.getElementById("totamount").value);
-      if (showIncome) {
-        record.totinc = totamount;
-        record.totexp = 0;
-      } else {
-        record.totinc = 0;
-        record.totexp = totamount;
+    if (totamount <= 0) {
+      alert("Total amount can't be smaller or equal to 0 !");
+    } else {
+      if (lastRecord === 0) {
+        record.userid = tmpUser.id;
+        if (showIncome) {
+          record.totinc = totamount;
+          record.totexp = 0;
+        } else {
+          record.totinc = 0;
+          record.totexp = totamount;
+        }
+        record.locuser = Number(document.getElementById("select_person").value);
+        record.date = document.getElementById("select_date").value;
+        record.place = document.getElementById("place").value;
+        document.getElementById("amount").readOnly = false;
+        document.getElementById("select_date").readOnly = true;
+        document.getElementById("place").readOnly = true;
+        document.getElementById("totamount").readOnly = true;
+        isMain = true;
       }
-      record.locuser = Number(document.getElementById("select_person").value);
-      record.date = document.getElementById("select_date").value;
-      record.place = document.getElementById("place").value;
-      document.getElementById("amount").readOnly = false;
-      document.getElementById("select_date").readOnly = true;
-      document.getElementById("place").readOnly = true;
-      document.getElementById("totamount").readOnly = true;
-      isMain = true;
+      let tmpAmount = Number(document.getElementById("amount").value);
+      if (records.length > 0) {
+        let tmpRest = Number(document.getElementById("lab_amount0").innerHTML);
+        if (tmpAmount > tmpRest) {
+          tmpAmount = tmpRest;
+        }
+      }
+      records.push({
+        groupid: tmpGroup,
+        subgroupid: tmpSubGroup,
+        amount: tmpAmount,
+        groupname: tmpGroupName,
+        subgroupname: tmpSubGroupName,
+        main: isMain,
+      });
+      lastRecord = records.length - 1;
+      showRecord({ data: records[lastRecord], no: lastRecord });
+      setNewGroupsAndSubgroups();
+      recalculateFirstRecordValue();
+      document.getElementById("select_group").focus();
+      document.getElementById("amount").value = (0).toFixed(2);
     }
-
-    records.push({
-      groupid: tmpGroup,
-      subgroupid: tmpSubGroup,
-      amount: Number(document.getElementById("amount").value),
-      groupname: tmpGroupName,
-      subgroupname: tmpSubGroupName,
-      main: isMain,
-    });
-
-    lastRecord = records.length - 1;
-    showRecord({ data: records[lastRecord], no: lastRecord });
-    setNewGroupsAndSubgroups();
-    recalculateFirstRecordValue();
-    document.getElementById("select_group").focus();
   }
 
-  function showRecord({data, no}) {
-    Functions.showNewRecord({ data: data, no: no }).then(
-      (tmpButton) => {
-        if (no !== 0) {
-          document.getElementById("addButton" + tmpButton).onclick =
-            function () {
-              addAmount(tmpButton);
-            };
-        };
-        document.getElementById("delButton" + tmpButton).onclick = function () {
-          delRecord(tmpButton);
+  function showRecord({ data, no }) {
+    Functions.showNewRecord({ data: data, no: no }).then((tmpButton) => {
+      if (no !== 0) {
+        document.getElementById("addButton" + tmpButton).onclick = function () {
+          addAmount(tmpButton);
         };
       }
-    );
+      document.getElementById("delButton" + tmpButton).onclick = function () {
+        delRecord(tmpButton);
+      };
+    });
   }
 
   function recalculateFirstRecordValue() {
@@ -184,33 +192,35 @@ function EntryArea() {
 
   function delRecord(props) {
     let tmpRecords = [];
-    for (let i=0; i<records.length; i++) {
-      if (i!==Number(props)) {
+    for (let i = 0; i < records.length; i++) {
+      if (i !== Number(props)) {
         tmpRecords.push(records[i]);
-      };
-    };
+      }
+    }
     records = tmpRecords;
-    if (records.length>0) {
+    if (records.length > 0) {
       recalculateFirstRecordValue();
     } else {
       document.getElementById("amount").readOnly = true;
-      let tmpTotAmount = (Number(document.getElementById("totamount").value)).toFixed(2);
+      let tmpTotAmount = Number(
+        document.getElementById("totamount").value
+      ).toFixed(2);
       document.getElementById("amount").value = String(tmpTotAmount);
       document.getElementById("select_date").readOnly = false;
       document.getElementById("place").readOnly = false;
       document.getElementById("totamount").readOnly = false;
-    };
+    }
     removeRows();
     setNewGroupsAndSubgroups();
     records.forEach((tmpRecord, index) => {
-      showRecord({ data: tmpRecord, no: index }); 
+      showRecord({ data: tmpRecord, no: index });
     });
   }
 
   function removeRows() {
-    while(document.getElementById("row_record")!=null) {
+    while (document.getElementById("row_record") != null) {
       document.getElementById("row_record").remove();
-    };
+    }
   }
 
   function addAmount(props) {
@@ -224,6 +234,10 @@ function EntryArea() {
       records[tmpRecord].amount = tmpValue + tmpAddValue;
     } else {
       records[tmpRecord].amount = tmpValue + tmpRest;
+    }
+    if (records[tmpRecord].amount < 0) {
+      alert("Amount can't be less than 0! It'll be changed to 0.");
+      records[tmpRecord].amount = 0;
     }
     document.getElementById("lab_amount" + String(tmpRecord)).innerHTML =
       records[tmpRecord].amount.toFixed(2);
@@ -263,14 +277,24 @@ function EntryArea() {
   }
 
   function totamountChange() {
-    var tmp = document.getElementById("totamount").value;
+    var tmp = Number(document.getElementById("totamount").value);
+    // document.getElementById("totamount").value = tmp.toFixed(2);
     var tmpElement = document.getElementById("amount");
     if (records.length === 0) {
       tmpElement.readOnly = true;
-      tmpElement.value = tmp;
+      tmpElement.value = tmp.toFixed(2);
     } else {
       tmpElement.readOnly = false;
     }
+  }
+
+  function saveRecord() {
+    if (!showIncome && records.length>0) {
+      console.log("Records for expense/s have to be saved.....");
+      // records have to be saved
+    } else {
+      console.log("Nothing to save!");
+    };
   }
 
   return (
@@ -330,7 +354,7 @@ function EntryArea() {
         ></input>
       </div>
 
-      <div id="table" className={showIncome ? "Hidden" : "Show-Block"}>
+      <div id="table_expenses" className={showIncome ? "Hidden" : "Show-Block"}>
         <table className="expenses ">
           <thead>
             <tr>
@@ -372,6 +396,11 @@ function EntryArea() {
         </table>
       </div>
 
+      <div>
+        <button className="main" type="button" onClick={saveRecord}>
+          Save
+        </button>
+      </div>
       <Child tmpUser={tmpUser} />
     </div>
   );
@@ -380,15 +409,15 @@ function EntryArea() {
 class Child extends Component {
   componentDidMount() {
     // here I can put something that have to be done after component did mount
-    console.log("Child was Mounted. Props: ", this.props);
+    console.log("Child was Mounted.");
   }
 
   componentDidUpdate() {
-    console.log("Child was updated. Props: ", this.props);
+    console.log("Child was updated.");
   }
 
   componentWillUnmount() {
-    console.log("Child was Unmounted");
+    console.log("Child was Unmounted.");
   }
 
   render() {
