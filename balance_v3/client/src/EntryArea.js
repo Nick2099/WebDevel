@@ -289,12 +289,18 @@ function EntryArea() {
   }
 
   function saveRecord() {
-    if (!showIncome && records.length>0) {
+    if (!showIncome && records.length > 0) {
       console.log("Records for expense/s have to be saved.....");
       // records have to be saved
+      Axios.post("http://localhost:3001/saverecordsexp", {
+        record: record,
+        records: records
+      }).then(function (response) {
+        console.log("saveRecord response: ", response);
+      });
     } else {
       console.log("Nothing to save!");
-    };
+    }
   }
 
   return (
@@ -341,6 +347,7 @@ function EntryArea() {
       <div id="div_place">
         <label className="width_100">Place</label>
         <input type="text" id="place" className="width_200"></input>
+        {/* autocomplete="off" */}
       </div>
 
       <div id="div_totamount">
