@@ -113,11 +113,11 @@ app.get("/userid", (req, res) => {
 app.post("/saverecordsexp", (req, res) => {
   const record = req.body.record;
   const records = req.body.records;
-  console.log(record, records);
+  console.log("record: ", record, " records: ",records);
 
   db.query("SELECT MAX(recid) AS lastrecid FROM records", (err, rows) => {
     console.log("err: ", err);
-    console.log("result: ", rows);
+    console.log("rows: ", rows);
     let lastrecid = rows[0].lastrecid;
     console.log("last recid: ", lastrecid);
     if (lastrecid === null) {
@@ -127,7 +127,7 @@ app.post("/saverecordsexp", (req, res) => {
     record.recid = lastrecid;
     records.forEach((tmpRecord, index) => {
       db.query(
-        "INSERT INTO mybalance.records (recid,userid,locuser,date,place,totinc,totexp,inc,exp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO mybalance.records (recid,userid,locuser,date,place,totinc,totexp,inc,exp,gr,sgr) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
         [
           record.recid,
           record.userid,
@@ -137,15 +137,20 @@ app.post("/saverecordsexp", (req, res) => {
           0,
           record.totexp,
           0,
-          tmpRecord.amount
-          // tmpRecord.groupid,
-          // tmpRecord.subgroupid
-        ], (err, result) => {
-			console.log("err: ", err);
-			console.log("result: ", result);
-		}
+          tmpRecord.amount,
+          tmpRecord.groupid,
+          tmpRecord.subgroupid,
+        ],
+        (err, result) => {
+          console.log("err: ", err);
+          console.log("result: ", result);
+          if (err) {
+            res.send({ status: "error" });
+          } else {
+            res.send({ status: "ok" });
+          }
+        }
       );
-
     });
   });
 });

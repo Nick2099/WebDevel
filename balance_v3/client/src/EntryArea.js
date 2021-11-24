@@ -297,6 +297,32 @@ function EntryArea() {
         records: records
       }).then(function (response) {
         console.log("saveRecord response: ", response);
+        // setting value to 0
+        record = {
+          id: 0,
+          recid: 0,
+          userid: 0,
+          locuser: 0,
+          date: "",
+          place: "",
+          totinc: 0,
+          totexp: 0,
+        };
+        records = [];
+
+        document.getElementById("place").value="";
+        document.getElementById("totamount").value=(0).toFixed(2);
+        document.getElementById("amount").readOnly = true;
+        document.getElementById("select_date").readOnly = false;
+        document.getElementById("place").readOnly = false;
+        document.getElementById("totamount").readOnly = false;
+
+        removeRows();
+        setNewGroupsAndSubgroups();
+        records.forEach((tmpRecord, index) => {
+          showRecord({ data: tmpRecord, no: index });
+        });
+    
       });
     } else {
       console.log("Nothing to save!");
