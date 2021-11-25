@@ -290,13 +290,14 @@ function EntryArea() {
 
   function saveRecord() {
     if (!showIncome && records.length > 0) {
-      console.log("Records for expense/s have to be saved.....");
-      // records have to be saved
       Axios.post("http://localhost:3001/saverecordsexp", {
         record: record,
         records: records
       }).then(function (response) {
-        console.log("saveRecord response: ", response);
+        console.log("saveRecord response: ", response.data);
+        if (response.data.status==="Error") {
+          alert(response.data.error);
+        };
         // setting value to 0
         record = {
           id: 0,

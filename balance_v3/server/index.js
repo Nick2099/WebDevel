@@ -113,46 +113,48 @@ app.get("/userid", (req, res) => {
 app.post("/saverecordsexp", (req, res) => {
   const record = req.body.record;
   const records = req.body.records;
-  console.log("record: ", record, " records: ",records);
+  let tmperr = "";
 
   db.query("SELECT MAX(recid) AS lastrecid FROM records", (err, rows) => {
-    console.log("err: ", err);
-    console.log("rows: ", rows);
-    let lastrecid = rows[0].lastrecid;
-    console.log("last recid: ", lastrecid);
-    if (lastrecid === null) {
-      lastrecid = 0;
-    }
-    lastrecid++;
-    record.recid = lastrecid;
-    records.forEach((tmpRecord, index) => {
-      db.query(
-        "INSERT INTO mybalance.records (recid,userid,locuser,date,place,totinc,totexp,inc,exp,gr,sgr) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-        [
-          record.recid,
-          record.userid,
-          record.locuser,
-          record.date,
-          record.place,
-          0,
-          record.totexp,
-          0,
-          tmpRecord.amount,
-          tmpRecord.groupid,
-          tmpRecord.subgroupid,
-        ],
-        (err, result) => {
-          console.log("err: ", err);
-          console.log("result: ", result);
-          if (err) {
-            res.send({ status: "error" });
-          } else {
-            res.send({ status: "ok" });
+    if (err) {
+      tmperr = "Error by getting max recid!";
+    } else {
+      let lastrecid = rows[0].lastrecid;
+      if (lastrecid === null) {
+        lastrecid = 0;
+      }
+      lastrecid++;
+      record.recid = lastrecid;
+      records.forEach((tmpRecord, index) => {
+        db.query(
+          "INSERT INTO mybalance.records (recid,userid,locuser,date,place,totinc,totexp,inc,exp,gr,sgr) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+          [
+            record.recid,
+            record.userid,
+            record.locuser,
+            record.date,
+            record.place,
+            0,
+            record.totexp,
+            0,
+            tmpRecord.amount,
+            tmpRecord.groupid,
+            tmpRecord.subgroupid,
+          ],
+          (err, result) => {
+            if (tmperr==="") {
+              if (err) {tmperr="Error by inserting data into 'records' at index " + String(index)};
+            };
           }
-        }
-      );
-    });
+        );
+      });  
+    }
   });
+  if (tmperr==="") {
+    res.send({status: "OK"});
+  } else {
+    res.send({status: "Error", error: tmperr});
+  };
 });
 
 app.listen(3001, () => {
