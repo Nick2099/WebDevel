@@ -130,16 +130,20 @@ app.post("/saverecordsexp", async (req, res) => {
   async function insertRecords({ record, records, nextrecid }) {
     console.log("insertRecords! ==> record , records, nextrecid: ", nextrecid);
     return new Promise((resolve) => {
-      records.forEach((tmpRecord, index) => {
+      records.forEach(async (tmpRecord, index) => {
+        console.log("tmpRecord: ", tmpRecord);
         try {
-          let inserting = insertRecords({
+          await insertRecord({
             record: record,
             tmpRecord: tmpRecord,
-            nextrecid: nextrecid
+            nextrecid: nextrecid})
+          .then((inserting) => {
+            console.log("inserting: ", inserting);
+            if (inserting.status == "Error")
+              throw "Error by inserting record with index " + String(index);  
           });
-          if (inserting.status == "Error")
-            throw "Error by inserting record with index " + String(index);
         } catch (error) {
+          console.log("catch (error): ", error);
           resolve({ status: "Error", error: error });
         }
       });
