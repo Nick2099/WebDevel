@@ -110,51 +110,137 @@ app.get("/userid", (req, res) => {
   );
 });
 
-app.post("/saverecordsexp", (req, res) => {
+app.post("/saverecordsexp", async (req, res) => {
   const record = req.body.record;
   const records = req.body.records;
   let tmperr = "";
 
-  db.query("SELECT MAX(recid) AS lastrecid FROM records", (err, rows) => {
-    if (err) {
-      tmperr = "Error by getting max recid!";
-    } else {
-      let lastrecid = rows[0].lastrecid;
-      if (lastrecid === null) {
-        lastrecid = 0;
-      }
-      lastrecid++;
-      record.recid = lastrecid;
+  function nextRecID() {
+    return new Promise((resolve) => {
+      db.query("SELECT MAX(recid) AS lastrecid FROM records", (err, rows) => {
+        if (err) {
+          resolve({ status: "Error" });
+        } else {
+          resolve({ status: "OK", no: rows[0].lastrecid + 1 });
+        }
+      });
+    });
+  }
+
+  async function insertRecords({ record, records, nextrecid }) {
+    console.log("insertRecords! ==> record , records, nextrecid: ", nextrecid);
+    return new Promise((resolve) => {
       records.forEach((tmpRecord, index) => {
-        db.query(
-          "INSERT INTO mybalance.records (recid,userid,locuser,date,place,totinc,totexp,inc,exp,gr,sgr) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-          [
-            record.recid,
-            record.userid,
-            record.locuser,
-            record.date,
-            record.place,
-            0,
-            record.totexp,
-            0,
-            tmpRecord.amount,
-            tmpRecord.groupid,
-            tmpRecord.subgroupid,
-          ],
-          (err, result) => {
-            if (tmperr==="") {
-              if (err) {tmperr="Error by inserting data into 'records' at index " + String(index)};
-            };
+        try {
+          let inserting = insertRecords({
+            record: record,
+            tmpRecord: tmpRecord,
+            nextrecid: nextrecid
+          });
+          if (inserting.status == "Error")
+            throw "Error by inserting record with index " + String(index);
+        } catch (error) {
+          resolve({ status: "Error", error: error });
+        }
+      });
+    });
+  }
+
+  async function insertRecord({ record, tmpRecord, nextrecid }) {
+    console.log(
+      "insertRecord! ===> ==> record , tmpRecord, nextrecid: ",
+      nextrecid
+    );
+    return new Promise((resolve) => {
+      db.query(
+        "INSERT INTO mybalance.recordss (recid,userid,locuser,date,place,totinc,totexp,inc,exp,gr,sgr) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          nextrecid,
+          record.userid,
+          record.locuser,
+          record.date,
+          record.place,
+          0,
+          record.totexp,
+          0,
+          tmpRecord.amount,
+          tmpRecord.groupid,
+          tmpRecord.subgroupid,
+        ],
+        (error, result) => {
+          if (error) {
+            resolve({ status: "Error", error: error });
+          } else {
+            resolve({ status: "OK" });
           }
-        );
-      });  
+        }
+      );
+    });
+  }
+
+  /*
+  function insertRecords({ record, records, nextrecid }) {
+    console.log("record , records, nextrecid: ", nextrecid);
+    return new Promise((resolve) => {
+      let tmperror = "";
+      try {
+        records.forEach((tmpRecord, index) => {
+          console.log("index:", index, " tmpRecord");
+          db.query(
+            "INSERT INTO mybalance.recordss (recid,userid,locuser,date,place,totinc,totexp,inc,exp,gr,sgr) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            [
+              nextrecid,
+              record.userid,
+              record.locuser,
+              record.date,
+              record.place,
+              0,
+              record.totexp,
+              0,
+              tmpRecord.amount,
+              tmpRecord.groupid,
+              tmpRecord.subgroupid,
+            ],
+            (err, result) => {
+              console.log("index before: ", index, " tmperror: ", tmperror);
+              if (err) {
+                tmperror = { status: "Error", err: err };
+              };
+              console.log("index after : ", index, " tmperror: ", tmperror);
+            }
+          );
+        });  
+        // resolve({ status: "OK", inserted: records.length });
+      } catch (err) {
+      } finally {
+        console.log("tmperror: ", tmperror);
+        if (tmperror!="") {
+          resolve({ status: "Error", err: err });
+        } else {
+          resolve({ status: "OK", inserted: records.length });
+        }
+      };
+    });
+  }
+  */
+
+  let nextrecid = await nextRecID();
+  console.log("nextrecid: ", nextrecid);
+  await insertRecords({
+    record: record,
+    records: records,
+    nextrecid: nextrecid.no,
+  }).then((insertedrecords) => {
+    console.log("insertrecords: ", insertedrecords);
+    res.send(insertedrecords);
+    /*
+    if (insertrecords.status === "OK") {
+      res.send({ status: "OK", inserted: insertrecords.inserted });
+    } else {
+      res.send({ status: "Error", err: insertrecords.err });
     }
+    */
   });
-  if (tmperr==="") {
-    res.send({status: "OK"});
-  } else {
-    res.send({status: "Error", error: tmperr});
-  };
 });
 
 app.listen(3001, () => {
