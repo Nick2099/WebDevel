@@ -152,7 +152,6 @@ app.post("/saverecordsexp", async (req, res) => {
           resolve({ status: "Error", error: error });
         }
       });
-      resolve({status: "OK"});
     });
   }
 
