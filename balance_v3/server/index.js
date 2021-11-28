@@ -162,7 +162,7 @@ app.post("/saverecordsexp", async (req, res) => {
     );
     return new Promise((resolve) => {
       db.query(
-        "INSERT INTO mybalance.recordss (recid,userid,locuser,date,place,totinc,totexp,inc,exp,gr,sgr) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO mybalance.records (recid,userid,locuser,date,place,totinc,totexp,inc,exp,gr,sgr) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
         [
           nextrecid,
           record.userid,
