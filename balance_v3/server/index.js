@@ -45,10 +45,8 @@ app.post("/register", (req, res) => {
                 '"',
               (err, result) => {
                 if (err) {
-                  // console.log(err);
                   res.send({ status: "error", error: "NOT_FOUND" });
                 } else {
-                  // console.log("result", result[0]);
                   res.send({ status: "ok", id: result[0].id });
                 }
               }
@@ -127,39 +125,20 @@ app.post("/saverecordsexp", async (req, res) => {
     });
   }
 
-  async function insertRecords({ record, records, nextrecid }) {
-    console.log(
-      "insertRecords! ===> 0 record , records, nextrecid: ",
-      nextrecid
-    );
-    return new Promise((resolve) => {
-      records.forEach(async (tmpRecord, index) => {
-        console.log("insertRecords! ===> 1");
-        try {
-          await insertRecord({
-            record: record,
-            tmpRecord: tmpRecord,
-            nextrecid: nextrecid,
-          }).then(async (inserting) => {
-            console.log("insertRecords! ===> 2 inserting: ", inserting);
-            if (inserting.status == "Error") {
-              console.log("insertRecords! ===> 3 inserting.status = 'Error'");
-              throw "Error by inserting record with index " + String(index);
-            }
-          });
-        } catch (error) {
-          console.log("insertRecords! ===> 4 catch (error)");
-          resolve({ status: "Error", error: error });
-        }
+  const insertRecords = async ({ record, records, nextrecid }) => {
+    const allAsyncResults = [];
+    for (const tmpRecord of records) {
+      const asyncResult = await insertRecord({
+        record: record,
+        tmpRecord: tmpRecord,
+        nextrecid: nextrecid,
       });
-    });
-  }
+      allAsyncResults.push(asyncResult);
+    }
+    return allAsyncResults;
+  };
 
   async function insertRecord({ record, tmpRecord, nextrecid }) {
-    console.log(
-      "insertRecord! ===> ===> 0 record , tmpRecord, nextrecid: ",
-      nextrecid
-    );
     return new Promise((resolve) => {
       db.query(
         "INSERT INTO mybalance.records (recid,userid,locuser,date,place,totinc,totexp,inc,exp,gr,sgr) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
@@ -177,7 +156,6 @@ app.post("/saverecordsexp", async (req, res) => {
           tmpRecord.subgroupid,
         ],
         (error, result) => {
-          console.log("insertRecord! ===> ===> 1 error, result");
           if (error) {
             resolve({ status: "Error", error: error.sqlMessage });
           } else {
@@ -186,18 +164,24 @@ app.post("/saverecordsexp", async (req, res) => {
         }
       );
     });
-    console.log("insertRecord! ===> ===> 2 record , tmpRecord, nextrecid: ");
   }
 
   let nextrecid = await nextRecID();
-  console.log("nextrecid: ", nextrecid);
   await insertRecords({
     record: record,
     records: records,
     nextrecid: nextrecid.no,
-  }).then((insertedrecords) => {
-    console.log("insertrecords: ", insertedrecords);
-    res.send(insertedrecords);
+  }).then((status) => {
+    let tmpStatus = { status: "OK" };
+    for (const item of status) {
+      if (item.status === "Error") {
+        tmpStatus = {
+          status: "Error",
+          error: "Error by inserting records in records",
+        };
+      }
+    }
+    res.send(tmpStatus);
   });
 });
 
