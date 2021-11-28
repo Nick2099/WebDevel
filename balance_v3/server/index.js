@@ -128,31 +128,37 @@ app.post("/saverecordsexp", async (req, res) => {
   }
 
   async function insertRecords({ record, records, nextrecid }) {
-    console.log("insertRecords! ==> record , records, nextrecid: ", nextrecid);
+    console.log(
+      "insertRecords! ===> 0 record , records, nextrecid: ",
+      nextrecid
+    );
     return new Promise((resolve) => {
       records.forEach(async (tmpRecord, index) => {
-        console.log("tmpRecord: ", tmpRecord);
+        console.log("insertRecords! ===> 1");
         try {
           await insertRecord({
             record: record,
             tmpRecord: tmpRecord,
-            nextrecid: nextrecid})
-          .then((inserting) => {
-            console.log("inserting: ", inserting);
-            if (inserting.status == "Error")
-              throw "Error by inserting record with index " + String(index);  
+            nextrecid: nextrecid,
+          }).then(async (inserting) => {
+            console.log("insertRecords! ===> 2 inserting: ", inserting);
+            if (inserting.status == "Error") {
+              console.log("insertRecords! ===> 3 inserting.status = 'Error'");
+              throw "Error by inserting record with index " + String(index);
+            }
           });
         } catch (error) {
-          console.log("catch (error): ", error);
+          console.log("insertRecords! ===> 4 catch (error)");
           resolve({ status: "Error", error: error });
         }
       });
+      resolve({status: "OK"});
     });
   }
 
   async function insertRecord({ record, tmpRecord, nextrecid }) {
     console.log(
-      "insertRecord! ===> ==> record , tmpRecord, nextrecid: ",
+      "insertRecord! ===> ===> 0 record , tmpRecord, nextrecid: ",
       nextrecid
     );
     return new Promise((resolve) => {
@@ -172,61 +178,17 @@ app.post("/saverecordsexp", async (req, res) => {
           tmpRecord.subgroupid,
         ],
         (error, result) => {
+          console.log("insertRecord! ===> ===> 1 error, result");
           if (error) {
-            resolve({ status: "Error", error: error });
+            resolve({ status: "Error", error: error.sqlMessage });
           } else {
             resolve({ status: "OK" });
           }
         }
       );
     });
+    console.log("insertRecord! ===> ===> 2 record , tmpRecord, nextrecid: ");
   }
-
-  /*
-  function insertRecords({ record, records, nextrecid }) {
-    console.log("record , records, nextrecid: ", nextrecid);
-    return new Promise((resolve) => {
-      let tmperror = "";
-      try {
-        records.forEach((tmpRecord, index) => {
-          console.log("index:", index, " tmpRecord");
-          db.query(
-            "INSERT INTO mybalance.recordss (recid,userid,locuser,date,place,totinc,totexp,inc,exp,gr,sgr) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-            [
-              nextrecid,
-              record.userid,
-              record.locuser,
-              record.date,
-              record.place,
-              0,
-              record.totexp,
-              0,
-              tmpRecord.amount,
-              tmpRecord.groupid,
-              tmpRecord.subgroupid,
-            ],
-            (err, result) => {
-              console.log("index before: ", index, " tmperror: ", tmperror);
-              if (err) {
-                tmperror = { status: "Error", err: err };
-              };
-              console.log("index after : ", index, " tmperror: ", tmperror);
-            }
-          );
-        });  
-        // resolve({ status: "OK", inserted: records.length });
-      } catch (err) {
-      } finally {
-        console.log("tmperror: ", tmperror);
-        if (tmperror!="") {
-          resolve({ status: "Error", err: err });
-        } else {
-          resolve({ status: "OK", inserted: records.length });
-        }
-      };
-    });
-  }
-  */
 
   let nextrecid = await nextRecID();
   console.log("nextrecid: ", nextrecid);
@@ -237,13 +199,6 @@ app.post("/saverecordsexp", async (req, res) => {
   }).then((insertedrecords) => {
     console.log("insertrecords: ", insertedrecords);
     res.send(insertedrecords);
-    /*
-    if (insertrecords.status === "OK") {
-      res.send({ status: "OK", inserted: insertrecords.inserted });
-    } else {
-      res.send({ status: "Error", err: insertrecords.err });
-    }
-    */
   });
 });
 
