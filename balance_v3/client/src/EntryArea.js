@@ -289,15 +289,59 @@ function EntryArea() {
   }
 
   function saveRecord() {
-    if (!showIncome && records.length > 0) {
-      Axios.post("http://localhost:3001/saverecordsexp", {
+    if (!showIncome) { // saving EXPENSE
+      if (records.length > 0) { // if there is something to save
+        Axios.post("http://localhost:3001/saverecordsexp", {
+          record: record,
+          records: records,
+        }).then(function (response) {
+          console.log("saveRecordsExp response: ", response.data);
+          if (response.data.status === "Error") {
+            alert(response.data.error);
+          }
+          // setting value to 0
+          record = {
+            id: 0,
+            recid: 0,
+            userid: 0,
+            locuser: 0,
+            date: "",
+            place: "",
+            totinc: 0,
+            totexp: 0,
+          };
+          records = [];
+
+          document.getElementById("place").value = "";
+          document.getElementById("totamount").value = (0).toFixed(2);
+          document.getElementById("amount").readOnly = true;
+          document.getElementById("select_date").readOnly = false;
+          document.getElementById("place").readOnly = false;
+          document.getElementById("totamount").readOnly = false;
+
+          removeRows();
+          setNewGroupsAndSubgroups();
+          records.forEach((tmpRecord, index) => {
+            showRecord({ data: tmpRecord, no: index });
+          });
+        });
+      } else { // if there is nothing to save
+        console.log("Nothing to save!");
+      }
+    } else { // saving INCOME
+      record.userid = tmpUser.id;
+      record.locuser = Number(document.getElementById("select_person").value);
+      record.date = document.getElementById("select_date").value;
+      record.place = document.getElementById("place").value;
+      record.totinc = Number(document.getElementById("totamount").value);
+      console.log("Saving record: ", record);
+      Axios.post("http://localhost:3001/saverecordsinc", {
         record: record,
-        records: records
       }).then(function (response) {
-        console.log("saveRecord response: ", response.data);
-        if (response.data.status==="Error") {
+        console.log("saveRecordsInc response: ", response.data);
+        if (response.data.status === "Error") {
           alert(response.data.error);
-        };
+        }
         // setting value to 0
         record = {
           id: 0,
@@ -311,22 +355,21 @@ function EntryArea() {
         };
         records = [];
 
-        document.getElementById("place").value="";
-        document.getElementById("totamount").value=(0).toFixed(2);
-        document.getElementById("amount").readOnly = true;
+        document.getElementById("place").value = "";
+        document.getElementById("totamount").value = (0).toFixed(2);
+        // document.getElementById("amount").readOnly = true;
         document.getElementById("select_date").readOnly = false;
         document.getElementById("place").readOnly = false;
         document.getElementById("totamount").readOnly = false;
 
+        /*
         removeRows();
         setNewGroupsAndSubgroups();
         records.forEach((tmpRecord, index) => {
           showRecord({ data: tmpRecord, no: index });
         });
-    
+        */
       });
-    } else {
-      console.log("Nothing to save!");
     }
   }
 

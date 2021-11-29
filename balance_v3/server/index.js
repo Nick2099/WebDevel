@@ -185,6 +185,59 @@ app.post("/saverecordsexp", async (req, res) => {
   });
 });
 
+app.post("/saverecordsinc", async (req, res) => {
+  const record = req.body.record;
+  let tmperr = "";
+
+  function nextRecID() {
+    return new Promise((resolve) => {
+      db.query("SELECT MAX(recid) AS lastrecid FROM records", (err, rows) => {
+        if (err) {
+          resolve({ status: "Error" });
+        } else {
+          resolve({ status: "OK", no: rows[0].lastrecid + 1 });
+        }
+      });
+    });
+  }
+
+  async function insertRecordInc({ record, nextrecid }) {
+    return new Promise((resolve) => {
+      db.query(
+        "INSERT INTO mybalance.records (recid,userid,locuser,date,place,totinc,totexp,inc,exp,gr,sgr) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+        [
+          nextrecid,
+          record.userid,
+          record.locuser,
+          record.date,
+          record.place,
+          record.totinc,
+          0,
+          0,
+          0,
+          0,
+          0,
+        ],
+        (error, result) => {
+          if (error) {
+            resolve({ status: "Error", error: error.sqlMessage });
+          } else {
+            resolve({ status: "OK" });
+          }
+        }
+      );
+    });
+  }
+
+  let nextrecid = await nextRecID();
+  await insertRecordInc({
+    record: record,
+    nextrecid: nextrecid.no,
+  }).then((status) => {
+    res.send(status);
+  });
+});
+
 app.listen(3001, () => {
   console.log("Server is running on port 3001!");
 });
