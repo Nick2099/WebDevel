@@ -167,11 +167,25 @@ input[type=radio] {
   height: 1.15rem;
 }
   
+input[type=checkbox] {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
 table.expenses {
   table-layout: auto;
   width: 100%;  
 }
 
+income {
+  display: block;
+  width: 90%;
+}
+
 td, th {
   border: 1px solid black;
+}
+
+textarea {
+  resize: none;
 }

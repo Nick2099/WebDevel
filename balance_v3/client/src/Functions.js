@@ -167,6 +167,12 @@ export function showNewRecord(props) {
   button2.id = "delButton"+String(no);
   td5.appendChild(button2);
   tr.appendChild(td5);
+  var td6 = document.createElement("td");
+  var check = document.createElement("input");
+  check.type = "checkbox";
+  check.id = "checkbox"+String(no);
+  td6.appendChild(check);
+  tr.appendChild(td6);
 
   var recs = document.getElementById("records");
   recs.appendChild(tr);

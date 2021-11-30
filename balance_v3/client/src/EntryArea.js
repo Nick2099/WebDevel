@@ -289,8 +289,13 @@ function EntryArea() {
   }
 
   function saveRecord() {
-    if (!showIncome) { // saving EXPENSE
-      if (records.length > 0) { // if there is something to save
+    console.log("showIncome: ", showIncome ? "Income" : "Expense");
+    console.log("record: ", record);
+    console.log("records: ", records);
+    if (!showIncome) {
+      // saving EXPENSE
+      if (records.length > 0) {
+        // if there is something to save
         Axios.post("http://localhost:3001/saverecordsexp", {
           record: record,
           records: records,
@@ -325,10 +330,12 @@ function EntryArea() {
             showRecord({ data: tmpRecord, no: index });
           });
         });
-      } else { // if there is nothing to save
+      } else {
+        // if there is nothing to save
         console.log("Nothing to save!");
       }
-    } else { // saving INCOME
+    } else {
+      // saving INCOME
       record.userid = tmpUser.id;
       record.locuser = Number(document.getElementById("select_person").value);
       record.date = document.getElementById("select_date").value;
@@ -440,6 +447,7 @@ function EntryArea() {
               <th>Amount</th>
               <th>Add record/amount</th>
               <th>Delete record</th>
+              <th>Recur.</th>
             </tr>
           </thead>
           <tbody id="records">
@@ -468,9 +476,29 @@ function EntryArea() {
                 </button>
               </td>
               <td></td>
+              <td></td>
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <div id="income" className={showIncome ? "Show-Block" : "Hidden"}>
+        <div>
+          <label className="width_100">Comment</label>
+          <textarea
+            id="inc_comment"
+            rows="3"
+            cols="40"
+            autocomplete="off"
+          ></textarea>
+        </div>
+        <div>
+          <input
+            type="checkbox"
+            id="regular_income"
+          ></input>
+          <label for="vehicle1">Save as recurring income.</label>
+        </div>
       </div>
 
       <div>
@@ -478,11 +506,12 @@ function EntryArea() {
           Save
         </button>
       </div>
-      <Child tmpUser={tmpUser} />
+      {/* <Child tmpUser={tmpUser} /> */}
     </div>
   );
 }
 
+/*    // Not needed at the moment
 class Child extends Component {
   componentDidMount() {
     // here I can put something that have to be done after component did mount
@@ -501,5 +530,6 @@ class Child extends Component {
     return null;
   }
 }
+*/
 
 export default EntryArea;
