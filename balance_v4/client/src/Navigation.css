@@ -1,0 +1,29 @@
+.nav-button {
+    --buttonwidth: 45px;
+    --transition-time: 300ms;
+  background: none;
+  border: none;
+  border-radius: 25%;
+  /* position */
+  position: absolute;
+  top: 20px;
+  right: 20px;
+    /* size */
+    width: var(--width);
+    height: var(--width);
+    /* transition */
+    transition: 400ms;
+    /* font */
+    font-size: 2rem;
+}
+
+.nav-button:focus {
+  outline: none;
+}
+
+.nav-button:hover {
+    background-color: rgba(42, 12, 126, 0.5);
+}
+
+.nav__background {
+}

@@ -1,9 +1,11 @@
 import React, { useEffect, useContext } from "react";
 import "./App.css";
-import { DataContext, DataContextProvider } from "./DataContextProvider";
+import { DataContext } from "./DataContextProvider";
+// DataContextProvider is loaded in index.js. Here we just need to have access to data
+import Navigation from "./Navigation";
+
 
 /*
-import NavigationBar from "./NavigationBar";
 import LoginArea from "./LoginArea";
 import HomeArea from './HomeArea';
 import EntryArea from './EntryArea';
@@ -80,14 +82,13 @@ function App() {
   }
 
   return (
-    <DataContextProvider>
-      <div className="App">
-        Proba
-        <button type="button" onClick={buttonClick}>
-          Change
-        </button>
-      </div>
-    </DataContextProvider>
+    <div className="App">
+      <Navigation />
+      Proba
+      <button type="button" onClick={buttonClick}>
+        Change
+      </button>
+    </div>
   );
 }
 
