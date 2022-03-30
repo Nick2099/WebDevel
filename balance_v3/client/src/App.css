@@ -5,18 +5,25 @@
 }
 
 button {
-  margin: 5px;
+  margin: 0px;
   font-size: 1rem;
   background-color: lightblue;
+  transition-duration: 0.4s;
 }
 
 button:hover {
   cursor: pointer;
+  background-color: white;
 }
 
-button.main {
+button.mainLoginButton {
   font-size: 1.2rem;
   background-color: aqua;
+  margin: 20px;
+}
+
+button.mainLoginButton:hover {
+  background-color: white;
 }
 
 .enabled {
@@ -27,6 +34,14 @@ button.main {
 .disabled {
   pointer-events: none;
   background-color: gray;
+}
+
+.loginButton {
+  width: 100px;
+}
+
+.bottomLoginButtons {
+  margin: 10px;
 }
 
 .App-header {
@@ -83,7 +98,7 @@ button.main {
   min-height: 70vh;
   display:inline-flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
   text-align: center;
 
 
@@ -97,7 +112,7 @@ button.main {
 .Login input {
   width: 300px;
   font-size: 1rem;
-  margin: 5px;
+  margin: 5px 0px 0px;
 }
 
 .Hidden {
@@ -113,6 +128,12 @@ button.main {
 label {
   display:inline-block;
   text-align: left;
+  margin: 20px 0px 0px;
+}
+
+.labelNote {
+  margin: 0px;
+  font-size: 0.8rem;
 }
 
 select {

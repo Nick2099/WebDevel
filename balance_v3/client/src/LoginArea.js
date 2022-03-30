@@ -8,6 +8,7 @@ function LoginArea() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordTxt, setPasswordTxt] = useState("");
   const [repeat, setRepeat] = useState("");
   const [repeatTxt, setRepeatTxt] = useState("");
   const [tmpUser, setTmpUser] = useContext(TmpUserContext);
@@ -147,6 +148,14 @@ function LoginArea() {
   };
 
   useEffect(() => {
+    if (password.length<5) {
+      setPasswordTxt(" - not acceptable");
+    } else {
+      setPasswordTxt(" - OK");
+    }
+  }, [password])
+
+  useEffect(() => {
     if (!(password === repeat)) {
       setRepeatTxt(" is not the same as Password!");
     } else {
@@ -165,14 +174,6 @@ function LoginArea() {
 
   return (
     <div className="Login">
-      <div>
-        <button type="button" onClick={guestLogin}>
-          Login as a guest
-        </button>
-        <button type="button" onClick={registerChange}>
-          {register ? "Login" : "Register"}
-        </button>
-      </div>
       <label>E-mail address</label>
       <input
         type="text"
@@ -188,13 +189,14 @@ function LoginArea() {
         value={name}
         onChange={updateName}
       ></input>
-      <label>Password</label>
+      <label>Password {register ? passwordTxt : ""}</label>
       <input
         type="password"
         name="password"
         value={password}
         onChange={updatePassword}
       ></input>
+      <label class="labelNote"> Password must contain: A a 0 !</label>
       <label className={register ? "Show-Block" : "Hidden"}>
         Repeat password {repeatTxt}
       </label>
@@ -205,12 +207,16 @@ function LoginArea() {
         value={repeat}
         onChange={updateRepeat}
       ></input>
-      <button className="main" type="button" onClick={formSubmit}>
+      <button className="mainLoginButton" type="button" onClick={formSubmit}>
         {register ? "Register" : "Login"}
       </button>
       <div>
-        <p>Loging in as s guest</p>
-        <p>Register to...</p>
+        <button class="bottomLoginButtons" type="button" onClick={guestLogin}>
+          Login as a guest
+        </button>
+        <button class="bottomLoginButtons" type="button" onClick={registerChange}>
+          {register ? "To login" : "To register"}
+        </button>
       </div>
     </div>
   );
