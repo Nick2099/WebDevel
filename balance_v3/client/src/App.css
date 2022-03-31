@@ -210,3 +210,11 @@ td, th {
 textarea {
   resize: none;
 }
+
+.green {
+ color: green; 
+}
+
+.red {
+  color: red;
+}

@@ -15,6 +15,7 @@ function LoginArea() {
   const [tmpUser, setTmpUser] = useContext(TmpUserContext);
   const [page, setPage] = useContext(PageContentContext);
   const [register, setRegister] = useState(false);
+  const [checked, setChecked] = useState([]);
 
   const updateEmail = (e) => {
     setEmail(e.target.value);
@@ -151,18 +152,19 @@ function LoginArea() {
   useEffect(() => {
     Functions.checkPass(password).then((value) => {
       if (value[5]) {
-        setPasswordTxt(" - OK");
+        setPasswordTxt(" - ✅ ❎");
       } else {
-        setPasswordTxt(" - " + value);
+        setPasswordTxt(" - ✓ ✗" + value); 
       };
+      setChecked(value);
     });
   }, [password])
 
   useEffect(() => {
-    if (!(password === repeat)) {
-      setRepeatTxt(" is not the same as Password!");
+    if ((password === repeat) && (password.length>0)) {
+      setRepeatTxt(" ✔️");
     } else {
-      setRepeatTxt(" - OK");
+      setRepeatTxt("");
     }
     return () => {};
   }, [password, repeat]);
@@ -192,17 +194,23 @@ function LoginArea() {
         value={name}
         onChange={updateName}
       ></input>
-      <label>Password {register ? passwordTxt : ""}</label>
+      <label>Password</label>
       <input
         type="password"
         name="password"
         value={password}
         onChange={updatePassword}
       ></input>
-      <label class="labelNote">{register ? "Password must contain: A a 0 !" : ""}</label>
-      <label className={register ? "Show-Block" : "Hidden"}>
-        Repeat password {repeatTxt}
-      </label>
+      {register ?
+      <label class="labelNote"> Password must contain:
+        <span className={checked[0]?"green":"red"}> A</span>
+        <span className={checked[1]?"green":"red"}> a</span>
+        <span className={checked[2]?"green":"red"}> 1</span>
+        <span className={checked[3]?"green":"red"}> $</span>
+        <span className={checked[4]?"green":"red"}> >7 </span>
+        {checked[5]?"✔️":""}
+      </label> : ""}
+      <label className={register ? "Show-Block" : "Hidden"}>Repeat password</label>
       <input
         className={register ? "Show-Block" : "Hidden"}
         type="password"
@@ -210,6 +218,7 @@ function LoginArea() {
         value={repeat}
         onChange={updateRepeat}
       ></input>
+      <label className={register ? "Show-Block labelNote" : "Hidden"}>Passwords have to be the same!{repeatTxt}</label>
       <button className="mainLoginButton" type="button" onClick={formSubmit}>
         {register ? "Register" : "Login"}
       </button>
