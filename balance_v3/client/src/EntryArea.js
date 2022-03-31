@@ -3,7 +3,7 @@ import React, {
   useContext,
   useEffect,
   useRef,
-  Component,
+  // Component //
 } from "react";
 import "./App.css";
 import Axios from "axios";

@@ -37,7 +37,7 @@ button.mainLoginButton:hover {
 }
 
 .loginButton {
-  width: 100px;
+  width: 70px;
 }
 
 .bottomLoginButtons {
@@ -96,10 +96,11 @@ button.mainLoginButton:hover {
 .Login {
   /* background-color: rgb(42, 42, 224); */
   min-height: 70vh;
+  width: 360px;
   display:inline-flex;
   flex-direction: column;
-  align-items: left;
-  text-align: center;
+  align-items: center;
+  text-align: left;
 
 
   /* display: flex;
@@ -107,6 +108,11 @@ button.mainLoginButton:hover {
   justify-content: center;
   align-items: center; 
   height: 350px; */
+}
+
+.LoginInputs {
+  /* background-color: blue; */
+  width: 308px;
 }
 
 .Login input {
@@ -212,7 +218,7 @@ textarea {
 }
 
 .green {
- color: green; 
+ color: lightgreen; 
 }
 
 .red {

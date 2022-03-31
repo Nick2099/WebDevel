@@ -9,7 +9,7 @@ function LoginArea() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordTxt, setPasswordTxt] = useState("");
+  // const [passwordTxt, setPasswordTxt] = useState(""); //
   const [repeat, setRepeat] = useState("");
   const [repeatTxt, setRepeatTxt] = useState("");
   const [tmpUser, setTmpUser] = useContext(TmpUserContext);
@@ -100,7 +100,36 @@ function LoginArea() {
     });
   }
 
-  async function guestLogin() {
+  async function adminLogin() {
+    Axios.get("http://localhost:3001/userid", {
+      params: {
+        email: "nikicadadic@gmail.com",
+        password: "pass",
+      },
+    }).then((resp) => {
+      if (resp.data[0].id > 0) {
+        setTmpUser({
+          email: resp.data[0].email,
+          name: resp.data[0].name,
+          logedin: true,
+          id: resp.data[0].id,
+        });
+        setPage((prevState) => {
+          return {
+            ...prevState,
+            showLogin: false,
+            showEntry: true,
+            showEntryAdd: true,
+            showHome: false,
+          };
+        });
+      } else {
+        alert(resp.data[0].error);
+      }
+    });
+  }
+
+  async function guestLogin() { // I have to change this function to be logged as a guest //
     Axios.get("http://localhost:3001/userid", {
       params: {
         email: "nikicadadic@gmail.com",
@@ -151,17 +180,17 @@ function LoginArea() {
 
   useEffect(() => {
     Functions.checkPass(password).then((value) => {
-      if (value[5]) {
+      /* if (value[5]) {
         setPasswordTxt(" - ✅ ❎");
       } else {
-        setPasswordTxt(" - ✓ ✗" + value); 
-      };
+        setPasswordTxt(" - ✓ ✗" + value);
+      } */
       setChecked(value);
     });
-  }, [password])
+  }, [password]);
 
   useEffect(() => {
-    if ((password === repeat) && (password.length>0)) {
+    if (password === repeat && password.length > 0) {
       setRepeatTxt(" ✔️");
     } else {
       setRepeatTxt("");
@@ -179,46 +208,57 @@ function LoginArea() {
 
   return (
     <div className="Login">
-      <label>E-mail address</label>
-      <input
-        type="text"
-        name="email"
-        value={email}
-        onChange={updateEmail}
-      ></input>
-      <label className={register ? "Show-Block" : "Hidden"}>Name</label>
-      <input
-        className={register ? "Show-Block" : "Hidden"}
-        type="text"
-        name="name"
-        value={name}
-        onChange={updateName}
-      ></input>
-      <label>Password</label>
-      <input
-        type="password"
-        name="password"
-        value={password}
-        onChange={updatePassword}
-      ></input>
-      {register ?
-      <label class="labelNote"> Password must contain:
-        <span className={checked[0]?"green":"red"}> A</span>
-        <span className={checked[1]?"green":"red"}> a</span>
-        <span className={checked[2]?"green":"red"}> 1</span>
-        <span className={checked[3]?"green":"red"}> $</span>
-        <span className={checked[4]?"green":"red"}> >7 </span>
-        {checked[5]?"✔️":""}
-      </label> : ""}
-      <label className={register ? "Show-Block" : "Hidden"}>Repeat password</label>
-      <input
-        className={register ? "Show-Block" : "Hidden"}
-        type="password"
-        name="repeat"
-        value={repeat}
-        onChange={updateRepeat}
-      ></input>
-      <label className={register ? "Show-Block labelNote" : "Hidden"}>Passwords have to be the same!{repeatTxt}</label>
+      <div className="LoginInputs">
+        <label>E-mail address</label>
+        <input
+          type="text"
+          name="email"
+          value={email}
+          onChange={updateEmail}
+        ></input>
+        <label className={register ? "Show-Block" : "Hidden"}>Name</label>
+        <input
+          className={register ? "Show-Block" : "Hidden"}
+          type="text"
+          name="name"
+          value={name}
+          onChange={updateName}
+        ></input>
+        <label>Password</label>
+        <input
+          type="password"
+          name="password"
+          value={password}
+          onChange={updatePassword}
+        ></input>
+        {register ? (
+          <label class="labelNote">
+            {" "}
+            Password must contain:
+            <span className={checked[0] ? "green" : "red"}> A</span>
+            <span className={checked[1] ? "green" : "red"}> z</span>
+            <span className={checked[2] ? "green" : "red"}> 1</span>
+            <span className={checked[3] ? "green" : "red"}> $</span>
+            <span className={checked[4] ? "green" : "red"}> {">7"} </span>
+            {checked[5] ? "✔️" : ""}
+          </label>
+        ) : (
+          ""
+        )}
+        <label className={register ? "Show-Block" : "Hidden"}>
+          Repeat password
+        </label>
+        <input
+          className={register ? "Show-Block" : "Hidden"}
+          type="password"
+          name="repeat"
+          value={repeat}
+          onChange={updateRepeat}
+        ></input>
+        <label className={register ? "Show-Block labelNote" : "Hidden"}>
+          Passwords have to be the same!{repeatTxt}
+        </label>
+      </div>
       <button className="mainLoginButton" type="button" onClick={formSubmit}>
         {register ? "Register" : "Login"}
       </button>
@@ -226,7 +266,14 @@ function LoginArea() {
         <button class="bottomLoginButtons" type="button" onClick={guestLogin}>
           Login as a guest
         </button>
-        <button class="bottomLoginButtons" type="button" onClick={registerChange}>
+        <button class="bottomLoginButtons" type="button" onClick={adminLogin}>
+          Admin
+        </button>
+        <button
+          class="bottomLoginButtons"
+          type="button"
+          onClick={registerChange}
+        >
           {register ? "To login" : "To register"}
         </button>
       </div>

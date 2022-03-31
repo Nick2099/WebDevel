@@ -212,7 +212,7 @@ export function checkPass(props) {
   for (let i = 0; i < password.length; i++) {
     tmp = password.charCodeAt(i);
     if (((tmp>32) && (tmp<48)) || ((tmp>57) && (tmp<64)) || ((tmp>90) && (tmp<97)) 
-    || ((tmp>122) && (tmp<127)) || (tmp=167) || (tmp=180)) {
+    || ((tmp>122) && (tmp<127)) || (tmp===167) || (tmp===180)) {
       passwordOk[3]=true;
       i = password.length;
     }
