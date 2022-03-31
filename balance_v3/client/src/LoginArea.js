@@ -3,6 +3,7 @@ import "./App.css";
 import { TmpUserContext } from "./TmpUserContext";
 import { PageContentContext } from "./PageContentContext";
 import Axios from "axios";
+import * as Functions from "./Functions";
 
 function LoginArea() {
   const [email, setEmail] = useState("");
@@ -148,11 +149,13 @@ function LoginArea() {
   };
 
   useEffect(() => {
-    if (password.length<5) {
-      setPasswordTxt(" - not acceptable");
-    } else {
-      setPasswordTxt(" - OK");
-    }
+    Functions.checkPass(password).then((value) => {
+      if (value[5]) {
+        setPasswordTxt(" - OK");
+      } else {
+        setPasswordTxt(" - " + value);
+      };
+    });
   }, [password])
 
   useEffect(() => {
@@ -196,7 +199,7 @@ function LoginArea() {
         value={password}
         onChange={updatePassword}
       ></input>
-      <label class="labelNote"> Password must contain: A a 0 !</label>
+      <label class="labelNote">{register ? "Password must contain: A a 0 !" : ""}</label>
       <label className={register ? "Show-Block" : "Hidden"}>
         Repeat password {repeatTxt}
       </label>

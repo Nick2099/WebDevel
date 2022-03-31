@@ -179,3 +179,50 @@ export function showNewRecord(props) {
 
   return Promise.resolve(String(no));
 }
+
+export function checkPass(props) {
+  let password = props;
+  let passwordOk = [false, false, false, false, false, false];
+  let tmp = 0;
+  // checking for uppercase letters
+  for (let i = 0; i < password.length; i++) {
+    tmp = password.charCodeAt(i);
+    if ((tmp > 64) && (tmp<91)) {
+      passwordOk[0]=true;
+      i = password.length;
+    }
+  }
+  // checking for lowcase letters 
+  for (let i = 0; i < password.length; i++) {
+    tmp = password.charCodeAt(i);
+    if ((tmp > 96) && (tmp<123)) {
+      passwordOk[1]=true;
+      i = password.length;
+    }
+  }
+  // checking for numbers
+  for (let i = 0; i < password.length; i++) {
+    tmp = password.charCodeAt(i);
+    if ((tmp > 47) && (tmp<58)) {
+      passwordOk[2]=true;
+      i = password.length;
+    }
+  }
+  // checking for special characters
+  for (let i = 0; i < password.length; i++) {
+    tmp = password.charCodeAt(i);
+    if (((tmp>32) && (tmp<48)) || ((tmp>57) && (tmp<64)) || ((tmp>90) && (tmp<97)) 
+    || ((tmp>122) && (tmp<127)) || (tmp=167) || (tmp=180)) {
+      passwordOk[3]=true;
+      i = password.length;
+    }
+  }
+  // checking lenght
+  if (password.length>7) {
+    passwordOk[4] = true;
+  };
+  // all checks together as a one
+  passwordOk[5] = passwordOk[0] && passwordOk[1] && passwordOk[2] && passwordOk[3] && passwordOk[4];
+
+  return Promise.resolve(passwordOk);
+}
