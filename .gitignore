@@ -2,6 +2,9 @@
 settings.json
 about_gitignore.txt
 
+# My directories/backup
+mybackup
+
 # Logs
 logs
 *.log

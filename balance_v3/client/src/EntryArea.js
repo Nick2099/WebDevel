@@ -405,6 +405,14 @@ function EntryArea() {
           onChange={incexpChange}
         ></input>
         <label>Expense</label>
+        <input
+          type="radio"
+          id="cto"
+          name="incexp"
+          value="cto"
+          onChange={incexpChange}
+        ></input>
+        <label>Conto</label>
       </div>
       <div id="div_date">
         <label className="width_100">Date</label>

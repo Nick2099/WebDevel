@@ -238,6 +238,84 @@ app.post("/saverecordsinc", async (req, res) => {
   });
 });
 
+// changing the way how the records will be saved //
+app.post("/saverecords2", async (req, res) => {
+  const record = req.body.record;
+  const records = req.body.records;
+  let tmperr = "";
+
+  function nextRecID() {
+    return new Promise((resolve) => {
+      db.query("SELECT MAX(recid) AS lastrecid FROM records", (err, rows) => {
+        if (err) {
+          resolve({ status: "Error" });
+        } else {
+          resolve({ status: "OK", no: rows[0].lastrecid + 1 });
+        }
+      });
+    });
+  }
+
+  const insertRecords = async ({ record, records, nextrecid }) => {
+    const allAsyncResults = [];
+    for (const tmpRecord of records) {
+      const asyncResult = await insertRecord({
+        record: record,
+        tmpRecord: tmpRecord,
+        nextrecid: nextrecid,
+      });
+      allAsyncResults.push(asyncResult);
+    }
+    return allAsyncResults;
+  };
+
+  async function insertRecord({ record, tmpRecord, nextrecid }) {
+    return new Promise((resolve) => {
+      db.query(
+        "INSERT INTO mybalance.records2 (recid,userid,locuser,date,place,gr,sgr,type,amount,cur) VALUES (?,?,?,?,?,?,?,?,?,?)",
+        [
+          nextrecid,
+          record.userid,
+          record.locuser,
+          record.date,
+          record.place,
+          tmpRecord.groupid,
+          tmpRecord.subgroupid,
+          record.type,
+          tmpRecord.amount,
+          record.cur,
+        ],
+        (error, result) => {
+          if (error) {
+            resolve({ status: "Error", error: error.sqlMessage });
+          } else {
+            resolve({ status: "OK" });
+          }
+        }
+      );
+    });
+  }
+
+  let nextrecid = await nextRecID();
+  await insertRecords({
+    record: record,
+    records: records,
+    nextrecid: nextrecid.no,
+  }).then((status) => {
+    let tmpStatus = { status: "OK" };
+    for (const item of status) {
+      if (item.status === "Error") {
+        tmpStatus = {
+          status: "Error",
+          error: "Error by inserting records in records",
+        };
+      }
+    }
+    res.send(tmpStatus);
+  });
+});
+
+
 app.listen(3001, () => {
   console.log("Server is running on port 3001!");
 });
