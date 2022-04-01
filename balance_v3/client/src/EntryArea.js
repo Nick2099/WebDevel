@@ -64,6 +64,7 @@ function EntryArea() {
               }).then((value) => {
                 Functions.fillSubGroups(value);
               });
+              incexpChange();
             }
           );
         });
@@ -82,9 +83,32 @@ function EntryArea() {
 
   function incexpChange() {
     setShowIncome(document.querySelector('input[name="incexp"]:checked').value);
-    record.type = Number(showIncome);
-    // ovisno o ovoj vrijednosti treba promijeniti koje grupe ili grupa ce se prikazivati
   }
+
+  useEffect(() => {
+    record.type = Number(showIncome);
+    console.log("record.type: ", record.type);
+    if (record.type===2) {
+      document.getElementById('select_group').value=-1;
+      document.getElementById('select_group').disabled=true;
+      changeGroup();
+    } else if (record.type===9) {
+      document.getElementById('select_group').value=0;
+      document.getElementById('select_group').disabled=true;
+      changeGroup();
+    } else {
+      document.getElementById('select_group').value=1;
+      document.getElementById('select_group').disabled=false;
+      if (document.getElementById('group_opt_-1') !== null) {
+        document.getElementById('group_opt_-1').disabled=true;
+      };
+      if (document.getElementById('group_opt_0') !== null) {
+        document.getElementById('group_opt_0').disabled=true;
+      };
+      changeGroup();
+    }
+
+  }, [showIncome]);
 
   function checkDate() {
     var tmpDate1 = String(document.getElementById("select_date").value);
@@ -133,6 +157,9 @@ function EntryArea() {
         document.getElementById("select_date").readOnly = true;
         document.getElementById("place").readOnly = true;
         document.getElementById("totamount").readOnly = true;
+        document.getElementById("inc").disabled = true;
+        document.getElementById("exp").disabled = true;
+        document.getElementById("cto").disabled = true;
         isMain = true;
       }
       let tmpAmount = Number(document.getElementById("amount").value);
@@ -156,6 +183,8 @@ function EntryArea() {
       recalculateFirstRecordValue();
       document.getElementById("select_group").focus();
       document.getElementById("amount").value = (0).toFixed(2);
+
+      // document.getElementById("inc").disabled=true; //
 
       console.log("record: ", record);
       console.log("records: ", records);  
@@ -204,7 +233,10 @@ function EntryArea() {
       document.getElementById("select_date").readOnly = false;
       document.getElementById("place").readOnly = false;
       document.getElementById("totamount").readOnly = false;
-    }
+      document.getElementById("inc").disabled = false;
+      document.getElementById("exp").disabled = false;
+      document.getElementById("cto").disabled = false;
+  }
     removeRows();
     setNewGroupsAndSubgroups();
     records.forEach((tmpRecord, index) => {
@@ -341,7 +373,7 @@ function EntryArea() {
           type="radio"
           id="inc"
           name="incexp"
-          value="1"
+          value="2"
           onChange={incexpChange}
         ></input>
         <label>Income</label>
@@ -349,7 +381,7 @@ function EntryArea() {
           type="radio"
           id="exp"
           name="incexp"
-          value="2"
+          value="1"
           onChange={incexpChange}
           defaultChecked
         ></input>
@@ -400,7 +432,7 @@ function EntryArea() {
       <div id="table_expenses">
         {" "}
         {/* ovo ostaje za sve */}
-        <table className="expenses ">
+        <table className="expenses">
           <thead>
             <tr>
               <th>Group</th>

@@ -19,6 +19,7 @@ export function fillGroups(value) {
     var options = document.createElement("option");
     options.innerHTML = value[i].name;
     options.value = value[i].id;
+    options.id = "group_opt_"+value[i].id;
     /*
     if (value[i].id === 0) {
       options.setAttribute("selected", true);
