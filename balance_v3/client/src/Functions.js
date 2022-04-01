@@ -173,7 +173,15 @@ export function showNewRecord(props) {
   check.id = "checkbox"+String(no);
   td6.appendChild(check);
   tr.appendChild(td6);
-
+  var td7 = document.createElement("td");
+  var button3 = document.createElement("button");
+  button3.className = "main";
+  button3.type = "button";
+  button3.innerHTML = "Add";
+  button3.id = "commentButton"+String(no);
+  td7.appendChild(button3);
+  tr.appendChild(td7);
+ 
   var recs = document.getElementById("records");
   recs.appendChild(tr);
 

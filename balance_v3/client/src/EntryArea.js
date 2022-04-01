@@ -12,7 +12,7 @@ import * as Functions from "./Functions";
 
 function EntryArea() {
   const [tmpUser] = useContext(TmpUserContext);
-  const [showIncome, setShowIncome] = useState(true);
+  const [showIncome, setShowIncome] = useState(1);
   const groups = useRef([]);
   const subgroups = useRef([]);
   const newsubgroups = useRef([]);
@@ -25,8 +25,8 @@ function EntryArea() {
     locuser: 0,
     date: "",
     place: "",
-    totinc: 0,
-    totexp: 0,
+    type: 0,
+    cur: "",
   };
   let records = [];
   // var groups = [];
@@ -81,12 +81,9 @@ function EntryArea() {
   }
 
   function incexpChange() {
-    var selected = document.querySelector('input[name="incexp"]:checked').id;
-    if (selected === "inc") {
-      setShowIncome(true);
-    } else {
-      setShowIncome(false);
-    }
+    setShowIncome(document.querySelector('input[name="incexp"]:checked').value);
+    record.type = Number(showIncome);
+    // ovisno o ovoj vrijednosti treba promijeniti koje grupe ili grupa ce se prikazivati
   }
 
   function checkDate() {
@@ -127,16 +124,11 @@ function EntryArea() {
     } else {
       if (lastRecord === 0) {
         record.userid = tmpUser.id;
-        if (showIncome) {
-          record.totinc = totamount;
-          record.totexp = 0;
-        } else {
-          record.totinc = 0;
-          record.totexp = totamount;
-        }
         record.locuser = Number(document.getElementById("select_person").value);
         record.date = document.getElementById("select_date").value;
         record.place = document.getElementById("place").value;
+        record.type = Number(showIncome);
+        record.cur = "EUR";
         document.getElementById("amount").readOnly = false;
         document.getElementById("select_date").readOnly = true;
         document.getElementById("place").readOnly = true;
@@ -164,6 +156,9 @@ function EntryArea() {
       recalculateFirstRecordValue();
       document.getElementById("select_group").focus();
       document.getElementById("amount").value = (0).toFixed(2);
+
+      console.log("record: ", record);
+      console.log("records: ", records);  
     }
   }
 
@@ -289,63 +284,16 @@ function EntryArea() {
   }
 
   function saveRecord() {
-    console.log("showIncome: ", showIncome ? "Income" : "Expense");
+    console.log("showIncome: ", showIncome);
     console.log("record: ", record);
     console.log("records: ", records);
-    if (!showIncome) {
-      // saving EXPENSE
-      if (records.length > 0) {
-        // if there is something to save
-        Axios.post("http://localhost:3001/saverecordsexp", {
-          record: record,
-          records: records,
-        }).then(function (response) {
-          console.log("saveRecordsExp response: ", response.data);
-          if (response.data.status === "Error") {
-            alert(response.data.error);
-          }
-          // setting value to 0
-          record = {
-            id: 0,
-            recid: 0,
-            userid: 0,
-            locuser: 0,
-            date: "",
-            place: "",
-            totinc: 0,
-            totexp: 0,
-          };
-          records = [];
-
-          document.getElementById("place").value = "";
-          document.getElementById("totamount").value = (0).toFixed(2);
-          document.getElementById("amount").readOnly = true;
-          document.getElementById("select_date").readOnly = false;
-          document.getElementById("place").readOnly = false;
-          document.getElementById("totamount").readOnly = false;
-
-          removeRows();
-          setNewGroupsAndSubgroups();
-          records.forEach((tmpRecord, index) => {
-            showRecord({ data: tmpRecord, no: index });
-          });
-        });
-      } else {
-        // if there is nothing to save
-        console.log("Nothing to save!");
-      }
-    } else {
-      // saving INCOME
-      record.userid = tmpUser.id;
-      record.locuser = Number(document.getElementById("select_person").value);
-      record.date = document.getElementById("select_date").value;
-      record.place = document.getElementById("place").value;
-      record.totinc = Number(document.getElementById("totamount").value);
-      console.log("Saving record: ", record);
-      Axios.post("http://localhost:3001/saverecordsinc", {
+    if (records.length > 0) {
+      // if there is something to save
+      Axios.post("http://localhost:3001/saverecords2", {
         record: record,
+        records: records,
       }).then(function (response) {
-        console.log("saveRecordsInc response: ", response.data);
+        console.log("saveRecordsExp response: ", response.data);
         if (response.data.status === "Error") {
           alert(response.data.error);
         }
@@ -357,26 +305,27 @@ function EntryArea() {
           locuser: 0,
           date: "",
           place: "",
-          totinc: 0,
-          totexp: 0,
+          type: 0,
+          cur: "",
         };
         records = [];
 
         document.getElementById("place").value = "";
         document.getElementById("totamount").value = (0).toFixed(2);
-        // document.getElementById("amount").readOnly = true;
+        document.getElementById("amount").readOnly = true;
         document.getElementById("select_date").readOnly = false;
         document.getElementById("place").readOnly = false;
         document.getElementById("totamount").readOnly = false;
 
-        /*
         removeRows();
         setNewGroupsAndSubgroups();
         records.forEach((tmpRecord, index) => {
           showRecord({ data: tmpRecord, no: index });
         });
-        */
       });
+    } else {
+      // if there is nothing to save
+      console.log("Nothing to save!");
     }
   }
 
@@ -392,24 +341,24 @@ function EntryArea() {
           type="radio"
           id="inc"
           name="incexp"
-          value="inc"
+          value="1"
           onChange={incexpChange}
-          defaultChecked
         ></input>
         <label>Income</label>
         <input
           type="radio"
           id="exp"
           name="incexp"
-          value="exp"
+          value="2"
           onChange={incexpChange}
+          defaultChecked
         ></input>
         <label>Expense</label>
         <input
           type="radio"
           id="cto"
           name="incexp"
-          value="cto"
+          value="9"
           onChange={incexpChange}
         ></input>
         <label>Conto</label>
@@ -425,9 +374,11 @@ function EntryArea() {
         ></input>
       </div>
 
+      {/* 
       <div id="div_entries">
         <h2>{showIncome ? "Income" : "Expense"}</h2>
       </div>
+      */}
 
       <div id="div_place">
         <label className="width_100">Place</label>
@@ -446,7 +397,9 @@ function EntryArea() {
         ></input>
       </div>
 
-      <div id="table_expenses" className={showIncome ? "Hidden" : "Show-Block"}>
+      <div id="table_expenses">
+        {" "}
+        {/* ovo ostaje za sve */}
         <table className="expenses ">
           <thead>
             <tr>
@@ -454,8 +407,9 @@ function EntryArea() {
               <th>Subgroup</th>
               <th>Amount</th>
               <th>Add record/amount</th>
-              <th>Delete record</th>
-              <th>Recur.</th>
+              <th>Delete</th>
+              <th>Recuring</th>
+              <th>Comment</th>
             </tr>
           </thead>
           <tbody id="records">
@@ -485,28 +439,10 @@ function EntryArea() {
               </td>
               <td></td>
               <td></td>
+              <td></td>
             </tr>
           </tbody>
         </table>
-      </div>
-
-      <div id="income" className={showIncome ? "Show-Block" : "Hidden"}>
-        <div>
-          <label className="width_100">Comment</label>
-          <textarea
-            id="inc_comment"
-            rows="3"
-            cols="40"
-            autocomplete="off"
-          ></textarea>
-        </div>
-        <div>
-          <input
-            type="checkbox"
-            id="regular_income"
-          ></input>
-          <label for="vehicle1">Save as recurring income.</label>
-        </div>
       </div>
 
       <div>

@@ -67,7 +67,7 @@ button.mainLoginButton:hover {
 }
 
 .NavigationBar {
-  display: block;
+  display: flex;
   background-color: royalblue;
   margin: 0;
   padding: 0;
@@ -82,6 +82,7 @@ button.mainLoginButton:hover {
 }
 
 .NavigationBar .right {
+  align-content: flex-end;
   margin: 0px;
   text-align: right;
   /* border: 1px solid black; */
