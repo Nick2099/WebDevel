@@ -29,10 +29,7 @@ function EntryArea() {
     cur: "",
   };
   let records = [];
-  // var groups = [];
   var newgroups = [];
-  // var subgroups = [];
-  // var newsubgroups = [];
 
   var tmpDate = new Date();
   var currentDate = tmpDate.toISOString().substring(0, 10);
@@ -42,18 +39,18 @@ function EntryArea() {
     getLocalUsers();
     Functions.getGroups().then((value) => {
       groups.current = value;
-      console.log("Groups are loaded: ", groups.current);
+      // console.log("Groups are loaded: ", groups.current);
       Functions.getSubGroups().then((value) => {
         subgroups.current = value;
-        console.log("Subgroups are loaded: ", subgroups.current);
+        // console.log("Subgroups are loaded: ", subgroups.current);
         Functions.removeSubgroups({
           subgroups: subgroups.current,
           records,
         }).then((value) => {
           newsubgroups.current = value;
-          console.log("Newsubgroups are created: ", newsubgroups.current);
+          // console.log("Newsubgroups are created: ", newsubgroups.current);
           Functions.removeAllOptionsFromSelect("select_group").then(
-            Functions.fillGroups(groups.current)
+            Functions.fillGroups({newgroups: groups.current, choosenentry: showIncome})
           );
           Functions.removeAllOptionsFromSelect("select_subgroup").then(
             (value) => {
@@ -64,7 +61,6 @@ function EntryArea() {
               }).then((value) => {
                 Functions.fillSubGroups(value);
               });
-              incexpChange();
             }
           );
         });
@@ -87,27 +83,8 @@ function EntryArea() {
 
   useEffect(() => {
     record.type = Number(showIncome);
-    console.log("record.type: ", record.type);
-    if (record.type===2) {
-      document.getElementById('select_group').value=-1;
-      document.getElementById('select_group').disabled=true;
-      changeGroup();
-    } else if (record.type===9) {
-      document.getElementById('select_group').value=0;
-      document.getElementById('select_group').disabled=true;
-      changeGroup();
-    } else {
-      document.getElementById('select_group').value=1;
-      document.getElementById('select_group').disabled=false;
-      if (document.getElementById('group_opt_-1') !== null) {
-        document.getElementById('group_opt_-1').disabled=true;
-      };
-      if (document.getElementById('group_opt_0') !== null) {
-        document.getElementById('group_opt_0').disabled=true;
-      };
-      changeGroup();
-    }
-
+    // console.log("record.type: ", record.type);
+    setNewGroupsAndSubgroups();
   }, [showIncome]);
 
   function checkDate() {
@@ -183,11 +160,6 @@ function EntryArea() {
       recalculateFirstRecordValue();
       document.getElementById("select_group").focus();
       document.getElementById("amount").value = (0).toFixed(2);
-
-      // document.getElementById("inc").disabled=true; //
-
-      console.log("record: ", record);
-      console.log("records: ", records);  
     }
   }
 
@@ -277,13 +249,16 @@ function EntryArea() {
     Functions.removeSubgroups({ subgroups: subgroups.current, records }).then(
       (value) => {
         newsubgroups.current = value;
+        // console.log("setNewGroupsAndSubgroups: newsubgroups.current: ", newsubgroups.current);
         Functions.removeGroups({
           groups: groups.current,
           newsubgroups: newsubgroups.current,
         }).then((value) => {
           newgroups = value;
+          // console.log("setNewGroupsAndSubgroups: newgroups: ", newgroups);
+          // console.log("setNewGroupsAndSubgroups: showIncome: ", showIncome);
           Functions.removeAllOptionsFromSelect("select_group").then(
-            Functions.fillGroups(newgroups).then(
+            Functions.fillGroups({newgroups: newgroups, choosenentry: showIncome}).then(
               Functions.setTmpGroup(choosengroup.current)
             )
           );
@@ -316,6 +291,7 @@ function EntryArea() {
   }
 
   function saveRecord() {
+    console.log("saveRecord");
     console.log("showIncome: ", showIncome);
     console.log("record: ", record);
     console.log("records: ", records);
