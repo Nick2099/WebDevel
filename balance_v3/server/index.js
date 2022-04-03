@@ -59,7 +59,7 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/getgroups", (req, res) => {
-  db.query("SELECT id, name FROM mybalance.groups", (err, result) => {
+  db.query("SELECT id, name FROM mybalance.groups ORDER BY name ASC", (err, result) => {
     if (err) {
       res.send([{ error: err }]);
     } else {
@@ -70,8 +70,7 @@ app.get("/getgroups", (req, res) => {
 
 app.get("/getsubgroups", (req, res) => {
   db.query(
-    // 'SELECT id, name FROM mybalance.subgroups WHERE groupid="' + String(req.query.group) + '" ORDER BY name', //
-    "SELECT id, groupid, name FROM mybalance.subgroups",
+    "SELECT id, groupid, name FROM mybalance.subgroups ORDER BY name ASC",
     (err, result) => {
       if (err) {
         res.send([{ error: err }]);
@@ -83,7 +82,6 @@ app.get("/getsubgroups", (req, res) => {
 });
 
 app.get("/userid", (req, res) => {
-  //treba sifrirati password
   db.query(
     'SELECT id, email, password, name FROM users WHERE email="' +
       req.query.email +
@@ -108,137 +106,6 @@ app.get("/userid", (req, res) => {
   );
 });
 
-app.post("/saverecordsexp", async (req, res) => {
-  const record = req.body.record;
-  const records = req.body.records;
-  let tmperr = "";
-
-  function nextRecID() {
-    return new Promise((resolve) => {
-      db.query("SELECT MAX(recid) AS lastrecid FROM records", (err, rows) => {
-        if (err) {
-          resolve({ status: "Error" });
-        } else {
-          resolve({ status: "OK", no: rows[0].lastrecid + 1 });
-        }
-      });
-    });
-  }
-
-  const insertRecords = async ({ record, records, nextrecid }) => {
-    const allAsyncResults = [];
-    for (const tmpRecord of records) {
-      const asyncResult = await insertRecord({
-        record: record,
-        tmpRecord: tmpRecord,
-        nextrecid: nextrecid,
-      });
-      allAsyncResults.push(asyncResult);
-    }
-    return allAsyncResults;
-  };
-
-  async function insertRecord({ record, tmpRecord, nextrecid }) {
-    return new Promise((resolve) => {
-      db.query(
-        "INSERT INTO mybalance.records (recid,userid,locuser,date,place,totinc,totexp,inc,exp,gr,sgr) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-        [
-          nextrecid,
-          record.userid,
-          record.locuser,
-          record.date,
-          record.place,
-          0,
-          record.totexp,
-          0,
-          tmpRecord.amount,
-          tmpRecord.groupid,
-          tmpRecord.subgroupid,
-        ],
-        (error, result) => {
-          if (error) {
-            resolve({ status: "Error", error: error.sqlMessage });
-          } else {
-            resolve({ status: "OK" });
-          }
-        }
-      );
-    });
-  }
-
-  let nextrecid = await nextRecID();
-  await insertRecords({
-    record: record,
-    records: records,
-    nextrecid: nextrecid.no,
-  }).then((status) => {
-    let tmpStatus = { status: "OK" };
-    for (const item of status) {
-      if (item.status === "Error") {
-        tmpStatus = {
-          status: "Error",
-          error: "Error by inserting records in records",
-        };
-      }
-    }
-    res.send(tmpStatus);
-  });
-});
-
-app.post("/saverecordsinc", async (req, res) => {
-  const record = req.body.record;
-  let tmperr = "";
-
-  function nextRecID() {
-    return new Promise((resolve) => {
-      db.query("SELECT MAX(recid) AS lastrecid FROM records", (err, rows) => {
-        if (err) {
-          resolve({ status: "Error" });
-        } else {
-          resolve({ status: "OK", no: rows[0].lastrecid + 1 });
-        }
-      });
-    });
-  }
-
-  async function insertRecordInc({ record, nextrecid }) {
-    return new Promise((resolve) => {
-      db.query(
-        "INSERT INTO mybalance.records (recid,userid,locuser,date,place,totinc,totexp,inc,exp,gr,sgr) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-        [
-          nextrecid,
-          record.userid,
-          record.locuser,
-          record.date,
-          record.place,
-          record.totinc,
-          0,
-          0,
-          0,
-          0,
-          0,
-        ],
-        (error, result) => {
-          if (error) {
-            resolve({ status: "Error", error: error.sqlMessage });
-          } else {
-            resolve({ status: "OK" });
-          }
-        }
-      );
-    });
-  }
-
-  let nextrecid = await nextRecID();
-  await insertRecordInc({
-    record: record,
-    nextrecid: nextrecid.no,
-  }).then((status) => {
-    res.send(status);
-  });
-});
-
-// changing the way how the records will be saved //
 app.post("/saverecords2", async (req, res) => {
   const record = req.body.record;
   const records = req.body.records;
@@ -246,9 +113,9 @@ app.post("/saverecords2", async (req, res) => {
 
   function nextRecID() {
     return new Promise((resolve) => {
-      db.query("SELECT MAX(recid) AS lastrecid FROM records", (err, rows) => {
+      db.query("SELECT MAX(recid) AS lastrecid FROM records2", (err, rows) => {
         if (err) {
-          resolve({ status: "Error" });
+          resolve({ status: "Error", error: err });
         } else {
           resolve({ status: "OK", no: rows[0].lastrecid + 1 });
         }
@@ -297,24 +164,27 @@ app.post("/saverecords2", async (req, res) => {
   }
 
   let nextrecid = await nextRecID();
-  await insertRecords({
-    record: record,
-    records: records,
-    nextrecid: nextrecid.no,
-  }).then((status) => {
-    let tmpStatus = { status: "OK" };
-    for (const item of status) {
-      if (item.status === "Error") {
-        tmpStatus = {
-          status: "Error",
-          error: "Error by inserting records in records",
-        };
+  if (nextrecid.status === "OK") {
+    await insertRecords({
+      record: record,
+      records: records,
+      nextrecid: nextrecid.no,
+    }).then((status) => {
+      let tmpStatus = { status: "OK" };
+      for (const item of status) {
+        if (item.status === "Error") {
+          tmpStatus = {
+            status: "Error",
+            error: item.error,
+          };
+        }
       }
-    }
-    res.send(tmpStatus);
-  });
+      res.send(tmpStatus);
+    });
+  } else {
+    res.send({status: "Error", error: nextrecid.error})    
+  }
 });
-
 
 app.listen(3001, () => {
   console.log("Server is running on port 3001!");

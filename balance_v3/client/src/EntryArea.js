@@ -39,18 +39,18 @@ function EntryArea() {
     getLocalUsers();
     Functions.getGroups().then((value) => {
       groups.current = value;
-      // console.log("Groups are loaded: ", groups.current);
       Functions.getSubGroups().then((value) => {
         subgroups.current = value;
-        // console.log("Subgroups are loaded: ", subgroups.current);
         Functions.removeSubgroups({
           subgroups: subgroups.current,
           records,
         }).then((value) => {
           newsubgroups.current = value;
-          // console.log("Newsubgroups are created: ", newsubgroups.current);
           Functions.removeAllOptionsFromSelect("select_group").then(
-            Functions.fillGroups({newgroups: groups.current, choosenentry: showIncome})
+            Functions.fillGroups({
+              newgroups: groups.current,
+              choosenentry: showIncome,
+            })
           );
           Functions.removeAllOptionsFromSelect("select_subgroup").then(
             (value) => {
@@ -208,7 +208,7 @@ function EntryArea() {
       document.getElementById("inc").disabled = false;
       document.getElementById("exp").disabled = false;
       document.getElementById("cto").disabled = false;
-  }
+    }
     removeRows();
     setNewGroupsAndSubgroups();
     records.forEach((tmpRecord, index) => {
@@ -258,9 +258,10 @@ function EntryArea() {
           // console.log("setNewGroupsAndSubgroups: newgroups: ", newgroups);
           // console.log("setNewGroupsAndSubgroups: showIncome: ", showIncome);
           Functions.removeAllOptionsFromSelect("select_group").then(
-            Functions.fillGroups({newgroups: newgroups, choosenentry: showIncome}).then(
-              Functions.setTmpGroup(choosengroup.current)
-            )
+            Functions.fillGroups({
+              newgroups: newgroups,
+              choosenentry: showIncome,
+            }).then(Functions.setTmpGroup(choosengroup.current))
           );
           Functions.removeAllOptionsFromSelect("select_subgroup").then(
             (value) => {
@@ -291,17 +292,11 @@ function EntryArea() {
   }
 
   function saveRecord() {
-    console.log("saveRecord");
-    console.log("showIncome: ", showIncome);
-    console.log("record: ", record);
-    console.log("records: ", records);
     if (records.length > 0) {
-      // if there is something to save
       Axios.post("http://localhost:3001/saverecords2", {
         record: record,
         records: records,
       }).then(function (response) {
-        console.log("saveRecordsExp response: ", response.data);
         if (response.data.status === "Error") {
           alert(response.data.error);
         }
@@ -317,14 +312,17 @@ function EntryArea() {
           cur: "",
         };
         records = [];
-
+        // setting new data and visiablity
         document.getElementById("place").value = "";
         document.getElementById("totamount").value = (0).toFixed(2);
         document.getElementById("amount").readOnly = true;
         document.getElementById("select_date").readOnly = false;
         document.getElementById("place").readOnly = false;
         document.getElementById("totamount").readOnly = false;
-
+        document.getElementById("inc").disabled = false;
+        document.getElementById("exp").disabled = false;
+        document.getElementById("cto").disabled = false;
+  
         removeRows();
         setNewGroupsAndSubgroups();
         records.forEach((tmpRecord, index) => {
