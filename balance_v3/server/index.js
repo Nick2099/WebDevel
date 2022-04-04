@@ -58,8 +58,8 @@ app.post("/register", (req, res) => {
   });
 });
 
-app.get("/getgroups", (req, res) => {
-  db.query("SELECT id, name FROM mybalance.groups ORDER BY name ASC", (err, result) => {
+app.get("/getbasicgroups", (req, res) => {
+  db.query("SELECT id, name FROM mybalance.basicgroups ORDER BY name ASC", (err, result) => {
     if (err) {
       res.send([{ error: err }]);
     } else {
@@ -83,7 +83,7 @@ app.get("/getsubgroups", (req, res) => {
 
 app.get("/userid", (req, res) => {
   db.query(
-    'SELECT id, email, password, name FROM users WHERE email="' +
+    'SELECT id, userid, email, password, name FROM users WHERE email="' +
       req.query.email +
       '"',
     (err, result) => {

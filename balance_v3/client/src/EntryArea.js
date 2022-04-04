@@ -37,7 +37,7 @@ function EntryArea() {
 
   useEffect(() => {
     getLocalUsers();
-    Functions.getGroups().then((value) => {
+    Functions.getBasicGroups().then((value) => {
       groups.current = value;
       Functions.getSubGroups().then((value) => {
         subgroups.current = value;
@@ -71,7 +71,7 @@ function EntryArea() {
   function getLocalUsers() {
     var opt = document.createElement("option");
     opt.innerHTML = tmpUser.name;
-    opt.value = 0;
+    opt.value = tmpUser.id;
     opt.setAttribute("selected", true);
     var sel = document.getElementById("select_person");
     sel.appendChild(opt);
@@ -124,7 +124,7 @@ function EntryArea() {
       alert("Total amount can't be smaller or equal to 0 !");
     } else {
       if (lastRecord === 0) {
-        record.userid = tmpUser.id;
+        record.userid = tmpUser.userid;
         record.locuser = Number(document.getElementById("select_person").value);
         record.date = document.getElementById("select_date").value;
         record.place = document.getElementById("place").value;
@@ -249,19 +249,24 @@ function EntryArea() {
     Functions.removeSubgroups({ subgroups: subgroups.current, records }).then(
       (value) => {
         newsubgroups.current = value;
-        // console.log("setNewGroupsAndSubgroups: newsubgroups.current: ", newsubgroups.current);
         Functions.removeGroups({
           groups: groups.current,
           newsubgroups: newsubgroups.current,
         }).then((value) => {
           newgroups = value;
-          // console.log("setNewGroupsAndSubgroups: newgroups: ", newgroups);
-          // console.log("setNewGroupsAndSubgroups: showIncome: ", showIncome);
           Functions.removeAllOptionsFromSelect("select_group").then(
             Functions.fillGroups({
               newgroups: newgroups,
               choosenentry: showIncome,
-            }).then(Functions.setTmpGroup(choosengroup.current))
+            }).then((value) => {
+              console.log("value of fillGroups", value);
+              if (value) {
+                document.getElementById("button_addRecord").disabled = false;
+              } else {
+                document.getElementById("button_addRecord").disabled = true;
+              };
+              Functions.setTmpGroup(choosengroup.current)
+            })
           );
           Functions.removeAllOptionsFromSelect("select_subgroup").then(
             (value) => {
@@ -439,7 +444,7 @@ function EntryArea() {
                 ></input>
               </td>
               <td>
-                <button className="main" type="button" onClick={addRecord}>
+                <button className="main" type="button" id="button_addRecord" onClick={addRecord}>
                   Add record
                 </button>
               </td>

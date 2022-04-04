@@ -1,8 +1,8 @@
 import Axios from "axios";
 
-export function getGroups() {
+export function getBasicGroups() {
   return new Promise((resolve, reject) => {
-    Axios.get("http://localhost:3001/getgroups", {
+    Axios.get("http://localhost:3001/getbasicgroups", {
       params: {},
     })
       .then((resp) => {
@@ -17,38 +17,42 @@ export function getGroups() {
 export function fillGroups(props) {
   let value = props.newgroups;
   let choosenentry = Number(props.choosenentry);
+  let thereAreResults = false;
   if (choosenentry === 1 || choosenentry === undefined) {
     for (let i = 0; i < value.length; i++) {
-      if (value[i].id>0) {
+      if (value[i].id>2) {
         let options = document.createElement("option");
         options.innerHTML = value[i].name;
         options.value = value[i].id;
         options.id = "group_opt_" + value[i].id;
-        document.getElementById("select_group").appendChild(options);  
+        document.getElementById("select_group").appendChild(options);
+        thereAreResults = true;
       }
     }
   } else if (choosenentry===2) {
     for (let i = 0; i < value.length; i++) {
-      if (value[i].id===-1) {
+      if (value[i].id===1) {
         let options = document.createElement("option");
         options.innerHTML = value[i].name;
         options.value = value[i].id;
         options.id = "group_opt_" + value[i].id;
         document.getElementById("select_group").appendChild(options);  
+        thereAreResults = true;
       }
     }
   } else { // should be only 9 left
     for (let i = 0; i < value.length; i++) {
-      if (value[i].id===0) {
+      if (value[i].id===2) {
         let options = document.createElement("option");
         options.innerHTML = value[i].name;
         options.value = value[i].id;
         options.id = "group_opt_" + value[i].id;
         document.getElementById("select_group").appendChild(options);  
+        thereAreResults = true;
       }
     }
   }
-  return Promise.resolve(0);
+  return Promise.resolve(thereAreResults);
 }
 
 export function setTmpGroup(value) {

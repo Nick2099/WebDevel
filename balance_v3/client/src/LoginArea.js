@@ -52,6 +52,7 @@ function LoginArea() {
           name: name,
           logedin: true,
           id: response.data.id,
+          userid: response.data.userid,
         });
         setPage((prevState) => {
           return {
@@ -78,12 +79,14 @@ function LoginArea() {
         password: password,
       },
     }).then((resp) => {
+      console.log("resp.data[0]: ", resp.data[0]);
       if (resp.data[0].id > 0) {
         setTmpUser({
           email: resp.data[0].email,
           name: resp.data[0].name,
           logedin: true,
           id: resp.data[0].id,
+          userid: resp.data[0].userid,
         });
         setPage((prevState) => {
           return {
@@ -107,12 +110,14 @@ function LoginArea() {
         password: "pass",
       },
     }).then((resp) => {
+      console.log("resp.data[0]: ", resp.data[0]);
       if (resp.data[0].id > 0) {
         setTmpUser({
           email: resp.data[0].email,
           name: resp.data[0].name,
           logedin: true,
           id: resp.data[0].id,
+          userid: resp.data[0].userid,
         });
         setPage((prevState) => {
           return {
@@ -132,8 +137,8 @@ function LoginArea() {
   async function guestLogin() { // I have to change this function to be logged as a guest //
     Axios.get("http://localhost:3001/userid", {
       params: {
-        email: "nikicadadic@gmail.com",
-        password: "pass",
+        email: "jully061282@gmail.com",
+        password: "qwer",
       },
     }).then((resp) => {
       if (resp.data[0].id > 0) {
@@ -142,6 +147,7 @@ function LoginArea() {
           name: resp.data[0].name,
           logedin: true,
           id: resp.data[0].id,
+          userid: resp.data[0].userid,
         });
         setPage((prevState) => {
           return {
@@ -171,7 +177,7 @@ function LoginArea() {
         getUserID();
       }
     } else {
-      setTmpUser({ email: "", name: "", logedin: false, id: 0 });
+      setTmpUser({ email: "", name: "", logedin: false, id: 0 , userid: 0});
       setPage((prevState) => {
         return { ...prevState, showLogin: false };
       });
@@ -180,11 +186,6 @@ function LoginArea() {
 
   useEffect(() => {
     Functions.checkPass(password).then((value) => {
-      /* if (value[5]) {
-        setPasswordTxt(" - ✅ ❎");
-      } else {
-        setPasswordTxt(" - ✓ ✗" + value);
-      } */
       setChecked(value);
     });
   }, [password]);

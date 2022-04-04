@@ -5,6 +5,7 @@ export const TmpUserContext = createContext();
 export const TmpUserProvider = (props) => {
     const [tmpUser, setTmpUser] = useState({
         id: 0,
+        userid: 0,  // when is the same as id then that is an administrator
         email: "",
         pass: "",
         mode: false,    //true - premium user, false - basic-free user
