@@ -45,15 +45,17 @@ function LoginArea() {
       mode: true,
       demoonly: false,
       confirmed: true,
+      admin: 1,
     }).then(function (response) {
       if (response.data.status === "ok") {
-        setTmpUser({
+        getUserID();
+        /* setTmpUser({
           email: email,
           name: name,
           logedin: true,
           id: response.data.id,
           userid: response.data.userid,
-        });
+        }); */
         setPage((prevState) => {
           return {
             ...prevState,
@@ -87,6 +89,10 @@ function LoginArea() {
           logedin: true,
           id: resp.data[0].id,
           userid: resp.data[0].userid,
+          mode: resp.data[0].mode,
+          demoonly: resp.data[0].demoonly,
+          confirmed: resp.data[0].confirmed,
+          admin: resp.data[0].admin,
         });
         setPage((prevState) => {
           return {
@@ -135,6 +141,11 @@ function LoginArea() {
   }
 
   async function guestLogin() { // I have to change this function to be logged as a guest //
+    setEmail("jully061282@gmail.com");
+    setPassword("qwer");
+    // getUserID();
+
+    /*
     Axios.get("http://localhost:3001/userid", {
       params: {
         email: "jully061282@gmail.com",
@@ -162,6 +173,7 @@ function LoginArea() {
         alert(resp.data[0].error);
       }
     });
+    */
   }
 
   const formSubmit = (e) => {

@@ -18,9 +18,9 @@ export function fillGroups(props) {
   let value = props.newgroups;
   let choosenentry = Number(props.choosenentry);
   let thereAreResults = false;
-  if (choosenentry === 1 || choosenentry === undefined) {
+  if (choosenentry === 1 || choosenentry === undefined) {  // Expense
     for (let i = 0; i < value.length; i++) {
-      if (value[i].id>2) {
+      if (value[i].id>9) {
         let options = document.createElement("option");
         options.innerHTML = value[i].name;
         options.value = value[i].id;
@@ -29,9 +29,20 @@ export function fillGroups(props) {
         thereAreResults = true;
       }
     }
-  } else if (choosenentry===2) {
+  } else if (choosenentry===2) {  // Income
     for (let i = 0; i < value.length; i++) {
       if (value[i].id===1) {
+        let options = document.createElement("option");
+        options.innerHTML = value[i].name;
+        options.value = value[i].id;
+        options.id = "group_opt_" + value[i].id;
+        document.getElementById("select_group").appendChild(options);  
+        thereAreResults = true;
+      }
+    }
+  } else if (choosenentry===8) {  // Transfer
+    for (let i = 0; i < value.length; i++) {
+      if (value[i].id===3) {
         let options = document.createElement("option");
         options.innerHTML = value[i].name;
         options.value = value[i].id;
@@ -52,6 +63,7 @@ export function fillGroups(props) {
       }
     }
   }
+  console.log("in fillGroups: ", thereAreResults);
   return Promise.resolve(thereAreResults);
 }
 

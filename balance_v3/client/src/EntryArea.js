@@ -50,6 +50,14 @@ function EntryArea() {
             Functions.fillGroups({
               newgroups: groups.current,
               choosenentry: showIncome,
+            }).then((value) => {
+              console.log("value of fillGroups at start", value);
+              if (value) {
+                document.getElementById("button_addRecord").disabled = false;
+              } else {
+                document.getElementById("button_addRecord").disabled = true;
+              }
+              Functions.setTmpGroup(choosengroup.current);
             })
           );
           Functions.removeAllOptionsFromSelect("select_subgroup").then(
@@ -246,42 +254,46 @@ function EntryArea() {
   }
 
   function setNewGroupsAndSubgroups() {
-    Functions.removeSubgroups({ subgroups: subgroups.current, records }).then(
-      (value) => {
-        newsubgroups.current = value;
-        Functions.removeGroups({
-          groups: groups.current,
-          newsubgroups: newsubgroups.current,
-        }).then((value) => {
-          newgroups = value;
-          Functions.removeAllOptionsFromSelect("select_group").then(
-            Functions.fillGroups({
-              newgroups: newgroups,
-              choosenentry: showIncome,
-            }).then((value) => {
-              console.log("value of fillGroups", value);
-              if (value) {
-                document.getElementById("button_addRecord").disabled = false;
-              } else {
-                document.getElementById("button_addRecord").disabled = true;
-              };
-              Functions.setTmpGroup(choosengroup.current)
-            })
-          );
-          Functions.removeAllOptionsFromSelect("select_subgroup").then(
-            (value) => {
-              let tmpGroup = document.getElementById("select_group").value;
-              Functions.getUsedSubGroups({
-                newsubgroups: newsubgroups.current,
-                tmpGroup,
-              }).then((value) => {
-                Functions.fillSubGroups(value);
-              });
+    Functions.removeSubgroups({
+      subgroups: subgroups.current,
+      records,
+    }).then((value) => {
+      newsubgroups.current = value;
+      Functions.removeGroups({
+        groups: groups.current,
+        newsubgroups: newsubgroups.current,
+      }).then((value) => {
+        newgroups = value;
+        Functions.removeAllOptionsFromSelect("select_group").then(
+          Functions.fillGroups({
+            newgroups: newgroups,
+            choosenentry: showIncome,
+          }).then((value) => {
+            console.log(
+              "value of fillGroups in setNewGroupsAndSubgroups: ",
+              value
+            );
+            if (value) {
+              document.getElementById("button_addRecord").disabled = false;
+            } else {
+              document.getElementById("button_addRecord").disabled = true;
             }
-          );
-        });
-      }
-    );
+            Functions.setTmpGroup(choosengroup.current);
+          })
+        );
+        Functions.removeAllOptionsFromSelect("select_subgroup").then(
+          (value) => {
+            let tmpGroup = document.getElementById("select_group").value;
+            Functions.getUsedSubGroups({
+              newsubgroups: newsubgroups.current,
+              tmpGroup,
+            }).then((value) => {
+              Functions.fillSubGroups(value);
+            });
+          }
+        );
+      });
+    });
   }
 
   function totamountChange() {
@@ -327,7 +339,7 @@ function EntryArea() {
         document.getElementById("inc").disabled = false;
         document.getElementById("exp").disabled = false;
         document.getElementById("cto").disabled = false;
-  
+
         removeRows();
         setNewGroupsAndSubgroups();
         records.forEach((tmpRecord, index) => {
@@ -365,6 +377,14 @@ function EntryArea() {
           defaultChecked
         ></input>
         <label>Expense</label>
+        <input
+          type="radio"
+          id="tra"
+          name="incexp"
+          value="8"
+          onChange={incexpChange}
+        ></input>
+        <label>Transfer</label>
         <input
           type="radio"
           id="cto"
@@ -444,7 +464,12 @@ function EntryArea() {
                 ></input>
               </td>
               <td>
-                <button className="main" type="button" id="button_addRecord" onClick={addRecord}>
+                <button
+                  className="main"
+                  type="button"
+                  id="button_addRecord"
+                  onClick={addRecord}
+                >
                   Add record
                 </button>
               </td>

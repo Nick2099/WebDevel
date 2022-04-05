@@ -27,12 +27,13 @@ app.post("/register", (req, res) => {
   const mode = req.body.mode;
   const demoonly = req.body.demoonly;
   const confirmed = req.body.confirmed;
+  const admin = req.body.admin;
 
   bcrypt.genSalt(10, function (err, salt) {
     bcrypt.hash(password, salt, function (err, hash) {
       db.query(
-        "INSERT INTO users (name, email, password, mode, demoonly, confirmed) VALUES (?, ?, ?, ?, ?, ?)",
-        [name, email, hash, mode, demoonly, confirmed],
+        "INSERT INTO users (name, email, password, mode, demoonly, confirmed, admin) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [name, email, hash, mode, demoonly, confirmed, admin],
         (err, result) => {
           if (err) {
             res.send({ status: "error", error: err.code });
@@ -83,7 +84,7 @@ app.get("/getsubgroups", (req, res) => {
 
 app.get("/userid", (req, res) => {
   db.query(
-    'SELECT id, userid, email, password, name FROM users WHERE email="' +
+    'SELECT id, userid, email, password, mode, demoonly, confirmed, name, admin FROM users WHERE email="' +
       req.query.email +
       '"',
     (err, result) => {

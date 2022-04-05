@@ -15,7 +15,8 @@ export const TmpUserProvider = (props) => {
         created: "",
         lastlogin: "",
         lastlogout: "",
-        logedin: false  // not in users table
+        logedin: false,  // not in users table
+        admin: 0    // 1 - Admin
         }
     );
     return(
