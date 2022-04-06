@@ -39,39 +39,47 @@ function EntryArea() {
     getLocalUsers();
     Functions.getBasicGroups().then((value) => {
       groups.current = value;
+      console.log("getBasicGroups: ", groups.current);
       Functions.getSubGroups().then((value) => {
         subgroups.current = value;
-        Functions.getTransferSubGroupsNames(tmpUser.id);
-        Functions.removeSubgroups({
-          subgroups: subgroups.current,
-          records,
-        }).then((value) => {
-          newsubgroups.current = value;
-          Functions.removeAllOptionsFromSelect("select_group").then(
-            Functions.fillGroups({
-              newgroups: groups.current,
-              choosenentry: showIncome,
+        Functions.getTransferSubGroupsNames(tmpUser.id).then((value) => {
+          Functions.joinSubGroups(subgroups.current, value).then((value) => {
+            subgroups.current = value;
+            console.log("joinSubGroups result: ", subgroups.current);
+            Functions.removeSubgroups({
+              subgroups: subgroups.current,
+              records,
             }).then((value) => {
-              console.log("value of fillGroups at start", value);
-              if (value) {
-                document.getElementById("button_addRecord").disabled = false;
-              } else {
-                document.getElementById("button_addRecord").disabled = true;
-              }
-              Functions.setTmpGroup(choosengroup.current);
-            })
-          );
-          Functions.removeAllOptionsFromSelect("select_subgroup").then(
-            (value) => {
-              let tmpGroup = document.getElementById("select_group").value;
-              Functions.getUsedSubGroups({
-                newsubgroups: newsubgroups.current,
-                tmpGroup,
-              }).then((value) => {
-                Functions.fillSubGroups(value);
-              });
-            }
-          );
+              newsubgroups.current = value;
+              Functions.removeAllOptionsFromSelect("select_group").then(
+                Functions.fillGroups({
+                  newgroups: groups.current,
+                  choosenentry: showIncome,
+                }).then((value) => {
+                  console.log("value of fillGroups at start", value);
+                  if (value) {
+                    document.getElementById(
+                      "button_addRecord"
+                    ).disabled = false;
+                  } else {
+                    document.getElementById("button_addRecord").disabled = true;
+                  }
+                  Functions.setTmpGroup(choosengroup.current);
+                })
+              );
+              Functions.removeAllOptionsFromSelect("select_subgroup").then(
+                (value) => {
+                  let tmpGroup = document.getElementById("select_group").value;
+                  Functions.getUsedSubGroups({
+                    newsubgroups: newsubgroups.current,
+                    tmpGroup,
+                  }).then((value) => {
+                    Functions.fillSubGroups(value);
+                  });
+                }
+              );
+            });
+          });
         });
       });
     });
@@ -310,6 +318,27 @@ function EntryArea() {
   }
 
   function saveRecord() {
+    let transferrecord = [];
+    let transferrecords = [];
+    Functions.createRecordsIfTranfer(record, records).then((value) => {
+      console.log("Created: ", value);
+      transferrecord = value.record;
+      transferrecords = value.records;
+      // saving only for transfer
+      if (transferrecords.length > 0) {
+        Axios.post("http://localhost:3001/saverecords2", {
+          record: transferrecord,
+          records: transferrecords,
+        }).then(function (response) {
+          if (response.data.status === "Error") {
+            alert(response.data.error);
+          }
+        });
+      } else {
+        // if there is nothing to save
+        console.log("Nothing to save for transfer records!");
+      }
+    });
     if (records.length > 0) {
       Axios.post("http://localhost:3001/saverecords2", {
         record: record,
@@ -382,7 +411,7 @@ function EntryArea() {
           type="radio"
           id="tra"
           name="incexp"
-          value="8"
+          value="3"
           onChange={incexpChange}
         ></input>
         <label>Transfer</label>

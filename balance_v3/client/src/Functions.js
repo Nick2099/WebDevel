@@ -18,9 +18,10 @@ export function fillGroups(props) {
   let value = props.newgroups;
   let choosenentry = Number(props.choosenentry);
   let thereAreResults = false;
-  if (choosenentry === 1 || choosenentry === undefined) {  // Expense
+  if (choosenentry === 1 || choosenentry === undefined) {
+    // Expense
     for (let i = 0; i < value.length; i++) {
-      if (value[i].id>9) {
+      if (value[i].id > 9) {
         let options = document.createElement("option");
         options.innerHTML = value[i].name;
         options.value = value[i].id;
@@ -29,36 +30,42 @@ export function fillGroups(props) {
         thereAreResults = true;
       }
     }
-  } else if (choosenentry===2) {  // Income
+  } else if (choosenentry === 2) {
+    // Income
     for (let i = 0; i < value.length; i++) {
-      if (value[i].id===1) {
+      if (value[i].id === 1) {
         let options = document.createElement("option");
         options.innerHTML = value[i].name;
         options.value = value[i].id;
         options.id = "group_opt_" + value[i].id;
-        document.getElementById("select_group").appendChild(options);  
+        document.getElementById("select_group").appendChild(options);
         thereAreResults = true;
       }
     }
-  } else if (choosenentry===8) {  // Transfer
+  } else if (choosenentry === 3) {
+    // Transfer
+    console.log("Transfer!");
+    console.log("value: ", value);
     for (let i = 0; i < value.length; i++) {
-      if (value[i].id===3) {
+      if (value[i].id === 3) {
+        console.log("inside the for loop");
         let options = document.createElement("option");
         options.innerHTML = value[i].name;
         options.value = value[i].id;
         options.id = "group_opt_" + value[i].id;
-        document.getElementById("select_group").appendChild(options);  
+        document.getElementById("select_group").appendChild(options);
         thereAreResults = true;
       }
     }
-  } else { // should be only 9 left
+  } else {
+    // should be only 9 left
     for (let i = 0; i < value.length; i++) {
-      if (value[i].id===2) {
+      if (value[i].id === 2) {
         let options = document.createElement("option");
         options.innerHTML = value[i].name;
         options.value = value[i].id;
         options.id = "group_opt_" + value[i].id;
-        document.getElementById("select_group").appendChild(options);  
+        document.getElementById("select_group").appendChild(options);
         thereAreResults = true;
       }
     }
@@ -79,19 +86,50 @@ export function setTmpGroup(value) {
 
 export function getSubGroups() {
   return new Promise((resolve, reject) => {
-    // let tmpValue = String(document.getElementById("select_group").value);
-    Axios.get("http://localhost:3001/getsubgroups", {
-      params: {
-        // group: tmpValue,
-      },
-    })
+    Axios.get("http://localhost:3001/getsubgroups", { params: {} })
       .then((resp) => {
         resolve(resp.data);
       })
       .catch((err) => {
-        console.log("Error: ", err);
+        resolve({Error: err});
       });
   });
+}
+
+export function joinSubGroups(subgroup1, subgroup2) {
+  return new Promise((resolve, reject) => {
+    let tmp = subgroup1.concat(subgroup2);
+    console.log("Functions.joinSubGroups. ", tmp);
+    resolve(tmp);
+  });
+}
+
+export function createRecordsIfTranfer(record, records) {
+  return new Promise((resolve, reject) => {
+    console.log("Functions.createRecordsIfTranfer");
+    console.log("record: ", record);
+    console.log("records: ", records);
+    let newRecord = {};
+    let newRecords = [];
+    if (record.type===3) {
+      for (let i=0; i<records.length; i++) {
+        newRecords.push({
+          amount : records[i].amount,
+          groupid: 4,
+          subgroupid: record.locuser
+        })
+      };
+      newRecord.userid = record.userid;
+      newRecord.locuser = records[0].subgroupid;
+      newRecord.date = record.date;
+      newRecord.place = record.place;
+      newRecord.type = 4;
+      newRecord.cur = record.cur;
+    }
+
+    console.log("new: ", newRecord, newRecords);
+    resolve({record: newRecord, records: newRecords});
+  })
 }
 
 export function getTransferSubGroupsNames(value) {
@@ -105,21 +143,20 @@ export function getTransferSubGroupsNames(value) {
         let tmpdata = resp.data;
         console.log("tmpdata: ", tmpdata);
         let tmpSubGroup = [{}];
-        for (let i=0; i<tmpdata.length; i++) {
+        for (let i = 0; i < tmpdata.length; i++) {
           console.log("i, tmpdata[i]: ", i, tmpdata[i]);
-          tmpSubGroup[i].id=tmpdata[i].id;
-          tmpSubGroup[i].groupid=3;
-          tmpSubGroup[i].name=tmpdata[i].name;
-        };
+          tmpSubGroup[i].id = tmpdata[i].id;
+          tmpSubGroup[i].groupid = 3;
+          tmpSubGroup[i].name = tmpdata[i].name;
+        }
         console.log("tmpSubGroup", tmpSubGroup);
-        resolve(resp.data);
+        resolve(tmpSubGroup);
       })
       .catch((err) => {
         console.log("Error: ", err);
       });
   });
 }
-
 
 export function fillSubGroups(value) {
   for (var i = 0; i < value.length; i++) {
