@@ -9,7 +9,6 @@ function LoginArea() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  // const [passwordTxt, setPasswordTxt] = useState(""); //
   const [repeat, setRepeat] = useState("");
   const [repeatTxt, setRepeatTxt] = useState("");
   const [tmpUser, setTmpUser] = useContext(TmpUserContext);
@@ -49,13 +48,6 @@ function LoginArea() {
     }).then(function (response) {
       if (response.data.status === "ok") {
         getUserID();
-        /* setTmpUser({
-          email: email,
-          name: name,
-          logedin: true,
-          id: response.data.id,
-          userid: response.data.userid,
-        }); */
         setPage((prevState) => {
           return {
             ...prevState,
@@ -74,11 +66,24 @@ function LoginArea() {
     });
   }
 
-  async function getUserID() {
+  async function getUserID(props) {
+    console.log("getUserID email, password: ", email, password);
+    console.log("getUserID props: ", props);
+
+    let tmpemail = "";
+    let tmppassword = "";
+    if (props !== undefined) {
+      tmpemail = props.email;
+      tmppassword = props.password;
+    } else {
+      tmpemail = email;
+      tmppassword = password;
+    }
+
     Axios.get("http://localhost:3001/userid", {
       params: {
-        email: email,
-        password: password,
+        email: tmpemail,
+        password: tmppassword,
       },
     }).then((resp) => {
       console.log("resp.data[0]: ", resp.data[0]);
@@ -110,70 +115,11 @@ function LoginArea() {
   }
 
   async function adminLogin() {
-    Axios.get("http://localhost:3001/userid", {
-      params: {
-        email: "nikicadadic@gmail.com",
-        password: "pass",
-      },
-    }).then((resp) => {
-      console.log("resp.data[0]: ", resp.data[0]);
-      if (resp.data[0].id > 0) {
-        setTmpUser({
-          email: resp.data[0].email,
-          name: resp.data[0].name,
-          logedin: true,
-          id: resp.data[0].id,
-          userid: resp.data[0].userid,
-        });
-        setPage((prevState) => {
-          return {
-            ...prevState,
-            showLogin: false,
-            showEntry: true,
-            showEntryAdd: true,
-            showHome: false,
-          };
-        });
-      } else {
-        alert(resp.data[0].error);
-      }
-    });
+    getUserID({email: "nikicadadic@gmail.com", password: "pass"});
   }
 
-  async function guestLogin() { // I have to change this function to be logged as a guest //
-    setEmail("jully061282@gmail.com");
-    setPassword("qwer");
-    // getUserID();
-
-    /*
-    Axios.get("http://localhost:3001/userid", {
-      params: {
-        email: "jully061282@gmail.com",
-        password: "qwer",
-      },
-    }).then((resp) => {
-      if (resp.data[0].id > 0) {
-        setTmpUser({
-          email: resp.data[0].email,
-          name: resp.data[0].name,
-          logedin: true,
-          id: resp.data[0].id,
-          userid: resp.data[0].userid,
-        });
-        setPage((prevState) => {
-          return {
-            ...prevState,
-            showLogin: false,
-            showEntry: true,
-            showEntryAdd: true,
-            showHome: false,
-          };
-        });
-      } else {
-        alert(resp.data[0].error);
-      }
-    });
-    */
+  async function guestLogin() {
+      getUserID({email: "jully061282@gmail.com", password: "qwer"});
   }
 
   const formSubmit = (e) => {
@@ -189,7 +135,7 @@ function LoginArea() {
         getUserID();
       }
     } else {
-      setTmpUser({ email: "", name: "", logedin: false, id: 0 , userid: 0});
+      setTmpUser({ email: "", name: "", logedin: false, id: 0, userid: 0 });
       setPage((prevState) => {
         return { ...prevState, showLogin: false };
       });
