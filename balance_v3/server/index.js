@@ -82,6 +82,22 @@ app.get("/getsubgroups", (req, res) => {
   );
 });
 
+app.get("/gettransfersubgroups", (req, res) => {
+  console.log("req.query.id: ",  req.query.id);
+  db.query(
+    'SELECT id, name FROM mybalance.users WHERE userid = "' +req.query.id + '" AND id <> "' +req.query.id + '" ORDER BY name ASC',
+    (err, result) => {
+      if (err) {
+        res.send([{error: err}])
+      } else {
+        console.log(result);
+        res.send(result);
+      }
+    }
+  )
+});
+
+
 app.get("/userid", (req, res) => {
   db.query(
     'SELECT id, userid, email, password, mode, demoonly, confirmed, name, admin FROM users WHERE email="' +

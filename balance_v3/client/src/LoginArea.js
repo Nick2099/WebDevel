@@ -66,27 +66,13 @@ function LoginArea() {
     });
   }
 
-  async function getUserID(props) {
-    console.log("getUserID email, password: ", email, password);
-    console.log("getUserID props: ", props);
-
-    let tmpemail = "";
-    let tmppassword = "";
-    if (props !== undefined) {
-      tmpemail = props.email;
-      tmppassword = props.password;
-    } else {
-      tmpemail = email;
-      tmppassword = password;
-    }
-
+  async function getUserID(tmpemail = email, tmppassword = password) {
     Axios.get("http://localhost:3001/userid", {
       params: {
         email: tmpemail,
         password: tmppassword,
       },
     }).then((resp) => {
-      console.log("resp.data[0]: ", resp.data[0]);
       if (resp.data[0].id > 0) {
         setTmpUser({
           email: resp.data[0].email,
@@ -115,11 +101,11 @@ function LoginArea() {
   }
 
   async function adminLogin() {
-    getUserID({email: "nikicadadic@gmail.com", password: "pass"});
+    getUserID("nikicadadic@gmail.com", "pass");
   }
 
   async function guestLogin() {
-      getUserID({email: "jully061282@gmail.com", password: "qwer"});
+      getUserID("jully061282@gmail.com", "qwer");
   }
 
   const formSubmit = (e) => {

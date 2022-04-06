@@ -94,6 +94,33 @@ export function getSubGroups() {
   });
 }
 
+export function getTransferSubGroupsNames(value) {
+  return new Promise((resolve, reject) => {
+    Axios.get("http://localhost:3001/gettransfersubgroups", {
+      params: {
+        id: value,
+      },
+    })
+      .then((resp) => {
+        let tmpdata = resp.data;
+        console.log("tmpdata: ", tmpdata);
+        let tmpSubGroup = [{}];
+        for (let i=0; i<tmpdata.length; i++) {
+          console.log("i, tmpdata[i]: ", i, tmpdata[i]);
+          tmpSubGroup[i].id=tmpdata[i].id;
+          tmpSubGroup[i].groupid=3;
+          tmpSubGroup[i].name=tmpdata[i].name;
+        };
+        console.log("tmpSubGroup", tmpSubGroup);
+        resolve(resp.data);
+      })
+      .catch((err) => {
+        console.log("Error: ", err);
+      });
+  });
+}
+
+
 export function fillSubGroups(value) {
   for (var i = 0; i < value.length; i++) {
     var options = document.createElement("option");

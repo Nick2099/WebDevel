@@ -41,6 +41,7 @@ function EntryArea() {
       groups.current = value;
       Functions.getSubGroups().then((value) => {
         subgroups.current = value;
+        Functions.getTransferSubGroupsNames(tmpUser.id);
         Functions.removeSubgroups({
           subgroups: subgroups.current,
           records,
