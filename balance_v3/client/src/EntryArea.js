@@ -41,43 +41,48 @@ function EntryArea() {
       groups.current = value;
       Functions.getSubGroups().then((value) => {
         subgroups.current = value;
-        Functions.getTransferSubGroupsNames(tmpUser.id, tmpUser.userid).then((value) => {
-          Functions.joinSubGroups(subgroups.current, value).then((value) => {
-            subgroups.current = value;
-            Functions.removeSubgroups({
-              subgroups: subgroups.current,
-              records,
-            }).then((value) => {
-              newsubgroups.current = value;
-              Functions.removeAllOptionsFromSelect("select_group").then(
-                Functions.fillGroups({
-                  newgroups: groups.current,
-                  choosenentry: showIncome,
-                }).then((value) => {
-                  if (value) {
-                    document.getElementById(
-                      "button_addRecord"
-                    ).disabled = false;
-                  } else {
-                    document.getElementById("button_addRecord").disabled = true;
-                  }
-                  Functions.setTmpGroup(choosengroup.current);
-                })
-              );
-              Functions.removeAllOptionsFromSelect("select_subgroup").then(
-                (value) => {
-                  let tmpGroup = document.getElementById("select_group").value;
-                  Functions.getUsedSubGroups({
-                    newsubgroups: newsubgroups.current,
-                    tmpGroup,
+        Functions.getTransferSubGroupsNames(tmpUser.id, tmpUser.userid).then(
+          (value) => {
+            Functions.joinSubGroups(subgroups.current, value).then((value) => {
+              subgroups.current = value;
+              Functions.removeSubgroups({
+                subgroups: subgroups.current,
+                records,
+              }).then((value) => {
+                newsubgroups.current = value;
+                Functions.removeAllOptionsFromSelect("select_group").then(
+                  Functions.fillGroups({
+                    newgroups: groups.current,
+                    choosenentry: showIncome,
                   }).then((value) => {
-                    Functions.fillSubGroups(value);
-                  });
-                }
-              );
+                    if (value) {
+                      document.getElementById(
+                        "button_addRecord"
+                      ).disabled = false;
+                    } else {
+                      document.getElementById(
+                        "button_addRecord"
+                      ).disabled = true;
+                    }
+                    Functions.setTmpGroup(choosengroup.current);
+                  })
+                );
+                Functions.removeAllOptionsFromSelect("select_subgroup").then(
+                  (value) => {
+                    let tmpGroup =
+                      document.getElementById("select_group").value;
+                    Functions.getUsedSubGroups({
+                      newsubgroups: newsubgroups.current,
+                      tmpGroup,
+                    }).then((value) => {
+                      Functions.fillSubGroups(value);
+                    });
+                  }
+                );
+              });
             });
-          });
-        });
+          }
+        );
       });
     });
   }, []); //this runs only once because of empty parameters []
@@ -167,11 +172,11 @@ function EntryArea() {
         groupname: tmpGroupName,
         subgroupname: tmpSubGroupName,
         main: isMain,
-        comment: comment
+        comment: comment,
       });
       lastRecord = records.length - 1;
       showRecord({ data: records[lastRecord], no: lastRecord });
-      document.getElementById("comment").value="";
+      document.getElementById("comment").value = "";
       setNewGroupsAndSubgroups();
       recalculateFirstRecordValue();
       document.getElementById("select_group").focus();
@@ -465,11 +470,11 @@ function EntryArea() {
             <tr>
               <th>Group</th>
               <th>Subgroup</th>
+              <th>Comment</th>
               <th>Amount</th>
               <th>Add</th>
               <th>Delete</th>
               <th>Recuring</th>
-              <th>Comment</th>
             </tr>
           </thead>
           <tbody id="records">
@@ -483,6 +488,15 @@ function EntryArea() {
               </td>
               <td>
                 <select className="width_200" id="select_subgroup"></select>
+              </td>
+              <td>
+                <textarea
+                  id="comment"
+                  name="comment"
+                  rows="3"
+                  cols="25"
+                  maxlength="100"
+                ></textarea>
               </td>
               <td>
                 <input
@@ -504,10 +518,6 @@ function EntryArea() {
               </td>
               <td></td>
               <td></td>
-              <td>
-              <textarea id="comment" name="comment" rows="3" cols="25" maxlength="100">
-              </textarea>
-              </td>
             </tr>
           </tbody>
         </table>

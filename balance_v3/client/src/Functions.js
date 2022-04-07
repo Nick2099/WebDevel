@@ -228,6 +228,12 @@ export function showNewRecord(props) {
   label2.innerHTML = element.subgroupname;
   td2.appendChild(label2);
   tr.appendChild(td2);
+  var td7 = document.createElement("td");
+  var label7 = document.createElement("label");
+  label7.innerHTML = element.comment;
+  label7.id = "lab_comment" + String(no);
+  td7.appendChild(label7);
+  tr.appendChild(td7);
   var td3 = document.createElement("td");
   var label3 = document.createElement("label");
   label3.innerHTML = element.amount.toFixed(2);
@@ -264,17 +270,6 @@ export function showNewRecord(props) {
   check.id = "checkbox" + String(no);
   td6.appendChild(check);
   tr.appendChild(td6);
-  var td7 = document.createElement("td");
-  var label7 = document.createElement("label");
-  label7.innerHTML = element.comment;
-  label7.id = "lab_comment" + String(no);
-  // var button3 = document.createElement("button");
-  // button3.className = "main";
-  // button3.type = "button";
-  // button3.innerHTML = "Add";
-  // button3.id = "commentButton" + String(no);
-  td7.appendChild(label7);
-  tr.appendChild(td7);
 
   var recs = document.getElementById("records");
   recs.appendChild(tr);
