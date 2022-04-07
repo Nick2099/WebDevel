@@ -108,7 +108,8 @@ export function createRecordsIfTranfer(record, records) {
         newRecords.push({
           amount : records[i].amount,
           groupid: 4,
-          subgroupid: record.locuser
+          subgroupid: record.locuser,
+          comment: ""
         })
       };
       newRecord.userid = record.userid;
@@ -264,12 +265,15 @@ export function showNewRecord(props) {
   td6.appendChild(check);
   tr.appendChild(td6);
   var td7 = document.createElement("td");
-  var button3 = document.createElement("button");
-  button3.className = "main";
-  button3.type = "button";
-  button3.innerHTML = "Add";
-  button3.id = "commentButton" + String(no);
-  td7.appendChild(button3);
+  var label7 = document.createElement("label");
+  label7.innerHTML = element.comment;
+  label7.id = "lab_comment" + String(no);
+  // var button3 = document.createElement("button");
+  // button3.className = "main";
+  // button3.type = "button";
+  // button3.innerHTML = "Add";
+  // button3.id = "commentButton" + String(no);
+  td7.appendChild(label7);
   tr.appendChild(td7);
 
   var recs = document.getElementById("records");

@@ -159,6 +159,7 @@ function EntryArea() {
           tmpAmount = tmpRest;
         }
       }
+      let comment = document.getElementById("comment").value;
       records.push({
         groupid: tmpGroup,
         subgroupid: tmpSubGroup,
@@ -166,9 +167,11 @@ function EntryArea() {
         groupname: tmpGroupName,
         subgroupname: tmpSubGroupName,
         main: isMain,
+        comment: comment
       });
       lastRecord = records.length - 1;
       showRecord({ data: records[lastRecord], no: lastRecord });
+      document.getElementById("comment").value="";
       setNewGroupsAndSubgroups();
       recalculateFirstRecordValue();
       document.getElementById("select_group").focus();
@@ -297,6 +300,11 @@ function EntryArea() {
     });
   }
 
+  function totAmountFocusOut() {
+    var tmp = Number(document.getElementById("totamount").value);
+    document.getElementById("totamount").value = tmp.toFixed(2);
+  }
+
   function totamountChange() {
     var tmp = Number(document.getElementById("totamount").value);
     // document.getElementById("totamount").value = tmp.toFixed(2);
@@ -323,7 +331,7 @@ function EntryArea() {
         });
       } else {
         // if there is nothing to save
-        console.log("Nothing to save for transfer records!");
+        // console.log("Nothing to save for transfer records!");
       }
     });
     if (records.length > 0) {
@@ -344,6 +352,7 @@ function EntryArea() {
           place: "",
           type: 0,
           cur: "",
+          comment: "",
         };
         records = [];
         // setting new data and visiablity
@@ -444,6 +453,7 @@ function EntryArea() {
           className="width_100 right"
           defaultValue="0.00"
           onChange={totamountChange}
+          onBlur={totAmountFocusOut}
         ></input>
       </div>
 
@@ -456,7 +466,7 @@ function EntryArea() {
               <th>Group</th>
               <th>Subgroup</th>
               <th>Amount</th>
-              <th>Add record/amount</th>
+              <th>Add</th>
               <th>Delete</th>
               <th>Recuring</th>
               <th>Comment</th>
@@ -494,7 +504,10 @@ function EntryArea() {
               </td>
               <td></td>
               <td></td>
-              <td></td>
+              <td>
+              <textarea id="comment" name="comment" rows="3" cols="25" maxlength="100">
+              </textarea>
+              </td>
             </tr>
           </tbody>
         </table>

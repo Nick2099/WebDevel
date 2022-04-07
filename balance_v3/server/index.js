@@ -49,6 +49,11 @@ app.post("/register", (req, res) => {
                 if (err) {
                   res.send({ status: "error", error: "NOT_FOUND" });
                 } else {
+                  db.query('UPDATE users SET userid="' + result[0].id + '" WHERE id="' + result[0].id + '"', (err1, result1) => {
+                    if (err1) {
+                      res.send({ status: "error", error: "CAN'T UPDATE userID"});
+                    }
+                  });
                   res.send({ status: "ok", id: result[0].id });
                 }
               }
@@ -155,7 +160,7 @@ app.post("/saverecords2", async (req, res) => {
   async function insertRecord({ record, tmpRecord, nextrecid }) {
     return new Promise((resolve) => {
       db.query(
-        "INSERT INTO mybalance.records2 (recid,userid,locuser,date,place,gr,sgr,type,amount,cur) VALUES (?,?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO mybalance.records2 (recid,userid,locuser,date,place,gr,sgr,type,amount,cur, comment) VALUES (?, ?,?,?,?,?,?,?,?,?,?)",
         [
           nextrecid,
           record.userid,
@@ -167,6 +172,7 @@ app.post("/saverecords2", async (req, res) => {
           record.type,
           tmpRecord.amount,
           record.cur,
+          tmpRecord.comment,
         ],
         (error, result) => {
           if (error) {
