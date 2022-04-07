@@ -28,12 +28,13 @@ app.post("/register", (req, res) => {
   const demoonly = req.body.demoonly;
   const confirmed = req.body.confirmed;
   const admin = req.body.admin;
+  const userid = 1;
 
   bcrypt.genSalt(10, function (err, salt) {
     bcrypt.hash(password, salt, function (err, hash) {
       db.query(
-        "INSERT INTO users (name, email, password, mode, demoonly, confirmed, admin) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        [name, email, hash, mode, demoonly, confirmed, admin],
+        "INSERT INTO users (userid, name, email, password, mode, demoonly, confirmed, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        [userid, name, email, hash, mode, demoonly, confirmed, admin],
         (err, result) => {
           if (err) {
             res.send({ status: "error", error: err.code });
@@ -83,14 +84,12 @@ app.get("/getsubgroups", (req, res) => {
 });
 
 app.get("/gettransfersubgroups", (req, res) => {
-  console.log("req.query.id: ",  req.query.id);
   db.query(
-    'SELECT id, name FROM mybalance.users WHERE userid = "' +req.query.id + '" AND id <> "' +req.query.id + '" ORDER BY name ASC',
+    'SELECT id, name FROM mybalance.users WHERE userid = "' +req.query.userid + '" AND id <> "' +req.query.id + '" ORDER BY name ASC',
     (err, result) => {
       if (err) {
         res.send([{error: err}])
       } else {
-        console.log(result);
         res.send(result);
       }
     }

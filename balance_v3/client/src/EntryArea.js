@@ -39,13 +39,11 @@ function EntryArea() {
     getLocalUsers();
     Functions.getBasicGroups().then((value) => {
       groups.current = value;
-      console.log("getBasicGroups: ", groups.current);
       Functions.getSubGroups().then((value) => {
         subgroups.current = value;
-        Functions.getTransferSubGroupsNames(tmpUser.id).then((value) => {
+        Functions.getTransferSubGroupsNames(tmpUser.id, tmpUser.userid).then((value) => {
           Functions.joinSubGroups(subgroups.current, value).then((value) => {
             subgroups.current = value;
-            console.log("joinSubGroups result: ", subgroups.current);
             Functions.removeSubgroups({
               subgroups: subgroups.current,
               records,
@@ -56,7 +54,6 @@ function EntryArea() {
                   newgroups: groups.current,
                   choosenentry: showIncome,
                 }).then((value) => {
-                  console.log("value of fillGroups at start", value);
                   if (value) {
                     document.getElementById(
                       "button_addRecord"
@@ -100,7 +97,6 @@ function EntryArea() {
 
   useEffect(() => {
     record.type = Number(showIncome);
-    // console.log("record.type: ", record.type);
     setNewGroupsAndSubgroups();
   }, [showIncome]);
 
@@ -278,10 +274,6 @@ function EntryArea() {
             newgroups: newgroups,
             choosenentry: showIncome,
           }).then((value) => {
-            console.log(
-              "value of fillGroups in setNewGroupsAndSubgroups: ",
-              value
-            );
             if (value) {
               document.getElementById("button_addRecord").disabled = false;
             } else {
@@ -318,17 +310,12 @@ function EntryArea() {
   }
 
   function saveRecord() {
-    let transferrecord = [];
-    let transferrecords = [];
     Functions.createRecordsIfTranfer(record, records).then((value) => {
-      console.log("Created: ", value);
-      transferrecord = value.record;
-      transferrecords = value.records;
       // saving only for transfer
-      if (transferrecords.length > 0) {
+      if (value.records.length > 0) {
         Axios.post("http://localhost:3001/saverecords2", {
-          record: transferrecord,
-          records: transferrecords,
+          record: value.record,
+          records: value.records,
         }).then(function (response) {
           if (response.data.status === "Error") {
             alert(response.data.error);
@@ -397,7 +384,7 @@ function EntryArea() {
           value="2"
           onChange={incexpChange}
         ></input>
-        <label>Income</label>
+        <label>Income</label> {/* gr=1   type=2 */}
         <input
           type="radio"
           id="exp"
@@ -406,7 +393,7 @@ function EntryArea() {
           onChange={incexpChange}
           defaultChecked
         ></input>
-        <label>Expense</label>
+        <label>Expense</label> {/* gr=>10   type=1 */}
         <input
           type="radio"
           id="tra"
@@ -414,7 +401,8 @@ function EntryArea() {
           value="3"
           onChange={incexpChange}
         ></input>
-        <label>Transfer</label>
+        <label>Transfer</label> {/* gr=3   type=3 */}
+        {/*    Transfer income      gr=4   type=4 */}
         <input
           type="radio"
           id="cto"
@@ -422,7 +410,8 @@ function EntryArea() {
           value="9"
           onChange={incexpChange}
         ></input>
-        <label>Conto</label>
+        <label>Conto</label> {/* gr=2   type=9 */}
+        {/*    Balance           gr=?   type=8 */}
       </div>
       <div id="div_date">
         <label className="width_100">Date</label>

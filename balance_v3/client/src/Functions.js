@@ -44,11 +44,8 @@ export function fillGroups(props) {
     }
   } else if (choosenentry === 3) {
     // Transfer
-    console.log("Transfer!");
-    console.log("value: ", value);
     for (let i = 0; i < value.length; i++) {
       if (value[i].id === 3) {
-        console.log("inside the for loop");
         let options = document.createElement("option");
         options.innerHTML = value[i].name;
         options.value = value[i].id;
@@ -70,7 +67,6 @@ export function fillGroups(props) {
       }
     }
   }
-  console.log("in fillGroups: ", thereAreResults);
   return Promise.resolve(thereAreResults);
 }
 
@@ -99,16 +95,12 @@ export function getSubGroups() {
 export function joinSubGroups(subgroup1, subgroup2) {
   return new Promise((resolve, reject) => {
     let tmp = subgroup1.concat(subgroup2);
-    console.log("Functions.joinSubGroups. ", tmp);
     resolve(tmp);
   });
 }
 
 export function createRecordsIfTranfer(record, records) {
   return new Promise((resolve, reject) => {
-    console.log("Functions.createRecordsIfTranfer");
-    console.log("record: ", record);
-    console.log("records: ", records);
     let newRecord = {};
     let newRecords = [];
     if (record.type===3) {
@@ -126,30 +118,28 @@ export function createRecordsIfTranfer(record, records) {
       newRecord.type = 4;
       newRecord.cur = record.cur;
     }
-
-    console.log("new: ", newRecord, newRecords);
     resolve({record: newRecord, records: newRecords});
   })
 }
 
-export function getTransferSubGroupsNames(value) {
+export function getTransferSubGroupsNames(valueid, valueuserid) {
   return new Promise((resolve, reject) => {
     Axios.get("http://localhost:3001/gettransfersubgroups", {
       params: {
-        id: value,
+        id: valueid,
+        userid: valueuserid
       },
     })
       .then((resp) => {
         let tmpdata = resp.data;
-        console.log("tmpdata: ", tmpdata);
         let tmpSubGroup = [{}];
         for (let i = 0; i < tmpdata.length; i++) {
-          console.log("i, tmpdata[i]: ", i, tmpdata[i]);
-          tmpSubGroup[i].id = tmpdata[i].id;
-          tmpSubGroup[i].groupid = 3;
-          tmpSubGroup[i].name = tmpdata[i].name;
+          tmpSubGroup.push({
+            id : tmpdata[i].id,
+            groupid : 3,
+            name : tmpdata[i].name
+            })
         }
-        console.log("tmpSubGroup", tmpSubGroup);
         resolve(tmpSubGroup);
       })
       .catch((err) => {
@@ -214,13 +204,11 @@ export function getUsedSubGroups(props) {
   let subgroups = props.newsubgroups;
   let groupNo = Number(props.tmpGroup);
   let newsubgroups = [];
-
   subgroups.forEach((subgroup) => {
     if (subgroup.groupid === groupNo) {
       newsubgroups.push(subgroup);
     }
   });
-
   return Promise.resolve(newsubgroups);
 }
 
