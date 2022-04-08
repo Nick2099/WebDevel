@@ -80,9 +80,9 @@ export function setTmpGroup(value) {
   });
 }
 
-export function getSubGroups() {
+export function getBasicSubGroups() {
   return new Promise((resolve, reject) => {
-    Axios.get("http://localhost:3001/getsubgroups", { params: {} })
+    Axios.get("http://localhost:3001/getbasicsubgroups", { params: {} })
       .then((resp) => {
         resolve(resp.data);
       })

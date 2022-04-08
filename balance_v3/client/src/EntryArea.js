@@ -39,7 +39,7 @@ function EntryArea() {
     getLocalUsers();
     Functions.getBasicGroups().then((value) => {
       groups.current = value;
-      Functions.getSubGroups().then((value) => {
+      Functions.getBasicSubGroups().then((value) => {
         subgroups.current = value;
         Functions.getTransferSubGroupsNames(tmpUser.id, tmpUser.userid).then(
           (value) => {

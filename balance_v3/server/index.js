@@ -75,9 +75,9 @@ app.get("/getbasicgroups", (req, res) => {
   });
 });
 
-app.get("/getsubgroups", (req, res) => {
+app.get("/getbasicsubgroups", (req, res) => {
   db.query(
-    "SELECT id, groupid, name FROM mybalance.subgroups ORDER BY name ASC",
+    "SELECT id, groupid, name FROM mybalance.basicsubgroups ORDER BY name ASC",
     (err, result) => {
       if (err) {
         res.send([{ error: err }]);
