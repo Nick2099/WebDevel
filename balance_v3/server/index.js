@@ -127,6 +127,16 @@ app.get("/userid", (req, res) => {
   );
 });
 
+app.post("/creategroupsingroups", async (req, res) => {
+  const id = req.body.id;
+  const groups = req.body.groups;
+  //
+  console.log("/creategroupsingroups", id, groups);
+
+  // ===> INSERT into groups....
+  res.send("OK");
+})
+
 app.post("/saverecords2", async (req, res) => {
   const record = req.body.record;
   const records = req.body.records;

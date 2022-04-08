@@ -36,68 +36,84 @@ function LoginArea() {
     setRegister(!register);
   };
 
-  function createUser(props) {
-    Axios.post("http://localhost:3001/register", {
-      name: name,
-      email: email,
-      password: password,
-      mode: true,
-      demoonly: false,
-      confirmed: true,
-      admin: 1,
-    }).then(function (response) {
-      if (response.data.status === "ok") {
-        getUserID();
-        setPage((prevState) => {
-          return {
-            ...prevState,
-            showLogin: false,
-            showEntry: true,
-            showHome: false,
-          };
-        });
-      } else {
-        if (response.data.error === "ER_DUP_ENTRY") {
-          alert("User with same e-mail address already exists!");
+  async function createUser(props) {
+    return new Promise((resolve, reject) => {
+      Axios.post("http://localhost:3001/register", {
+        name: name,
+        email: email,
+        password: password,
+        mode: true,
+        demoonly: false,
+        confirmed: true,
+        admin: 1,
+      }).then(function (response) {
+        if (response.data.status === "ok") {
+          getUserID().then((value) => {
+            createDataInGroupsAndSubgroups(value);  
+          });
+          setPage((prevState) => {
+            return {
+              ...prevState,
+              showLogin: false,
+              showEntry: true,
+              showHome: false,
+            };
+          });
+          resolve("OK");
         } else {
-          alert("Error: " + response.data.error);
+          if (response.data.error === "ER_DUP_ENTRY") {
+            alert("User with same e-mail address already exists!");
+          } else {
+            alert("Error: " + response.data.error);
+          }
+          resolve("Error");
         }
-      }
+      });
+    });
+  }
+
+  async function createDataInGroupsAndSubgroups(tmpid) {
+    Functions.getBasicGroups().then((value) => {
+      Functions.createGroupsInGroups(tmpid, value);
     });
   }
 
   async function getUserID(tmpemail = email, tmppassword = password) {
-    Axios.get("http://localhost:3001/userid", {
-      params: {
-        email: tmpemail,
-        password: tmppassword,
-      },
-    }).then((resp) => {
-      if (resp.data[0].id > 0) {
-        setTmpUser({
-          email: resp.data[0].email,
-          name: resp.data[0].name,
-          logedin: true,
-          id: resp.data[0].id,
-          userid: resp.data[0].userid,
-          mode: resp.data[0].mode,
-          demoonly: resp.data[0].demoonly,
-          confirmed: resp.data[0].confirmed,
-          admin: resp.data[0].admin,
-        });
-        setPage((prevState) => {
-          return {
-            ...prevState,
-            showLogin: false,
-            showEntry: true,
-            showEntryAdd: true,
-            showHome: false,
-          };
-        });
-      } else {
-        alert(resp.data[0].error);
-      }
-    });
+    return new Promise((resolve, reject) => {
+      Axios.get("http://localhost:3001/userid", {
+        params: {
+          email: tmpemail,
+          password: tmppassword,
+        },
+      }).then((resp) => {
+        if (resp.data[0].id > 0) {
+          setTmpUser({
+            email: resp.data[0].email,
+            name: resp.data[0].name,
+            logedin: true,
+            id: resp.data[0].id,
+            userid: resp.data[0].userid,
+            mode: resp.data[0].mode,
+            demoonly: resp.data[0].demoonly,
+            confirmed: resp.data[0].confirmed,
+            admin: resp.data[0].admin,
+          });
+          setPage((prevState) => {
+            return {
+              ...prevState,
+              showLogin: false,
+              showEntry: true,
+              showEntryAdd: true,
+              showHome: false,
+            };
+          });
+          resolve(resp.data[0].id);
+        } else {
+          alert(resp.data[0].error);
+          resolve("Error");
+        }
+      });  
+    })
   }
 
   async function adminLogin() {
@@ -177,7 +193,7 @@ function LoginArea() {
           onChange={updatePassword}
         ></input>
         {register ? (
-          <label class="labelNote">
+          <label className="labelNote">
             {" "}
             Password must contain:
             <span className={checked[0] ? "green" : "red"}> A</span>
@@ -208,14 +224,14 @@ function LoginArea() {
         {register ? "Register" : "Login"}
       </button>
       <div>
-        <button class="bottomLoginButtons" type="button" onClick={guestLogin}>
+        <button className="bottomLoginButtons" type="button" onClick={guestLogin}>
           Login as a guest
         </button>
-        <button class="bottomLoginButtons" type="button" onClick={adminLogin}>
+        <button className="bottomLoginButtons" type="button" onClick={adminLogin}>
           Admin
         </button>
         <button
-          class="bottomLoginButtons"
+          className="bottomLoginButtons"
           type="button"
           onClick={registerChange}
         >

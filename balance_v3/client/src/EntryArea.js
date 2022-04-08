@@ -495,7 +495,7 @@ function EntryArea() {
                   name="comment"
                   rows="3"
                   cols="25"
-                  maxlength="100"
+                  maxLength="100"
                 ></textarea>
               </td>
               <td>

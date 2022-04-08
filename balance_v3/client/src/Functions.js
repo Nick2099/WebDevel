@@ -14,6 +14,22 @@ export function getBasicGroups() {
   });
 }
 
+export function createGroupsInGroups(id, groups) {
+  return new Promise((resolve, reject) => {
+    console.log("id: ", id);
+    console.log("groups: ", groups);
+    Axios.post("http://localhost:3001/creategroupsingroups", {
+      id: id,
+      groups: groups,
+    }).then(function (response) {
+      if (response.data.status === "Error") {
+        alert(response.data.error);
+      }
+    });
+    resolve({ status: "OK" });
+  });
+}
+
 export function fillGroups(props) {
   let value = props.newgroups;
   let choosenentry = Number(props.choosenentry);
@@ -87,7 +103,7 @@ export function getBasicSubGroups() {
         resolve(resp.data);
       })
       .catch((err) => {
-        resolve({Error: err});
+        resolve({ Error: err });
       });
   });
 }
@@ -103,15 +119,15 @@ export function createRecordsIfTranfer(record, records) {
   return new Promise((resolve, reject) => {
     let newRecord = {};
     let newRecords = [];
-    if (record.type===3) {
-      for (let i=0; i<records.length; i++) {
+    if (record.type === 3) {
+      for (let i = 0; i < records.length; i++) {
         newRecords.push({
-          amount : records[i].amount,
+          amount: records[i].amount,
           groupid: 4,
           subgroupid: record.locuser,
-          comment: ""
-        })
-      };
+          comment: "",
+        });
+      }
       newRecord.userid = record.userid;
       newRecord.locuser = records[0].subgroupid;
       newRecord.date = record.date;
@@ -119,8 +135,8 @@ export function createRecordsIfTranfer(record, records) {
       newRecord.type = 4;
       newRecord.cur = record.cur;
     }
-    resolve({record: newRecord, records: newRecords});
-  })
+    resolve({ record: newRecord, records: newRecords });
+  });
 }
 
 export function getTransferSubGroupsNames(valueid, valueuserid) {
@@ -128,7 +144,7 @@ export function getTransferSubGroupsNames(valueid, valueuserid) {
     Axios.get("http://localhost:3001/gettransfersubgroups", {
       params: {
         id: valueid,
-        userid: valueuserid
+        userid: valueuserid,
       },
     })
       .then((resp) => {
@@ -136,10 +152,10 @@ export function getTransferSubGroupsNames(valueid, valueuserid) {
         let tmpSubGroup = [{}];
         for (let i = 0; i < tmpdata.length; i++) {
           tmpSubGroup.push({
-            id : tmpdata[i].id,
-            groupid : 3,
-            name : tmpdata[i].name
-            })
+            id: tmpdata[i].id,
+            groupid: 3,
+            name: tmpdata[i].name,
+          });
         }
         resolve(tmpSubGroup);
       })

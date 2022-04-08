@@ -40,7 +40,7 @@ function NavigationBar({email, name, id, logedin}) {
             <div className="right">
                 <button type="button" onClick={entryButton} className={tmpUser.logedin ? "enabled" : "Hidden"}>Manage entries</button>
                 <button type="button" onClick={settingsButton} className={tmpUser.logedin ? "enabled" : "Hidden"}>Settings</button>
-                <button type="button" class="loginButton" onClick={logButton} value={tmpUser.logedin}>{tmpUser.logedin ? "Logout" : page.showLogin ? "Home" : "Login"}</button>
+                <button type="button" className="loginButton" onClick={logButton} value={tmpUser.logedin}>{tmpUser.logedin ? "Logout" : page.showLogin ? "Home" : "Login"}</button>
             </div>
         </div>
     );
