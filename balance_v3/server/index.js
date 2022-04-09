@@ -49,11 +49,21 @@ app.post("/register", (req, res) => {
                 if (err) {
                   res.send({ status: "error", error: "NOT_FOUND" });
                 } else {
-                  db.query('UPDATE users SET userid="' + result[0].id + '" WHERE id="' + result[0].id + '"', (err1, result1) => {
-                    if (err1) {
-                      res.send({ status: "error", error: "CAN'T UPDATE userID"});
+                  db.query(
+                    'UPDATE users SET userid="' +
+                      result[0].id +
+                      '" WHERE id="' +
+                      result[0].id +
+                      '"',
+                    (err1, result1) => {
+                      if (err1) {
+                        res.send({
+                          status: "error",
+                          error: "CAN'T UPDATE userID",
+                        });
+                      }
                     }
-                  });
+                  );
                   res.send({ status: "ok", id: result[0].id });
                 }
               }
@@ -66,14 +76,31 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/getbasicgroups", (req, res) => {
-  db.query("SELECT id, name FROM mybalance.basicgroups ORDER BY name ASC", (err, result) => {
-    if (err) {
-      res.send([{ error: err }]);
-    } else {
-      res.send(result);
+  db.query(
+    "SELECT id, name FROM mybalance.basicgroups ORDER BY name ASC",
+    (err, result) => {
+      if (err) {
+        res.send([{ error: err }]);
+      } else {
+        res.send(result);
+      }
     }
-  });
+  );
 });
+
+app.get("/getgroups", (req, res) => {
+  db.query(
+    'SELECT groupid AS id, name FROM mybalance.groups WHERE userid="' + req.query.id +'" ORDER BY name ASC',
+    (err, result) => {
+      if (err) {
+        res.send([{ error: err }]);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
 
 app.get("/getbasicsubgroups", (req, res) => {
   db.query(
@@ -88,19 +115,35 @@ app.get("/getbasicsubgroups", (req, res) => {
   );
 });
 
-app.get("/gettransfersubgroups", (req, res) => {
+app.get("/getsubgroups", (req, res) => {
   db.query(
-    'SELECT id, name FROM mybalance.users WHERE userid = "' +req.query.userid + '" AND id <> "' +req.query.id + '" ORDER BY name ASC',
+    "SELECT subgroupid AS id, groupid, name FROM mybalance.subgroups ORDER BY name ASC",
     (err, result) => {
       if (err) {
-        res.send([{error: err}])
+        res.send([{ error: err }]);
       } else {
         res.send(result);
       }
     }
-  )
+  );
 });
 
+app.get("/gettransfersubgroups", (req, res) => {
+  db.query(
+    'SELECT id, name FROM mybalance.users WHERE userid = "' +
+      req.query.userid +
+      '" AND id <> "' +
+      req.query.id +
+      '" ORDER BY name ASC',
+    (err, result) => {
+      if (err) {
+        res.send([{ error: err }]);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
 
 app.get("/userid", (req, res) => {
   db.query(
@@ -130,12 +173,35 @@ app.get("/userid", (req, res) => {
 app.post("/creategroupsingroups", async (req, res) => {
   const id = req.body.id;
   const groups = req.body.groups;
-  //
-  console.log("/creategroupsingroups", id, groups);
+  db.query(
+    'INSERT INTO mybalance.groups (userid, groupid, name) VALUES ?',
+    [groups.map((group) => [id, group.id, group.name])],
+    (error, results) => {
+      if (error!==null) {
+        res.send("OK");
+      } else {
+        res.send(error);
+      }
+    }
+  );
+});
 
-  // ===> INSERT into groups....
-  res.send("OK");
-})
+app.post("/createsubgroupsinsubgroups", async (req, res) => {
+  const id = req.body.id;
+  const subgroups = req.body.subgroups;
+  db.query(
+    'INSERT INTO mybalance.subgroups (userid, subgroupid, groupid, name) VALUES ?',
+    [subgroups.map((subgroup) => [id, subgroup.id, subgroup.groupid, subgroup.name])],
+    (error, results) => {
+      if (error!==null) {
+        res.send("OK");
+      } else {
+        res.send(error);
+      }
+    }
+  );
+});
+
 
 app.post("/saverecords2", async (req, res) => {
   const record = req.body.record;
@@ -214,7 +280,7 @@ app.post("/saverecords2", async (req, res) => {
       res.send(tmpStatus);
     });
   } else {
-    res.send({status: "Error", error: nextrecid.error})    
+    res.send({ status: "Error", error: nextrecid.error });
   }
 });
 

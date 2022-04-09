@@ -14,19 +14,48 @@ export function getBasicGroups() {
   });
 }
 
+export function getGroups(id) {
+  return new Promise((resolve, reject) => {
+    Axios.get("http://localhost:3001/getgroups", {
+      params: { id: id },
+    })
+      .then((resp) => {
+        console.log("getGroups resp.data: ", resp.data);
+        resolve(resp.data);
+      })
+      .catch((err) => {
+        console.log("Error: ", err);
+      });
+  });
+}
+
 export function createGroupsInGroups(id, groups) {
   return new Promise((resolve, reject) => {
-    console.log("id: ", id);
-    console.log("groups: ", groups);
     Axios.post("http://localhost:3001/creategroupsingroups", {
       id: id,
       groups: groups,
     }).then(function (response) {
-      if (response.data.status === "Error") {
-        alert(response.data.error);
+      if (response.statusText === "OK") {
+        resolve({ status: "OK" });
+      } else {
+        alert("createGroupsInGroups: " + response.data.error);
       }
     });
-    resolve({ status: "OK" });
+  });
+}
+
+export function createSubgroupsInSubgroups(id, subgroups) {
+  return new Promise((resolve, reject) => {
+    Axios.post("http://localhost:3001/createsubgroupsinsubgroups", {
+      id: id,
+      subgroups: subgroups,
+    }).then(function (response) {
+      if (response.statusText === "OK") {
+        resolve({ status: "OK" });
+      } else {
+        alert("createSubgroupsInSubgroups: " + response.data.error);
+      }
+    });
   });
 }
 
@@ -107,6 +136,20 @@ export function getBasicSubGroups() {
       });
   });
 }
+
+export function getSubGroups(id) {
+  return new Promise((resolve, reject) => {
+    Axios.get("http://localhost:3001/getsubgroups", { params: { id: id } })
+      .then((resp) => {
+        console.log("getSubgroups resp.data: ", resp.data);
+        resolve(resp.data);
+      })
+      .catch((err) => {
+        resolve({ Error: err });
+      });
+  });
+}
+
 
 export function joinSubGroups(subgroup1, subgroup2) {
   return new Promise((resolve, reject) => {

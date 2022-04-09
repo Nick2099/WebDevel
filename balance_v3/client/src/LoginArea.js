@@ -49,17 +49,18 @@ function LoginArea() {
       }).then(function (response) {
         if (response.data.status === "ok") {
           getUserID().then((value) => {
-            createDataInGroupsAndSubgroups(value);  
+            createDataInGroupsAndSubgroups(value).then(() => {
+              setPage((prevState) => {
+                return {
+                  ...prevState,
+                  showLogin: false,
+                  showEntry: true,
+                  showHome: false,
+                };
+              });
+              resolve("OK");
+            });
           });
-          setPage((prevState) => {
-            return {
-              ...prevState,
-              showLogin: false,
-              showEntry: true,
-              showHome: false,
-            };
-          });
-          resolve("OK");
         } else {
           if (response.data.error === "ER_DUP_ENTRY") {
             alert("User with same e-mail address already exists!");
@@ -73,8 +74,24 @@ function LoginArea() {
   }
 
   async function createDataInGroupsAndSubgroups(tmpid) {
-    Functions.getBasicGroups().then((value) => {
-      Functions.createGroupsInGroups(tmpid, value);
+    return new Promise((resolve, reject) => {
+      Functions.getBasicGroups().then((value) => {
+        Functions.createGroupsInGroups(tmpid, value).then((value1) => {
+          if (value1.status === "OK") {
+            Functions.getBasicSubGroups().then((value1) => {
+              console.log("SubGroups loaded: ", value1);
+              Functions.createSubgroupsInSubgroups(tmpid, value1).then(
+                (value2) => {
+                  console.log("createDataInGroupsAndSubgroups finished!");
+                  resolve("OK");
+                }
+              );
+            });
+          } else {
+            resolve("Error");
+          }
+        });
+      });
     });
   }
 
@@ -112,8 +129,8 @@ function LoginArea() {
           alert(resp.data[0].error);
           resolve("Error");
         }
-      });  
-    })
+      });
+    });
   }
 
   async function adminLogin() {
@@ -121,7 +138,7 @@ function LoginArea() {
   }
 
   async function guestLogin() {
-      getUserID("jully061282@gmail.com", "qwer");
+    getUserID("jully061282@gmail.com", "qwer");
   }
 
   const formSubmit = (e) => {
@@ -224,10 +241,18 @@ function LoginArea() {
         {register ? "Register" : "Login"}
       </button>
       <div>
-        <button className="bottomLoginButtons" type="button" onClick={guestLogin}>
+        <button
+          className="bottomLoginButtons"
+          type="button"
+          onClick={guestLogin}
+        >
           Login as a guest
         </button>
-        <button className="bottomLoginButtons" type="button" onClick={adminLogin}>
+        <button
+          className="bottomLoginButtons"
+          type="button"
+          onClick={adminLogin}
+        >
           Admin
         </button>
         <button
