@@ -463,8 +463,6 @@ function EntryArea() {
       </div>
 
       <div id="table_expenses">
-        {" "}
-        {/* ovo ostaje za sve */}
         <table className="expenses">
           <thead>
             <tr>

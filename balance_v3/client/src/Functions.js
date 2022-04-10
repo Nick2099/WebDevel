@@ -1,4 +1,8 @@
 import Axios from "axios";
+const maxNameLength = 30;
+const maxEmailLength = 45;
+const maxPasswordLength = 20;
+
 
 export function getBasicGroups() {
   return new Promise((resolve, reject) => {
@@ -148,7 +152,6 @@ export function getSubGroups(id) {
   });
 }
 
-
 export function joinSubGroups(subgroup1, subgroup2) {
   return new Promise((resolve, reject) => {
     let tmp = subgroup1.concat(subgroup2);
@@ -190,7 +193,7 @@ export function getTransferSubGroupsNames(valueid, valueuserid) {
     })
       .then((resp) => {
         let tmpdata = resp.data;
-        let tmpSubGroup = [{}];
+        let tmpSubGroup = [];
         for (let i = 0; i < tmpdata.length; i++) {
           tmpSubGroup.push({
             id: tmpdata[i].id,
@@ -203,6 +206,66 @@ export function getTransferSubGroupsNames(valueid, valueuserid) {
       .catch((err) => {
         console.log("Error: ", err);
       });
+  });
+}
+
+export function getLocalUsers(valueid, valueuserid) {
+  return new Promise((resolve, reject) => {
+    Axios.get("http://localhost:3001/getlocalusers", {
+      params: {
+        id: valueid,
+        userid: valueuserid,
+      },
+    })
+      .then((resp) => {
+        let tmpdata = resp.data;
+        let tmpSubGroup = [];
+        for (let i = 0; i < tmpdata.length; i++) {
+          tmpSubGroup.push({
+            id: tmpdata[i].id,
+            name: tmpdata[i].name,
+            email: tmpdata[i].email,
+            adv: tmpdata[i].adv,
+          });
+        }
+        resolve(tmpSubGroup);
+      })
+      .catch((err) => {
+        console.log("Error: ", err);
+      });
+  });
+}
+
+export function addLocalUserToTable(tmp) {
+  console.log("tmp: ", tmp);
+  return new Promise((resolve, reject) => {
+    tmp.forEach((tmpone) => {
+      console.log("tmpone: ", tmpone);
+      let tr = document.createElement("tr");
+      tr.name = "tr" + String(tmpone.id);
+      let td1 = document.createElement("td");
+      let input1 = document.createElement("input");
+      input1.value = tmpone.name;
+      input1.id = "nameLocalUser" + String(tmpone.id);
+      input1.maxLength = maxNameLength;
+      td1.appendChild(input1);
+      tr.appendChild(td1);
+      let td2 = document.createElement("td");
+      let input2 = document.createElement("input");
+      input2.value = tmpone.email;
+      input2.id = "emailLocalUser" + String(tmpone.id);
+      input2.maxLength = maxEmailLength;
+      td2.appendChild(input2);
+      tr.appendChild(td2);
+      let td3 = document.createElement("td");
+      let input3 = document.createElement("input");
+      input3.type = "checkbox";
+      if (tmpone.adv===1) {input3.checked=true} else {input3.checked=false};
+      input3.id = "advLocalUser" + String(tmpone.id);
+      td3.appendChild(input3);
+      tr.appendChild(td3);
+      document.getElementById("localUsers").appendChild(tr);
+    });
   });
 }
 
@@ -406,17 +469,17 @@ export function getCurrencies() {
   });
 }
 
-export function setCurrencies({cur, curs}) {
+export function setCurrencies({ cur, curs }) {
   return new Promise((resolve, reject) => {
     var sel = document.getElementById("select_cur");
     curs.current.forEach((tmpcur) => {
       var opt = document.createElement("option");
-      opt.innerHTML = tmpcur.cur + ' (' + String(tmpcur.curdec) + ')';
+      opt.innerHTML = tmpcur.cur + " (" + String(tmpcur.curdec) + ")";
       opt.value = tmpcur.cur + String(tmpcur.curdec);
-      if (cur===tmpcur.cur) {
+      if (cur === tmpcur.cur) {
         opt.setAttribute("selected", true);
-      };
+      }
       sel.appendChild(opt);
     });
-  })
+  });
 }

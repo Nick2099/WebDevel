@@ -20,7 +20,7 @@ function NavigationBar({email, name, id, logedin}) {
             };
         } else {
             setTmpUser({email: "", name: "", logedin: false, id: 0});
-            setPage(prevState => {return{...prevState, showLogin: false, showHome: true, showEntry: false}})
+            setPage(prevState => {return{...prevState, showLogin: false, showHome: true, showEntry: false, showSettings: false}})
         };
     }
 

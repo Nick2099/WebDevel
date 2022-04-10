@@ -144,6 +144,24 @@ app.get("/gettransfersubgroups", (req, res) => {
   );
 });
 
+app.get("/getlocalusers", (req, res) => {
+  db.query(
+    'SELECT id, name, email, adv FROM mybalance.users WHERE userid = "' +
+      req.query.userid +
+      '" AND id <> "' +
+      req.query.id +
+      '" ORDER BY name ASC',
+    (err, result) => {
+      if (err) {
+        res.send([{ error: err }]);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+
 app.get("/userid", (req, res) => {
   db.query(
     'SELECT id, userid, email, password, mode, demoonly, confirmed, name, admin, cur, curdec FROM users WHERE email="' +
