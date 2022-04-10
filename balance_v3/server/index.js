@@ -101,7 +101,6 @@ app.get("/getgroups", (req, res) => {
   );
 });
 
-
 app.get("/getbasicsubgroups", (req, res) => {
   db.query(
     "SELECT id, groupid, name FROM mybalance.basicsubgroups ORDER BY name ASC",
@@ -147,7 +146,7 @@ app.get("/gettransfersubgroups", (req, res) => {
 
 app.get("/userid", (req, res) => {
   db.query(
-    'SELECT id, userid, email, password, mode, demoonly, confirmed, name, admin FROM users WHERE email="' +
+    'SELECT id, userid, email, password, mode, demoonly, confirmed, name, admin, cur, curdec FROM users WHERE email="' +
       req.query.email +
       '"',
     (err, result) => {
@@ -282,6 +281,19 @@ app.post("/saverecords2", async (req, res) => {
   } else {
     res.send({ status: "Error", error: nextrecid.error });
   }
+});
+
+app.get("/getcurrencies", (req, res) => {
+  db.query(
+    'SELECT cur, curdec FROM mybalance.currencies ORDER BY cur ASC',
+    (err, result) => {
+      if (err) {
+        res.send([{ error: err }]);
+      } else {
+        res.send(result);
+      }
+    }
+  );
 });
 
 app.listen(3001, () => {

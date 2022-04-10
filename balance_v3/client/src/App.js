@@ -82,19 +82,3 @@ function App() {
 }
 
 export default App;
-
-/*
-  return (
-      <TmpUserProvider>
-        <div className="App">
-          <NavigationBar />
-          <ShowLoginArea show={page.showLogin.toString()}/>
-          <ShowHomeArea show={page.showHome.toString()}/>
-          <div id="EntryArea">
-            <ShowEntryArea show={page.showEntry.toString()}/>
-          </div>
-          <ShowSettingsArea show={page.showSettings.toString()}/>
-        </div>
-      </TmpUserProvider>      
-  );
-*/

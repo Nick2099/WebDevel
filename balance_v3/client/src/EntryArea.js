@@ -536,6 +536,7 @@ function EntryArea() {
 /*    // Not needed at the moment
 class Child extends Component {
   componentDidMount() {
+    
     // here I can put something that have to be done after component did mount
     console.log("Child was Mounted.");
   }

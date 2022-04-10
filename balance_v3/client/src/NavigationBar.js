@@ -25,11 +25,23 @@ function NavigationBar({email, name, id, logedin}) {
     }
 
     function entryButton() {
-
+        setPage({
+            showLogin: false,
+            showHome: false,
+            showEntry: true,
+            showEntryAdd: true,
+            showSettings: false,    
+        });    
     }
 
     function settingsButton() {
-        
+        setPage({
+            showLogin: false,
+            showHome: false,
+            showEntry: false,
+            showEntryAdd: false,
+            showSettings: true,    
+        });    
     }
 
     return(

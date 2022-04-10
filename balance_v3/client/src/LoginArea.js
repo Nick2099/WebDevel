@@ -46,6 +46,8 @@ function LoginArea() {
         demoonly: false,
         confirmed: true,
         admin: 1,
+        cur: "EUR",
+        curdec: 2,
       }).then(function (response) {
         if (response.data.status === "ok") {
           getUserID().then((value) => {
@@ -114,6 +116,8 @@ function LoginArea() {
             demoonly: resp.data[0].demoonly,
             confirmed: resp.data[0].confirmed,
             admin: resp.data[0].admin,
+            cur: resp.data[0].cur,
+            curdec: resp.data[0].curdec,
           });
           setPage((prevState) => {
             return {

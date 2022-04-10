@@ -20,7 +20,6 @@ export function getGroups(id) {
       params: { id: id },
     })
       .then((resp) => {
-        console.log("getGroups resp.data: ", resp.data);
         resolve(resp.data);
       })
       .catch((err) => {
@@ -141,7 +140,6 @@ export function getSubGroups(id) {
   return new Promise((resolve, reject) => {
     Axios.get("http://localhost:3001/getsubgroups", { params: { id: id } })
       .then((resp) => {
-        console.log("getSubgroups resp.data: ", resp.data);
         resolve(resp.data);
       })
       .catch((err) => {
@@ -392,4 +390,33 @@ export function checkPass(props) {
     passwordOk[4];
 
   return Promise.resolve(passwordOk);
+}
+
+export function getCurrencies() {
+  return new Promise((resolve, reject) => {
+    Axios.get("http://localhost:3001/getcurrencies", {
+      params: {},
+    })
+      .then((resp) => {
+        resolve(resp.data);
+      })
+      .catch((err) => {
+        console.log("Error: ", err);
+      });
+  });
+}
+
+export function setCurrencies({cur, curs}) {
+  return new Promise((resolve, reject) => {
+    var sel = document.getElementById("select_cur");
+    curs.current.forEach((tmpcur) => {
+      var opt = document.createElement("option");
+      opt.innerHTML = tmpcur.cur + ' (' + String(tmpcur.curdec) + ')';
+      opt.value = tmpcur.cur + String(tmpcur.curdec);
+      if (cur===tmpcur.cur) {
+        opt.setAttribute("selected", true);
+      };
+      sel.appendChild(opt);
+    });
+  })
 }
