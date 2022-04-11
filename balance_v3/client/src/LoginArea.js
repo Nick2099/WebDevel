@@ -48,6 +48,8 @@ function LoginArea() {
         admin: 1,
         cur: "EUR",
         curdec: 2,
+        adv: 1,
+        userid: 0,
       }).then(function (response) {
         if (response.data.status === "ok") {
           getUserID().then((value) => {
@@ -81,10 +83,8 @@ function LoginArea() {
         Functions.createGroupsInGroups(tmpid, value).then((value1) => {
           if (value1.status === "OK") {
             Functions.getBasicSubGroups().then((value1) => {
-              console.log("SubGroups loaded: ", value1);
               Functions.createSubgroupsInSubgroups(tmpid, value1).then(
                 (value2) => {
-                  console.log("createDataInGroupsAndSubgroups finished!");
                   resolve("OK");
                 }
               );
@@ -138,11 +138,11 @@ function LoginArea() {
   }
 
   async function adminLogin() {
-    getUserID("nikicadadic@gmail.com", "pass");
+    getUserID("nikicadadic@gmail.com", "Qwertz1!");
   }
 
   async function guestLogin() {
-    getUserID("jully061282@gmail.com", "qwer");
+    getUserID("jully061282@gmail.com", "Asdfgh1!");
   }
 
   const formSubmit = (e) => {

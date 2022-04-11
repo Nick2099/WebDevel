@@ -21,22 +21,38 @@ app.get("/", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  const name = req.body.name;
+  const userid = req.body.userid;
   const email = req.body.email;
   const password = req.body.password;
   const mode = req.body.mode;
   const demoonly = req.body.demoonly;
   const confirmed = req.body.confirmed;
+  const name = req.body.name;
   const admin = req.body.admin;
-  const userid = 1;
+  const cur = req.body.cur;
+  const curdec = req.body.curdec;
+  const adv = req.body.adv;
 
   bcrypt.genSalt(10, function (err, salt) {
     bcrypt.hash(password, salt, function (err, hash) {
       db.query(
-        "INSERT INTO users (userid, name, email, password, mode, demoonly, confirmed, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        [userid, name, email, hash, mode, demoonly, confirmed, admin],
+        "INSERT INTO users (userid, name, email, password, mode, demoonly, confirmed, admin, cur, curdec, adv) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [
+          userid,
+          name,
+          email,
+          hash,
+          mode,
+          demoonly,
+          confirmed,
+          admin,
+          cur,
+          curdec,
+          adv,
+        ],
         (err, result) => {
           if (err) {
+            console.log("err: ", err);
             res.send({ status: "error", error: err.code });
           } else {
             db.query(
@@ -49,21 +65,23 @@ app.post("/register", (req, res) => {
                 if (err) {
                   res.send({ status: "error", error: "NOT_FOUND" });
                 } else {
-                  db.query(
-                    'UPDATE users SET userid="' +
-                      result[0].id +
-                      '" WHERE id="' +
-                      result[0].id +
-                      '"',
-                    (err1, result1) => {
-                      if (err1) {
-                        res.send({
-                          status: "error",
-                          error: "CAN'T UPDATE userID",
-                        });
+                  if (userid === 0) { // not if localuser is registeres
+                    db.query(
+                      'UPDATE users SET userid="' +
+                        result[0].id +
+                        '" WHERE id="' +
+                        result[0].id +
+                        '"',
+                      (err1, result1) => {
+                        if (err1) {
+                          res.send({
+                            status: "error",
+                            error: "CAN'T UPDATE userID",
+                          });
+                        }
                       }
-                    }
-                  );
+                    );
+                  }
                   res.send({ status: "ok", id: result[0].id });
                 }
               }
@@ -90,7 +108,9 @@ app.get("/getbasicgroups", (req, res) => {
 
 app.get("/getgroups", (req, res) => {
   db.query(
-    'SELECT groupid AS id, name FROM mybalance.groups WHERE userid="' + req.query.id +'" ORDER BY name ASC',
+    'SELECT groupid AS id, name FROM mybalance.groups WHERE userid="' +
+      req.query.id +
+      '" ORDER BY name ASC',
     (err, result) => {
       if (err) {
         res.send([{ error: err }]);
@@ -116,7 +136,9 @@ app.get("/getbasicsubgroups", (req, res) => {
 
 app.get("/getsubgroups", (req, res) => {
   db.query(
-    "SELECT subgroupid AS id, groupid, name FROM mybalance.subgroups ORDER BY name ASC",
+    'SELECT subgroupid AS id, groupid, name FROM mybalance.subgroups WHERE userid="' +
+    req.query.id +
+    '"ORDER BY name ASC',
     (err, result) => {
       if (err) {
         res.send([{ error: err }]);
@@ -161,7 +183,6 @@ app.get("/getlocalusers", (req, res) => {
   );
 });
 
-
 app.get("/userid", (req, res) => {
   db.query(
     'SELECT id, userid, email, password, mode, demoonly, confirmed, name, admin, cur, curdec FROM users WHERE email="' +
@@ -191,10 +212,10 @@ app.post("/creategroupsingroups", async (req, res) => {
   const id = req.body.id;
   const groups = req.body.groups;
   db.query(
-    'INSERT INTO mybalance.groups (userid, groupid, name) VALUES ?',
+    "INSERT INTO mybalance.groups (userid, groupid, name) VALUES ?",
     [groups.map((group) => [id, group.id, group.name])],
     (error, results) => {
-      if (error!==null) {
+      if (error !== null) {
         res.send("OK");
       } else {
         res.send(error);
@@ -207,10 +228,17 @@ app.post("/createsubgroupsinsubgroups", async (req, res) => {
   const id = req.body.id;
   const subgroups = req.body.subgroups;
   db.query(
-    'INSERT INTO mybalance.subgroups (userid, subgroupid, groupid, name) VALUES ?',
-    [subgroups.map((subgroup) => [id, subgroup.id, subgroup.groupid, subgroup.name])],
+    "INSERT INTO mybalance.subgroups (userid, subgroupid, groupid, name) VALUES ?",
+    [
+      subgroups.map((subgroup) => [
+        id,
+        subgroup.id,
+        subgroup.groupid,
+        subgroup.name,
+      ]),
+    ],
     (error, results) => {
-      if (error!==null) {
+      if (error !== null) {
         res.send("OK");
       } else {
         res.send(error);
@@ -218,7 +246,6 @@ app.post("/createsubgroupsinsubgroups", async (req, res) => {
     }
   );
 });
-
 
 app.post("/saverecords2", async (req, res) => {
   const record = req.body.record;
@@ -303,7 +330,7 @@ app.post("/saverecords2", async (req, res) => {
 
 app.get("/getcurrencies", (req, res) => {
   db.query(
-    'SELECT cur, curdec FROM mybalance.currencies ORDER BY cur ASC',
+    "SELECT cur, curdec FROM mybalance.currencies ORDER BY cur ASC",
     (err, result) => {
       if (err) {
         res.send([{ error: err }]);

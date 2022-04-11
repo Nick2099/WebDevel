@@ -37,9 +37,10 @@ function EntryArea() {
 
   useEffect(() => {
     getLocalUsers();
-    Functions.getGroups(tmpUser.id).then((value) => {
+    Functions.getGroups(tmpUser.userid).then((value) => {
       groups.current = value;
-      Functions.getSubGroups(tmpUser.id).then((value) => {
+      Functions.getSubGroups(tmpUser.userid).then((value) => {
+        console.log("subgroups: ", value);
         subgroups.current = value;
         Functions.getTransferSubGroupsNames(tmpUser.id, tmpUser.userid).then(
           (value) => {
