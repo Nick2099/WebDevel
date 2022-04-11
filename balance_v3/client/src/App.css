@@ -4,6 +4,11 @@
   height: 100vh;
 }
 
+.dark-mode {
+  background-color: black;
+  color: white;
+}
+
 button {
   margin: 0px;
   font-size: 1rem;
@@ -224,4 +229,47 @@ textarea {
 
 .red {
   color: red;
+}
+
+#SettingsArea {
+  width: fit-content;
+  text-align: left;
+  padding: 5px;
+}
+
+#SettingsArea #Part {
+  margin: 20px 0px;
+}
+
+#SettingsArea table, tr, td, th {
+  border-collapse: collapse;
+  border: none;
+  border-bottom: 1px solid white;
+}
+
+#SettingsArea label {
+  margin: 5px 0px;
+}
+
+#SettingsArea .labelNote {
+  margin: 0px 5px;
+  font-size: 0.8rem;
+}
+
+#SettingsArea input {
+  margin: 5px 5px;
+}
+
+#SettingsArea h2 {
+  text-align: center;
+}
+
+#SettingsArea h3 {
+  text-align: left;
+  margin-bottom: 10px;
+  margin-top: 30px;
+}
+
+#SettingsArea button {
+  font-size: 1rem;
 }

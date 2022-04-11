@@ -9,14 +9,13 @@ import "./App.css";
 import Axios from "axios";
 import { TmpUserContext } from "./TmpUserContext";
 import * as Functions from "./Functions";
-import LoginArea from "./LoginArea";
+// import LoginArea from "./LoginArea";
 
 function SettingsArea() {
   const [tmpUser, setTmpUser] = useContext(TmpUserContext);
   // const groups = useRef([]);
   // const subgroups = useRef([]);
   const currencies = useRef([]);
-  const [addNewUser, setAddNewUser] = useState(false);
   const localUsers = useRef([]);
   const maxNoOfLocalUsers = 5;
   const maxNameLength = 30;
@@ -73,17 +72,7 @@ function SettingsArea() {
   }, [tmpUser.cur, tmpUser.id, tmpUser.userid]);
   // it looks that those dependencies doesn't have to be set to zero []
 
-  useEffect(() => {
-    if (addNewUser) {
-      document.getElementById("addNewUserDiv").className = "Show-block";
-    } else {
-      document.getElementById("addNewUserDiv").className = "Hidden";
-    }
-  }, [addNewUser]);
-
-  function addNewUserVisibility() {
-    setAddNewUser(!addNewUser);
-  }
+  function saveChanges() {}
 
   function registerLocalUser() {
     console.log("data: ", passwordInput, repeatInput, nameInput, emailInput);
@@ -156,20 +145,31 @@ function SettingsArea() {
           <h2>Settings</h2>
         </header>
       </div>
-      <div>
-        <label>User name</label>
-        <input
-          type="text"
-          maxLength={maxNameLength}
-          defaultValue={tmpUser.name}
-        ></input>
-      </div>
-      <div>
-        <label>Currency</label>
-        <select id="select_cur"></select>
+      <div id="Part">
+        <h3>User</h3>
+        <table>
+          <tbody>
+            <tr>
+              <td>User name</td>
+              <td>
+              <input
+            type="text"
+            maxLength={maxNameLength}
+            defaultValue={tmpUser.name}
+          ></input>
+              </td>
+            </tr>
+            <tr>
+              <td>Currency</td>
+              <td>
+              <select id="select_cur"></select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
-      <div>
+      <div id="Part">
         <h3>Local users</h3>
         <table id="localUsers">
           <thead>
@@ -179,75 +179,94 @@ function SettingsArea() {
               <th>Visibility</th>
             </tr>
           </thead>
+          <tbody>
+            
+          </tbody>
         </table>
+        <button onClick={saveChanges}>Save changes</button>
       </div>
 
-      <div>
-        <div>
-          <button onClick={addNewUserVisibility}>Add new user</button>
-        </div>
-        <div id="addNewUserDiv" className="Hidden">
-          <div>
-            <label>E-mail</label>
-            <input
-              id="emailInput"
-              type="email"
-              maxLength={maxEmailLength}
-              value={emailInput}
-              onChange={updateEmailInput}
-            ></input>
-          </div>
-          <div>
-            <label>Name</label>
-            <input
-              id="nameInput"
-              type="text"
-              maxLength={maxNameLength}
-              value={nameInput}
-              onChange={updateNameInput}
-            ></input>
-          </div>
-          <div>
-            <label>Password</label>
-            <input
-              id="pass1Input"
-              type="password"
-              maxLength={maxPasswordLength}
-              value={passwordInput}
-              onChange={updatePasswordInput}
-            ></input>
-          </div>
-          <label className="notePass1Input">
-            {" "}
-            Password must contain:
-            <span className={checkedInput[0] ? "green" : "red"}> A</span>
-            <span className={checkedInput[1] ? "green" : "red"}> z</span>
-            <span className={checkedInput[2] ? "green" : "red"}> 1</span>
-            <span className={checkedInput[3] ? "green" : "red"}> $</span>
-            <span className={checkedInput[4] ? "green" : "red"}> {">7"} </span>
-            {checkedInput[5] ? "✔️" : ""}
-          </label>
-          <div>
-            <label>Repeat password</label>
-            <input
-              id="pass2Input"
-              type="password"
-              maxLength={maxPasswordLength}
-              value={repeatInput}
-              onChange={updateRepeatInput}
-            ></input>
-          </div>
-          <div>
-            <label>Passwords have to be the same!{repeatTxtInput}</label>
-          </div>
-          <div>
-            <input type="checkbox" id="visibilitycheck" value="true"></input>
-            <label>All users and their data visible.</label>
-          </div>
-          <div>
-            <button onClick={registerLocalUser}>Register user</button>
-          </div>
-        </div>
+      <div id="Part">
+        <h3>Add new user</h3>
+        <table id="localUsers">
+          <tbody>
+            <tr>
+              <td className="right">E-mail</td>
+              <td>
+                <input
+                  id="emailInput"
+                  type="email"
+                  maxLength={maxEmailLength}
+                  value={emailInput}
+                  onChange={updateEmailInput}
+                ></input>
+              </td>
+            </tr>
+            <tr>
+              <td className="right">Name</td>
+              <td>
+                <input
+                  id="nameInput"
+                  type="text"
+                  maxLength={maxNameLength}
+                  value={nameInput}
+                  onChange={updateNameInput}
+                ></input>
+              </td>
+            </tr>
+            <tr>
+              <td className="right">Password</td>
+              <td>
+                <input
+                  id="pass1Input"
+                  type="password"
+                  maxLength={maxPasswordLength}
+                  value={passwordInput}
+                  onChange={updatePasswordInput}
+                ></input>
+                <br></br>
+                <label className="labelNote">
+                  {" "}
+                  Password must contain:
+                  <span className={checkedInput[0] ? "green" : "red"}> A</span>
+                  <span className={checkedInput[1] ? "green" : "red"}> z</span>
+                  <span className={checkedInput[2] ? "green" : "red"}> 1</span>
+                  <span className={checkedInput[3] ? "green" : "red"}> $</span>
+                  <span className={checkedInput[4] ? "green" : "red"}>
+                    {" "}
+                    {">7"}{" "}
+                  </span>
+                  {checkedInput[5] ? "✔️" : ""}
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td className="right">Repeat password</td>
+              <td>
+                <input
+                  id="pass2Input"
+                  type="password"
+                  maxLength={maxPasswordLength}
+                  value={repeatInput}
+                  onChange={updateRepeatInput}
+                ></input>
+                <br></br>
+                <label className="labelNote">Passwords have to be the same!{repeatTxtInput}</label>
+              </td>
+            </tr>
+            <tr>
+              <td className="right">All users and their data visible</td>
+              <td>
+                <input
+                  type="checkbox"
+                  id="visibilitycheck"
+                  value="true"
+                ></input>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button onClick={registerLocalUser}>Register user</button>
       </div>
     </div>
   );
