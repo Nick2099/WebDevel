@@ -17,7 +17,7 @@ function SettingsArea() {
   // const subgroups = useRef([]);
   const currencies = useRef([]);
   const localUsers = useRef([]);
-  const maxNoOfLocalUsers = 5;
+  // const maxNoOfLocalUsers = 5;
   const maxNameLength = 30;
   const maxEmailLength = 30;
   const maxPasswordLength = 20;
@@ -71,7 +71,9 @@ function SettingsArea() {
   }, [tmpUser.cur, tmpUser.id, tmpUser.userid]);
   // it looks that those dependencies doesn't have to be set to zero []
 
-  function saveChanges() {}
+  function saveChangesUser() {};
+
+  function saveChangesLocalUsers() {};
 
   function registerLocalUser() {
     console.log("data: ", passwordInput, repeatInput, nameInput, emailInput);
@@ -184,6 +186,7 @@ function SettingsArea() {
             </tr>
           </tbody>
         </table>
+        <button name="buttonUser" onClick={saveChangesUser}>Save changes</button>
       </div>
 
       <div id="Part">
@@ -197,7 +200,7 @@ function SettingsArea() {
             </tr>
           </thead>
         </table>
-        <button onClick={saveChanges}>Save changes</button>
+        <button name="buttonLocalUsers" onClick={saveChangesLocalUsers}>Save changes</button>
       </div>
 
       <div id="Part">

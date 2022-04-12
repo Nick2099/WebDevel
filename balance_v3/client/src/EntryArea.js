@@ -40,7 +40,6 @@ function EntryArea() {
     Functions.getGroups(tmpUser.userid).then((value) => {
       groups.current = value;
       Functions.getSubGroups(tmpUser.userid).then((value) => {
-        console.log("subgroups: ", value);
         subgroups.current = value;
         Functions.getTransferSubGroupsNames(tmpUser.id, tmpUser.userid).then(
           (value) => {
@@ -325,7 +324,7 @@ function EntryArea() {
 
   function saveRecord() {
     Functions.createRecordsIfTranfer(record, records).then((value) => {
-      // saving only for transfer
+      // saving only for transfer - It's not working if there are more than 1 row
       if (value.records.length > 0) {
         Axios.post("http://localhost:3001/saverecords2", {
           record: value.record,

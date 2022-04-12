@@ -1,7 +1,7 @@
 import Axios from "axios";
 const maxNameLength = 30;
 const maxEmailLength = 45;
-const maxPasswordLength = 20;
+// const maxPasswordLength = 20;
 
 export function getBasicGroups() {
   return new Promise((resolve, reject) => {
