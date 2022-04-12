@@ -21,7 +21,6 @@ function SettingsArea() {
   const maxNameLength = 30;
   const maxEmailLength = 30;
   const maxPasswordLength = 20;
-
   const [emailInput, setEmailInput] = useState("");
   const [nameInput, setNameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
@@ -97,7 +96,7 @@ function SettingsArea() {
 
   function registerLocalUser2() {
     let tmpadv = 0;
-    if (document.getElementById("visibilitycheck").value) {
+    if (document.getElementById("visibilitycheck").checked) {
       tmpadv = 1;
     }
     createLocalUser({
@@ -116,7 +115,6 @@ function SettingsArea() {
   }
 
   async function createLocalUser(props) {
-    console.log("createLocalUser props: ", props);
     return new Promise((resolve, reject) => {
       Axios.post("http://localhost:3001/register", {
         name: props.name,
@@ -130,12 +128,31 @@ function SettingsArea() {
         curdec: props.curdec,
         adv: props.adv,
         userid: props.userid,
-      }).then(function (response) {
+      }).then((response) => {
         if (response.data.status === "ok") {
+          afterRegisterLocarUser({
+            id: response.data.id,
+            name: props.name,
+            email: props.email,
+            adv: props.adv,
+          });
+          return Promise.resolve({ status: "ok", id: response.data.id });
         } else {
+          return Promise.resolve({ status: "error" });
         }
       });
     });
+  }
+
+  function afterRegisterLocarUser(props) {
+    localUsers.current.push({
+      id: props.id,
+      name: props.name,
+      email: props.email,
+      adv: props.adv,
+    });
+    Functions.deleteAllRowsInLocalUsersTable();
+    Functions.addLocalUserToTable(localUsers.current);
   }
 
   return (
@@ -152,17 +169,17 @@ function SettingsArea() {
             <tr>
               <td>User name</td>
               <td>
-              <input
-            type="text"
-            maxLength={maxNameLength}
-            defaultValue={tmpUser.name}
-          ></input>
+                <input
+                  type="text"
+                  maxLength={maxNameLength}
+                  defaultValue={tmpUser.name}
+                ></input>
               </td>
             </tr>
             <tr>
               <td>Currency</td>
               <td>
-              <select id="select_cur"></select>
+                <select id="select_cur"></select>
               </td>
             </tr>
           </tbody>
@@ -179,15 +196,12 @@ function SettingsArea() {
               <th>Visibility</th>
             </tr>
           </thead>
-          <tbody>
-            
-          </tbody>
         </table>
         <button onClick={saveChanges}>Save changes</button>
       </div>
 
       <div id="Part">
-        <h3>Add new user</h3>
+        <h3>Add new local user</h3>
         <table id="localUsers">
           <tbody>
             <tr>
@@ -251,17 +265,15 @@ function SettingsArea() {
                   onChange={updateRepeatInput}
                 ></input>
                 <br></br>
-                <label className="labelNote">Passwords have to be the same!{repeatTxtInput}</label>
+                <label className="labelNote">
+                  Passwords have to be the same!{repeatTxtInput}
+                </label>
               </td>
             </tr>
             <tr>
               <td className="right">All users and their data visible</td>
               <td>
-                <input
-                  type="checkbox"
-                  id="visibilitycheck"
-                  value="true"
-                ></input>
+                <input type="checkbox" id="visibilitycheck"></input>
               </td>
             </tr>
           </tbody>

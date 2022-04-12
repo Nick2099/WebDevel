@@ -473,7 +473,7 @@ function EntryArea() {
               <th>Amount</th>
               <th>Add</th>
               <th>Delete</th>
-              <th>Recuring</th>
+              {/* <th>Recuring</th> */}
             </tr>
           </thead>
           <tbody id="records">
@@ -516,7 +516,7 @@ function EntryArea() {
                 </button>
               </td>
               <td></td>
-              <td></td>
+              {/* <td></td> */}
             </tr>
           </tbody>
         </table>

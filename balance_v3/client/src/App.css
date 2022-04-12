@@ -74,6 +74,7 @@ button.mainLoginButton:hover {
 .NavigationBar {
   display: flex;
   background-color: royalblue;
+  color: white;
   margin: 0;
   padding: 0;
 }

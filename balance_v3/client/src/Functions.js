@@ -3,7 +3,6 @@ const maxNameLength = 30;
 const maxEmailLength = 45;
 const maxPasswordLength = 20;
 
-
 export function getBasicGroups() {
   return new Promise((resolve, reject) => {
     Axios.get("http://localhost:3001/getbasicgroups", {
@@ -237,10 +236,11 @@ export function getLocalUsers(valueid, valueuserid) {
 }
 
 export function addLocalUserToTable(tmp) {
-  console.log("tmp: ", tmp);
+  let tbody = document.createElement("tbody");
+  tbody.id = "localUsersBody";
+  document.getElementById("localUsers").appendChild(tbody);
   return new Promise((resolve, reject) => {
     tmp.forEach((tmpone) => {
-      console.log("tmpone: ", tmpone);
       let tr = document.createElement("tr");
       tr.name = "tr" + String(tmpone.id);
       let td1 = document.createElement("td");
@@ -260,13 +260,22 @@ export function addLocalUserToTable(tmp) {
       let td3 = document.createElement("td");
       let input3 = document.createElement("input");
       input3.type = "checkbox";
-      if (tmpone.adv===1) {input3.checked=true} else {input3.checked=false};
+      if (tmpone.adv === 1) {
+        input3.checked = true;
+      } else {
+        input3.checked = false;
+      }
       input3.id = "advLocalUser" + String(tmpone.id);
       td3.appendChild(input3);
       tr.appendChild(td3);
-      document.getElementById("localUsers").appendChild(tr);
+      document.getElementById("localUsersBody").appendChild(tr);
     });
   });
+}
+
+export function deleteAllRowsInLocalUsersTable() {
+  var tbl = document.getElementById("localUsers"); // Get the table
+  tbl.removeChild(tbl.getElementsByTagName("tbody")[0]);  
 }
 
 export function fillSubGroups(value) {
@@ -389,7 +398,7 @@ export function showNewRecord(props) {
   check.type = "checkbox";
   check.id = "checkbox" + String(no);
   td6.appendChild(check);
-  tr.appendChild(td6);
+  // tr.appendChild(td6);
 
   var recs = document.getElementById("records");
   recs.appendChild(tr);
