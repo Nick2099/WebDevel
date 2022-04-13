@@ -280,7 +280,7 @@ app.post("/saverecords2", async (req, res) => {
   async function insertRecord({ record, tmpRecord, nextrecid }) {
     return new Promise((resolve) => {
       db.query(
-        "INSERT INTO mybalance.records2 (recid,userid,locuser,date,place,gr,sgr,type,amount,cur, comment) VALUES (?, ?,?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO mybalance.records2 (recid,userid,locuser,date,place,gr,sgr,type,amount,cur,comment) VALUES (?, ?,?,?,?,?,?,?,?,?,?)",
         [
           nextrecid,
           record.userid,

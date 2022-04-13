@@ -5,8 +5,8 @@ import {PageContentContext} from "./PageContentContext";
 import NavigationBar from "./NavigationBar";
 import LoginArea from "./LoginArea";
 import HomeArea from './HomeArea';
-// import EntryArea from './EntryArea';
 import EntryArea from './EntryArea';
+import ShowArea from './ShowArea';
 import SettingsArea from './SettingsArea';
 
 function App() {
@@ -16,6 +16,16 @@ function App() {
     if (props.show==="true") {
         return(
           <EntryArea />
+        );
+    } else {
+      return null;
+    };
+  };
+
+  function ShowShowArea(props) {
+    if (props.show==="true") {
+        return(
+          <ShowArea />
         );
     } else {
       return null;
@@ -65,6 +75,7 @@ function App() {
     ShowLoginArea(page.showLogin.toString);
     ShowHomeArea(page.showHome.toString);
     ShowEntryArea(page.showEntry.toString);
+    ShowShowArea(page.showShow.toString);
     ShowSettingsArea(page.showSettings.toString);
   }, [page])
 
@@ -75,6 +86,7 @@ function App() {
         <ShowLoginArea show={page.showLogin.toString()}/>
         <ShowHomeArea show={page.showHome.toString()}/>
         <ShowEntryArea show={page.showEntry.toString()}/>
+        <ShowShowArea show={page.showShow.toString()}/>
         <ShowSettingsArea show={page.showSettings.toString()}/>
       </div>
     </TmpUserProvider>      

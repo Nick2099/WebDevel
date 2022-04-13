@@ -147,7 +147,7 @@ function EntryArea() {
         record.date = document.getElementById("select_date").value;
         record.place = document.getElementById("place").value;
         record.type = Number(showIncome);
-        record.cur = "EUR";
+        record.cur = tmpUser.cur;
         document.getElementById("amount").readOnly = false;
         document.getElementById("select_date").readOnly = true;
         document.getElementById("place").readOnly = true;

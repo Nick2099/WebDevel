@@ -9,6 +9,7 @@ export const PageContentProvider = (props) => {
         showEntry: false,
         showEntryAdd: false,
         showSettings: false,
+        showShow: false,
         setPage: () => {}
         }
     );
