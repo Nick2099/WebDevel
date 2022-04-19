@@ -515,12 +515,14 @@ export function addAllLocalUsers(value) {
     var tr = document.createElement("tr");
     value.forEach((tmpvalue) => {
       var td = document.createElement("td");
+      td.innerHTML = tmpvalue.name;
       var inp = document.createElement("input");
       inp.type = "checkbox";
       inp.id = "id" + tmpvalue.id;
       td.appendChild(inp);
       tr.appendChild(td);
     });
+    document.getElementById("allLocalUsers").appendChild(tr);
     resolve({status: "OK"})
   })
 }
