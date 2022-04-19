@@ -492,3 +492,35 @@ export function setCurrencies({ cur, curs }) {
     });
   });
 }
+
+export function getAllLocalUsers(valueuserid) {
+  return new Promise((resolve, reject) => {
+    Axios.get("http://localhost:3001/getalllocalusers", {
+      params: {
+        userid: valueuserid,
+      },
+    })
+      .then((resp) => {
+        resolve({status: "OK", data: resp.data});
+      })
+      .catch((err) => {
+        console.log({status: "Error: ", err: err});
+      });
+  });
+}
+
+export function addAllLocalUsers(value) {
+  return new Promise((resolve, reject) => {
+    console.log("value: ", value);
+    var tr = document.createElement("tr");
+    value.forEach((tmpvalue) => {
+      var td = document.createElement("td");
+      var inp = document.createElement("input");
+      inp.type = "checkbox";
+      inp.id = "id" + tmpvalue.id;
+      td.appendChild(inp);
+      tr.appendChild(td);
+    });
+    resolve({status: "OK"})
+  })
+}

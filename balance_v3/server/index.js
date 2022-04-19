@@ -65,7 +65,8 @@ app.post("/register", (req, res) => {
                 if (err) {
                   res.send({ status: "error", error: "NOT_FOUND" });
                 } else {
-                  if (userid === 0) { // not if localuser is registeres
+                  if (userid === 0) {
+                    // not if localuser is registeres
                     db.query(
                       'UPDATE users SET userid="' +
                         result[0].id +
@@ -137,8 +138,8 @@ app.get("/getbasicsubgroups", (req, res) => {
 app.get("/getsubgroups", (req, res) => {
   db.query(
     'SELECT subgroupid AS id, groupid, name FROM mybalance.subgroups WHERE userid="' +
-    req.query.id +
-    '"ORDER BY name ASC',
+      req.query.id +
+      '"ORDER BY name ASC',
     (err, result) => {
       if (err) {
         res.send([{ error: err }]);
@@ -172,6 +173,21 @@ app.get("/getlocalusers", (req, res) => {
       req.query.userid +
       '" AND id <> "' +
       req.query.id +
+      '" ORDER BY name ASC',
+    (err, result) => {
+      if (err) {
+        res.send([{ error: err }]);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+app.get("/getalllocalusers", (req, res) => {
+  db.query(
+    'SELECT id, name FROM mybalance.users WHERE userid = "' +
+      req.query.userid +
       '" ORDER BY name ASC',
     (err, result) => {
       if (err) {
