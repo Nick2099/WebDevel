@@ -509,18 +509,21 @@ export function getAllLocalUsers(valueuserid) {
   });
 }
 
-export function addAllLocalUsers(value) {
+export function addAllLocalUsers(value, id, admin) {
   return new Promise((resolve, reject) => {
     console.log("value: ", value);
     var tr = document.createElement("tr");
     value.forEach((tmpvalue) => {
-      var td = document.createElement("td");
-      td.innerHTML = tmpvalue.name;
-      var inp = document.createElement("input");
-      inp.type = "checkbox";
-      inp.id = "id" + tmpvalue.id;
-      td.appendChild(inp);
-      tr.appendChild(td);
+      if ((admin === 1) || (tmpvalue.id === id)) {
+        var td = document.createElement("td");
+        td.innerHTML = tmpvalue.name;
+        var inp = document.createElement("input");
+        inp.type = "checkbox";
+        inp.id = "id" + tmpvalue.id;
+        inp.checked = true;
+        td.appendChild(inp);
+        tr.appendChild(td);  
+      }
     });
     document.getElementById("allLocalUsers").appendChild(tr);
     resolve({status: "OK"})
