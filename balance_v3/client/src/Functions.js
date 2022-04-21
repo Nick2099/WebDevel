@@ -511,7 +511,6 @@ export function getAllLocalUsers(valueuserid) {
 
 export function addAllLocalUsers(value, id, admin) {
   return new Promise((resolve, reject) => {
-    console.log("value: ", value);
     var tr = document.createElement("tr");
     value.forEach((tmpvalue) => {
       if ((admin === 1) || (tmpvalue.id === id)) {

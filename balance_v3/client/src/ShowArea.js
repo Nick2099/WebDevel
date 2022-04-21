@@ -22,14 +22,12 @@ function ShowArea() {
 
   function getAllLocalUsers() {
     Functions.getAllLocalUsers(tmpUser.userid).then((value) => {
-      console.log("All local users: ", value);
       Functions.addAllLocalUsers(value.data, tmpUser.id, tmpUser.admin);
     });
   }
 
   function addMonths() {
     for (let i=0; i<months.length; i++) {
-      console.log("month: ", i, months[i]);
       let opt = document.createElement("option");
       opt.innerHTML = months[i];
       opt.value = i+1;
@@ -56,11 +54,11 @@ function ShowArea() {
             <th>Period</th>
             <td>
               <select id="select_period">
-                <option>Weekly</option> 
-                <option>Monthly</option>
-                <option>Quarterly</option>
-                <option>Half-yearly</option>
-                <option>Yearly</option>
+                <option value="1">Weekly</option> 
+                <option value="2">Monthly</option>
+                <option value="3">Quarterly</option>
+                <option value="4">Half-yearly</option>
+                <option value="5">Yearly</option>
               </select>
             </td>
           </tr>
