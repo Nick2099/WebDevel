@@ -111,7 +111,12 @@ function EntryArea() {
       document.getElementById("select_date").value = tmpDateValue;
     } else {
       tmpDateValue = tmpDate1;
-    }
+    };
+    Functions.dateRangeCheck(tmpDateValue).then((value) => {
+      if (value.status==="Change") {
+        document.getElementById("select_date").value=value.newDate;
+      };
+    });
   }
 
   function changeGroup() {

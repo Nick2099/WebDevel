@@ -539,11 +539,27 @@ export function getAllYears(id, userid, admin) {
       },
     })
       .then((resp) => {
-        console.log();
         resolve({ status: "OK", data: resp.data });
       })
       .catch((err) => {
-        console.log({ status: "Error: ", err: err });
+        resolve({ status: "Error", err: err });
       });
+  });
+}
+
+export function dateRangeCheck(tmpDate) {
+  return new Promise((resolve, reject) => {
+    let year = tmpDate.slice(0, 4);
+    let today = new Date();
+    let yyyy = today.getFullYear();
+    if (year<yyyy-1) {
+      let newDate = (yyyy-1).toString()+"-01-01";
+      resolve({ status: "Change", newDate: newDate });
+    };
+    if (year>yyyy+1) {
+      let newDate =  (yyyy+1).toString()+"-12-31";
+      resolve({ status: "Change", newDate: newDate });
+    };
+    resolve({status: "OK"});
   });
 }

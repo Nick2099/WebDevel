@@ -358,8 +358,16 @@ app.get("/getcurrencies", (req, res) => {
 });
 
 app.get("/getallyears", (req, res) => {
-  console.log("req.query:", req.query);
-  res.send({status: "ok"});
+  db.query(
+    'SELECT DISTINCT YEAR(date) AS year FROM mybalance.records2 WHERE userid = "' + req.query.userid + '" ORDER BY year ASC',
+    (err, result) => {
+      if (err) {
+        res.send([{error: err}]);
+      } else {
+        res.send(result);
+      }
+    }
+  );
 })
 
 app.listen(3001, () => {

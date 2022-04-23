@@ -51,8 +51,26 @@ function ShowArea() {
 
   function addYears() {
     Functions.getAllYears(tmpUser.id, tmpUser.userid, tmpUser.admin).then((value) => {
-      console.log("addYears value: ", value);
+      if (value.status==="OK") {
+        for (let i = 0; i < value.data.length; i++) {
+          let opt = document.createElement("option");
+          opt.innerHTML = value.data[i].year;
+          opt.value = i + 1;
+          document.getElementById("select_year").appendChild(opt);
+        }    
+      } else {
+        alert("Error in getAllYears: ", value.err);
+      }
     });
+  }
+
+  function selectPeriodChange() {
+    let selectedPeriod = document.getElementById("select_period").value;
+    if (selectedPeriod>1) {
+      document.getElementById("select_month").disabled=true;
+    } else {
+      document.getElementById("select_month").disabled=false;
+    }
   }
 
   return (
@@ -73,7 +91,8 @@ function ShowArea() {
             <tr>
               <th>Period</th>
               <td>
-                <select id="select_period">
+                <select id="select_period" onChange={selectPeriodChange}>
+                  <option value="0" selected>Daily</option>
                   <option value="1">Weekly</option>
                   <option value="2">Monthly</option>
                   <option value="3">Quarterly</option>
