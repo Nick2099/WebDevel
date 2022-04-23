@@ -275,7 +275,7 @@ export function addLocalUserToTable(tmp) {
 
 export function deleteAllRowsInLocalUsersTable() {
   var tbl = document.getElementById("localUsers"); // Get the table
-  tbl.removeChild(tbl.getElementsByTagName("tbody")[0]);  
+  tbl.removeChild(tbl.getElementsByTagName("tbody")[0]);
 }
 
 export function fillSubGroups(value) {
@@ -501,10 +501,10 @@ export function getAllLocalUsers(valueuserid) {
       },
     })
       .then((resp) => {
-        resolve({status: "OK", data: resp.data});
+        resolve({ status: "OK", data: resp.data });
       })
       .catch((err) => {
-        console.log({status: "Error: ", err: err});
+        console.log({ status: "Error: ", err: err });
       });
   });
 }
@@ -513,7 +513,7 @@ export function addAllLocalUsers(value, id, admin) {
   return new Promise((resolve, reject) => {
     var tr = document.createElement("tr");
     value.forEach((tmpvalue) => {
-      if ((admin === 1) || (tmpvalue.id === id)) {
+      if (admin === 1 || tmpvalue.id === id) {
         var td = document.createElement("td");
         td.innerHTML = tmpvalue.name;
         var inp = document.createElement("input");
@@ -521,10 +521,29 @@ export function addAllLocalUsers(value, id, admin) {
         inp.id = "id" + tmpvalue.id;
         inp.checked = true;
         td.appendChild(inp);
-        tr.appendChild(td);  
+        tr.appendChild(td);
       }
     });
     document.getElementById("allLocalUsers").appendChild(tr);
-    resolve({status: "OK"})
-  })
+    resolve({ status: "OK" });
+  });
+}
+
+export function getAllYears(id, userid, admin) {
+  return new Promise((resolve, reject) => {
+    Axios.get("http://localhost:3001/getallyears", {
+      params: {
+        locuser: id,
+        userid: userid,
+        admin: admin,
+      },
+    })
+      .then((resp) => {
+        console.log();
+        resolve({ status: "OK", data: resp.data });
+      })
+      .catch((err) => {
+        console.log({ status: "Error: ", err: err });
+      });
+  });
 }

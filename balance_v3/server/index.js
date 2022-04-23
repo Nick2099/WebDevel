@@ -357,6 +357,11 @@ app.get("/getcurrencies", (req, res) => {
   );
 });
 
+app.get("/getallyears", (req, res) => {
+  console.log("req.query:", req.query);
+  res.send({status: "ok"});
+})
+
 app.listen(3001, () => {
   console.log("Server is running on port 3001!");
 });
