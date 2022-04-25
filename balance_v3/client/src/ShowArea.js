@@ -27,6 +27,7 @@ function ShowArea() {
     "November",
     "December",
   ];
+  var noOfLocalUsers = 0;
 
   useEffect(() => {
     getAllLocalUsers();
@@ -36,7 +37,10 @@ function ShowArea() {
 
   function getAllLocalUsers() {
     Functions.getAllLocalUsers(tmpUser.userid).then((value) => {
-      Functions.addAllLocalUsers(value.data, tmpUser.id, tmpUser.admin);
+      Functions.addAllLocalUsers(value.data, tmpUser.id, tmpUser.admin).then((value) => {
+        console.log("value: ", value);
+        noOfLocalUsers = value.noOfLocalUsers;
+      });
     });
   }
 
@@ -50,26 +54,36 @@ function ShowArea() {
   }
 
   function addYears() {
-    Functions.getAllYears(tmpUser.id, tmpUser.userid, tmpUser.admin).then((value) => {
-      if (value.status==="OK") {
-        for (let i = 0; i < value.data.length; i++) {
-          let opt = document.createElement("option");
-          opt.innerHTML = value.data[i].year;
-          opt.value = i + 1;
-          document.getElementById("select_year").appendChild(opt);
-        }    
-      } else {
-        alert("Error in getAllYears: ", value.err);
+    Functions.getAllYears(tmpUser.id, tmpUser.userid, tmpUser.admin).then(
+      (value) => {
+        if (value.status === "OK") {
+          for (let i = 0; i < value.data.length; i++) {
+            let opt = document.createElement("option");
+            opt.innerHTML = value.data[i].year;
+            opt.value = i + 1;
+            document.getElementById("select_year").appendChild(opt);
+          }
+        } else {
+          alert("Error in getAllYears: ", value.err);
+        }
       }
-    });
+    );
   }
 
   function selectPeriodChange() {
     let selectedPeriod = document.getElementById("select_period").value;
-    if (selectedPeriod>1) {
-      document.getElementById("select_month").disabled=true;
+    if (selectedPeriod > 1) {
+      document.getElementById("select_month").disabled = true;
     } else {
-      document.getElementById("select_month").disabled=false;
+      document.getElementById("select_month").disabled = false;
+    }
+  }
+
+  function showChoosen() {
+    let i=0;
+    for (let i=0; i<noOfLocalUsers; i++) {
+      let tmpLocalUserId = document.getElementById("id"+i).value;
+      console.log("tmpLocalUserId", tmpLocalUserId);
     }
   }
 
@@ -91,8 +105,12 @@ function ShowArea() {
             <tr>
               <th>Period</th>
               <td>
-                <select id="select_period" onChange={selectPeriodChange}>
-                  <option value="0" selected>Daily</option>
+                <select
+                  id="select_period"
+                  onChange={selectPeriodChange}
+                  defaultValue={"1"}
+                >
+                  <option value="0">Daily</option>
                   <option value="1">Weekly</option>
                   <option value="2">Monthly</option>
                   <option value="3">Quarterly</option>
@@ -111,6 +129,11 @@ function ShowArea() {
               <th>Year</th>
               <td>
                 <select id="select_year"></select>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button type="button" id="button_show" onClick={showChoosen}>Show</button>
               </td>
             </tr>
           </tbody>

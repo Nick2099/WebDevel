@@ -512,20 +512,23 @@ export function getAllLocalUsers(valueuserid) {
 export function addAllLocalUsers(value, id, admin) {
   return new Promise((resolve, reject) => {
     var tr = document.createElement("tr");
+    let tmpcounter = 0;
     value.forEach((tmpvalue) => {
       if (admin === 1 || tmpvalue.id === id) {
         var td = document.createElement("td");
         td.innerHTML = tmpvalue.name;
         var inp = document.createElement("input");
         inp.type = "checkbox";
-        inp.id = "id" + tmpvalue.id;
+        inp.value = tmpvalue.id;
+        inp.id = "id" + tmpcounter;
         inp.checked = true;
         td.appendChild(inp);
         tr.appendChild(td);
+        tmpcounter++;
       }
     });
     document.getElementById("allLocalUsers").appendChild(tr);
-    resolve({ status: "OK" });
+    resolve({ status: "OK" , noOfLocalUsers: tmpcounter});
   });
 }
 
