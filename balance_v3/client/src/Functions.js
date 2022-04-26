@@ -566,3 +566,15 @@ export function dateRangeCheck(tmpDate) {
     resolve({status: "OK"});
   });
 }
+
+export function getShowForChoosen(choosenLocalUserIds, choosenPeriod, choosenMonth, choosenYear) {
+  console.log("Functions.getShowForChoosen ====>");
+  console.log("choosenLocalUserIds: ", choosenLocalUserIds);
+  console.log("choosenPeriod: ", choosenPeriod);
+  console.log("choosenMonth: ", choosenMonth);
+  console.log("choosenYear: ", choosenYear);
+
+  if (choosenPeriod===0) {
+    console.log("Daily!");
+  }
+}

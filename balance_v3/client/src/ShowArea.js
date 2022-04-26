@@ -38,7 +38,6 @@ function ShowArea() {
   function getAllLocalUsers() {
     Functions.getAllLocalUsers(tmpUser.userid).then((value) => {
       Functions.addAllLocalUsers(value.data, tmpUser.id, tmpUser.admin).then((value) => {
-        console.log("value: ", value);
         noOfLocalUsers = value.noOfLocalUsers;
       });
     });
@@ -60,7 +59,7 @@ function ShowArea() {
           for (let i = 0; i < value.data.length; i++) {
             let opt = document.createElement("option");
             opt.innerHTML = value.data[i].year;
-            opt.value = i + 1;
+            opt.value = value.data[i].year;
             document.getElementById("select_year").appendChild(opt);
           }
         } else {
@@ -80,11 +79,18 @@ function ShowArea() {
   }
 
   function showChoosen() {
-    let i=0;
+    let choosenLocalUserIds = [];
     for (let i=0; i<noOfLocalUsers; i++) {
       let tmpLocalUserId = document.getElementById("id"+i).value;
-      console.log("tmpLocalUserId", tmpLocalUserId);
+      let tmpLocalUserIdChoosen = document.getElementById("id"+i).checked;
+      if (tmpLocalUserIdChoosen) {
+        choosenLocalUserIds.push(tmpLocalUserId);
+      }
     }
+    let choosenPeriod = document.getElementById("select_period").value;
+    let choosenMonth = document.getElementById("select_month").value;
+    let choosenYear = document.getElementById("select_year").value;
+    Functions.getShowForChoosen(choosenLocalUserIds, choosenPeriod, choosenMonth, choosenYear);
   }
 
   return (
