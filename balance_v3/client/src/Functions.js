@@ -568,13 +568,34 @@ export function dateRangeCheck(tmpDate) {
 }
 
 export function getShowForChoosen(choosenLocalUserIds, choosenPeriod, choosenMonth, choosenYear) {
+
+  function Daily() {
+    return new Promise((resolve, reject) => {
+      Axios.get("http://localhost:3001/showdaily", {
+        params: {
+          localUserIds: choosenLocalUserIds,
+          month: choosenMonth,
+          year: choosenYear,
+        },
+      })
+        .then((resp) => {
+          resolve({ status: "OK", data: resp.data });
+        })
+        .catch((err) => {
+          resolve({ status: "Error", err: err });
+        });
+    });  
+  };
+
   console.log("Functions.getShowForChoosen ====>");
   console.log("choosenLocalUserIds: ", choosenLocalUserIds);
   console.log("choosenPeriod: ", choosenPeriod);
   console.log("choosenMonth: ", choosenMonth);
   console.log("choosenYear: ", choosenYear);
-
-  if (choosenPeriod===0) {
+  if (choosenPeriod==="0") {
     console.log("Daily!");
+    Daily().then((value) => {
+      console.log("Daily data:", value);
+    });
   }
 }

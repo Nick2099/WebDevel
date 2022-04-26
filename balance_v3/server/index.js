@@ -370,6 +370,24 @@ app.get("/getallyears", (req, res) => {
   );
 })
 
+app.get("/showdaily", (req, res) => {
+  var localUserIds = req.query.localUserIds;
+  var month = req.query.month;
+  var year = req.query.year;
+  console.log(localUserIds, month, year);
+  db.query(
+    'SELECT gr, sgr, type, amount FROM mybalance.records2 WHERE YEAR(date)="'+year+'" AND MONTH(date)="'+month+'" ORDER BY type, gr, sgr',
+    (err, result) => {
+      if (err) {
+        res.send([{error: err}]);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+})
+
+
 app.listen(3001, () => {
   console.log("Server is running on port 3001!");
 });
