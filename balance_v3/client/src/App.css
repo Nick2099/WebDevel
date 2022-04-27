@@ -274,3 +274,13 @@ textarea {
 #SettingsArea button {
   font-size: 1rem;
 }
+
+#ShowArea {
+  width: fit-content;
+  text-align: left;
+  padding: 5px;
+}
+
+#ShowArea label {
+  margin: 5px 0px;
+}

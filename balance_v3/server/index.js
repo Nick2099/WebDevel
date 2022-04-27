@@ -374,17 +374,50 @@ app.get("/showdaily", (req, res) => {
   var localUserIds = req.query.localUserIds;
   var month = req.query.month;
   var year = req.query.year;
-  console.log(localUserIds, month, year);
-  db.query(
-    'SELECT gr, sgr, type, amount FROM mybalance.records2 WHERE YEAR(date)="'+year+'" AND MONTH(date)="'+month+'" ORDER BY type, gr, sgr',
-    (err, result) => {
-      if (err) {
-        res.send([{error: err}]);
-      } else {
-        res.send(result);
+  var template = req.query.template;
+  var group = req.query.group;
+  // console.log(localUserIds, month, year, template, group);
+  if (template==="0") {
+    // All groups
+    db.query(
+      // 'SELECT gr, sgr, type, amount FROM mybalance.records2 WHERE YEAR(date)="'+year+'" AND MONTH(date)="'+month+'" ORDER BY type, gr, sgr',
+      'SELECT DATE_FORMAT(date,"%y-%m-%d") AS date, gr, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'+year+'" AND MONTH(date)="'
+      +month+'" AND locuser IN (' + localUserIds + ') GROUP BY date, gr ORDER BY date, gr',
+      (err, result) => {
+        if (err) {
+          res.send([{error: err}]);
+        } else {
+          res.send(result);
+        }
       }
-    }
-  );
+    );  
+  } else if (template==="1") {
+    // Choosen Group
+    db.query(
+      'SELECT DATE_FORMAT(date,"%y-%m-%d") AS date, sgr, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'+year+'" AND MONTH(date)="'
+      +month+'" AND locuser IN (' + localUserIds + ') GROUP BY date, sgr ORDER BY date, sgr',
+      (err, result) => {
+        if (err) {
+          res.send([{error: err}]);
+        } else {
+          res.send(result);
+        }
+      }
+    );  
+  } else if (template==="2") {
+    // Income/Expense/Transfer/Conto ==> type
+    db.query(
+      'SELECT DATE_FORMAT(date,"%y-%m-%d") AS date, type, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'+year+'" AND MONTH(date)="'
+      +month+'" AND locuser IN (' + localUserIds + ') GROUP BY date, type ORDER BY date, type',
+      (err, result) => {
+        if (err) {
+          res.send([{error: err}]);
+        } else {
+          res.send(result);
+        }
+      }
+    );  
+  }
 })
 
 

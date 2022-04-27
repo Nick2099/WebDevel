@@ -567,7 +567,7 @@ export function dateRangeCheck(tmpDate) {
   });
 }
 
-export function getShowForChoosen(choosenLocalUserIds, choosenPeriod, choosenMonth, choosenYear) {
+export function getShowForChoosen(choosenLocalUserIds, choosenPeriod, choosenMonth, choosenYear, choosenTemplate, choosenGroup) {
 
   function Daily() {
     return new Promise((resolve, reject) => {
@@ -576,6 +576,8 @@ export function getShowForChoosen(choosenLocalUserIds, choosenPeriod, choosenMon
           localUserIds: choosenLocalUserIds,
           month: choosenMonth,
           year: choosenYear,
+          template: choosenTemplate,
+          group: choosenGroup,
         },
       })
         .then((resp) => {
@@ -587,15 +589,16 @@ export function getShowForChoosen(choosenLocalUserIds, choosenPeriod, choosenMon
     });  
   };
 
-  console.log("Functions.getShowForChoosen ====>");
-  console.log("choosenLocalUserIds: ", choosenLocalUserIds);
-  console.log("choosenPeriod: ", choosenPeriod);
-  console.log("choosenMonth: ", choosenMonth);
-  console.log("choosenYear: ", choosenYear);
+  // console.log("Functions.getShowForChoosen ====>");
+  // console.log("choosenLocalUserIds: ", choosenLocalUserIds);
+  // console.log("choosenPeriod: ", choosenPeriod);
+  // console.log("choosenMonth: ", choosenMonth);
+  // console.log("choosenYear: ", choosenYear);
+  console.log("choosenTemplate: ", choosenTemplate);
+  console.log("choosenGroup: ", choosenGroup);
   if (choosenPeriod==="0") {
-    console.log("Daily!");
     Daily().then((value) => {
-      console.log("Daily data:", value);
+      console.log("Daily data:", value.data);
     });
   }
 }

@@ -49,7 +49,9 @@ function ShowArea() {
       opt.innerHTML = months[i];
       opt.value = i + 1;
       document.getElementById("select_month").appendChild(opt);
-    }
+    };
+    let tmpMonth = (new Date()).getMonth() + 1;
+    document.getElementById("select_month").value=tmpMonth;
   }
 
   function addYears() {
@@ -90,7 +92,9 @@ function ShowArea() {
     let choosenPeriod = document.getElementById("select_period").value;
     let choosenMonth = document.getElementById("select_month").value;
     let choosenYear = document.getElementById("select_year").value;
-    Functions.getShowForChoosen(choosenLocalUserIds, choosenPeriod, choosenMonth, choosenYear);
+    let choosenTemplate = document.querySelector('input[name="select_template"]:checked').value;
+    let choosenGroup = document.getElementById("select_group").value;
+    Functions.getShowForChoosen(choosenLocalUserIds, choosenPeriod, choosenMonth, choosenYear, choosenTemplate, choosenGroup);
   }
 
   return (
@@ -114,7 +118,7 @@ function ShowArea() {
                 <select
                   id="select_period"
                   onChange={selectPeriodChange}
-                  defaultValue={"1"}
+                  defaultValue={"0"}
                 >
                   <option value="0">Daily</option>
                   <option value="1">Weekly</option>
@@ -135,6 +139,28 @@ function ShowArea() {
               <th>Year</th>
               <td>
                 <select id="select_year"></select>
+              </td>
+            </tr>
+            <tr>
+              <th>Template</th>
+              <td>
+                <input type="radio" name="select_template" value="0" defaultChecked></input>
+                <label>All groups</label>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <input type="radio" name="select_template" value="1"></input>
+                <label>Selected group</label>
+                <select id="select_group"></select>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <input type="radio" name="select_template" value="2"></input>
+                <label>Income/Expense/Transfer/Conto</label>
               </td>
             </tr>
             <tr>
