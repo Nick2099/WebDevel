@@ -9,6 +9,10 @@
   color: white;
 }
 
+.fullWidth {
+  width: 1000px;
+}
+
 button {
   margin: 0px;
   font-size: 1rem;

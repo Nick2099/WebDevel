@@ -4,8 +4,19 @@ import React, {
   useEffect,
   useRef,
   createElement,
+  PureComponent,
   // Component,
 } from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 import "./App.css";
 import Axios from "axios";
 import { TmpUserContext } from "./TmpUserContext";
@@ -29,6 +40,50 @@ function ShowArea() {
   ];
   var noOfLocalUsers = 0;
   const groups = useRef([]);
+  const data = [
+    {
+      name: "Page A",
+      uv: 4000,
+      pv: 2400,
+      amt: 2400,
+    },
+    {
+      name: "Page B",
+      uv: 3000,
+      pv: 1398,
+      amt: 2210,
+    },
+    {
+      name: "Page C",
+      uv: 2000,
+      pv: 9800,
+      amt: 2290,
+    },
+    {
+      name: "Page D",
+      uv: 2780,
+      pv: 3908,
+      amt: 2000,
+    },
+    {
+      name: "Page E",
+      uv: 1890,
+      pv: 4800,
+      amt: 2181,
+    },
+    {
+      name: "Page F",
+      uv: 2390,
+      pv: 3800,
+      amt: 2500,
+    },
+    {
+      name: "Page G",
+      uv: 3490,
+      pv: 4300,
+      amt: 2100,
+    },
+  ];
 
   useEffect(() => {
     getAllLocalUsers();
@@ -37,14 +92,16 @@ function ShowArea() {
     Functions.getGroups(tmpUser.userid).then((value) => {
       groups.current = value;
       addGroups();
-    })
+    });
   }, []);
 
   function getAllLocalUsers() {
     Functions.getAllLocalUsers(tmpUser.userid).then((value) => {
-      Functions.addAllLocalUsers(value.data, tmpUser.id, tmpUser.admin).then((value) => {
-        noOfLocalUsers = value.noOfLocalUsers;
-      });
+      Functions.addAllLocalUsers(value.data, tmpUser.id, tmpUser.admin).then(
+        (value) => {
+          noOfLocalUsers = value.noOfLocalUsers;
+        }
+      );
     });
   }
 
@@ -54,7 +111,7 @@ function ShowArea() {
       opt.innerHTML = groups.current[i].name;
       opt.value = groups.current[i].id;
       document.getElementById("select_group").appendChild(opt);
-    };
+    }
   }
 
   function addMonths() {
@@ -63,9 +120,9 @@ function ShowArea() {
       opt.innerHTML = months[i];
       opt.value = i + 1;
       document.getElementById("select_month").appendChild(opt);
-    };
-    let tmpMonth = (new Date()).getMonth() + 1;
-    document.getElementById("select_month").value=tmpMonth;
+    }
+    let tmpMonth = new Date().getMonth() + 1;
+    document.getElementById("select_month").value = tmpMonth;
   }
 
   function addYears() {
@@ -96,9 +153,9 @@ function ShowArea() {
 
   function showChoosen() {
     let choosenLocalUserIds = [];
-    for (let i=0; i<noOfLocalUsers; i++) {
-      let tmpLocalUserId = document.getElementById("id"+i).value;
-      let tmpLocalUserIdChoosen = document.getElementById("id"+i).checked;
+    for (let i = 0; i < noOfLocalUsers; i++) {
+      let tmpLocalUserId = document.getElementById("id" + i).value;
+      let tmpLocalUserIdChoosen = document.getElementById("id" + i).checked;
       if (tmpLocalUserIdChoosen) {
         choosenLocalUserIds.push(tmpLocalUserId);
       }
@@ -106,9 +163,18 @@ function ShowArea() {
     let choosenPeriod = document.getElementById("select_period").value;
     let choosenMonth = document.getElementById("select_month").value;
     let choosenYear = document.getElementById("select_year").value;
-    let choosenTemplate = document.querySelector('input[name="select_template"]:checked').value;
+    let choosenTemplate = document.querySelector(
+      'input[name="select_template"]:checked'
+    ).value;
     let choosenGroup = document.getElementById("select_group").value;
-    Functions.getShowForChoosen(choosenLocalUserIds, choosenPeriod, choosenMonth, choosenYear, choosenTemplate, choosenGroup);
+    Functions.getShowForChoosen(
+      choosenLocalUserIds,
+      choosenPeriod,
+      choosenMonth,
+      choosenYear,
+      choosenTemplate,
+      choosenGroup
+    );
   }
 
   return (
@@ -158,7 +224,12 @@ function ShowArea() {
             <tr>
               <th>Template</th>
               <td>
-                <input type="radio" name="select_template" value="0" defaultChecked></input>
+                <input
+                  type="radio"
+                  name="select_template"
+                  value="0"
+                  defaultChecked
+                ></input>
                 <label>All groups</label>
               </td>
             </tr>
@@ -179,11 +250,41 @@ function ShowArea() {
             </tr>
             <tr>
               <td>
-                <button type="button" id="button_show" onClick={showChoosen}>Show</button>
+                <button type="button" id="button_show" onClick={showChoosen}>
+                  Show
+                </button>
               </td>
             </tr>
           </tbody>
         </table>
+      </div>
+      <div className="fullWidth">
+        <ResponsiveContainer width="100%" aspect={3}>
+          <LineChart
+            width={1000}
+            height={300}
+            data={data}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="pv"
+              stroke="yellow"
+              activeDot={{ r: 8 }}
+            />
+            <Line type="monotone" dataKey="uv" stroke="white" />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

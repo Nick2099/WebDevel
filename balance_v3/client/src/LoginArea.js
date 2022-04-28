@@ -206,7 +206,7 @@ function LoginArea() {
           value={name}
           onChange={updateName}
         ></input>
-        <label for="password">Password</label>
+        <label htmlFor="password">Password</label>
         <input
           type="password"
           name="password"
