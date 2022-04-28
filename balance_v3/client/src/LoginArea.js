@@ -206,10 +206,11 @@ function LoginArea() {
           value={name}
           onChange={updateName}
         ></input>
-        <label>Password</label>
+        <label for="password">Password</label>
         <input
           type="password"
           name="password"
+          id="password"
           value={password}
           onChange={updatePassword}
         ></input>
