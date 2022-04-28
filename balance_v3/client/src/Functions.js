@@ -594,8 +594,7 @@ export function getShowForChoosen(choosenLocalUserIds, choosenPeriod, choosenMon
   // console.log("choosenPeriod: ", choosenPeriod);
   // console.log("choosenMonth: ", choosenMonth);
   // console.log("choosenYear: ", choosenYear);
-  console.log("choosenTemplate: ", choosenTemplate);
-  console.log("choosenGroup: ", choosenGroup);
+  console.log("choosenTemplate: ", choosenTemplate, "choosenGroup: ", choosenGroup);
   if (choosenPeriod==="0") {
     Daily().then((value) => {
       console.log("Daily data:", value.data);

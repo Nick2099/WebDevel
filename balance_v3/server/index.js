@@ -395,7 +395,7 @@ app.get("/showdaily", (req, res) => {
     // Choosen Group
     db.query(
       'SELECT DATE_FORMAT(date,"%y-%m-%d") AS date, sgr, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'+year+'" AND MONTH(date)="'
-      +month+'" AND locuser IN (' + localUserIds + ') GROUP BY date, sgr ORDER BY date, sgr',
+      +month+'" AND locuser IN ('+localUserIds+') AND gr="'+group+'" GROUP BY date, sgr ORDER BY date, sgr',
       (err, result) => {
         if (err) {
           res.send([{error: err}]);

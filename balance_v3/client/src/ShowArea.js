@@ -28,11 +28,16 @@ function ShowArea() {
     "December",
   ];
   var noOfLocalUsers = 0;
+  const groups = useRef([]);
 
   useEffect(() => {
     getAllLocalUsers();
     addMonths();
     addYears();
+    Functions.getGroups(tmpUser.userid).then((value) => {
+      groups.current = value;
+      addGroups();
+    })
   }, []);
 
   function getAllLocalUsers() {
@@ -41,6 +46,15 @@ function ShowArea() {
         noOfLocalUsers = value.noOfLocalUsers;
       });
     });
+  }
+
+  function addGroups() {
+    for (let i = 0; i < groups.current.length; i++) {
+      let opt = document.createElement("option");
+      opt.innerHTML = groups.current[i].name;
+      opt.value = groups.current[i].id;
+      document.getElementById("select_group").appendChild(opt);
+    };
   }
 
   function addMonths() {
