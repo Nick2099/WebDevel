@@ -528,7 +528,7 @@ export function addAllLocalUsers(value, id, admin) {
       }
     });
     document.getElementById("allLocalUsers").appendChild(tr);
-    resolve({ status: "OK" , noOfLocalUsers: tmpcounter});
+    resolve({ status: "OK", noOfLocalUsers: tmpcounter });
   });
 }
 
@@ -555,21 +555,27 @@ export function dateRangeCheck(tmpDate) {
     let year = tmpDate.slice(0, 4);
     let today = new Date();
     let yyyy = today.getFullYear();
-    if (year<yyyy-1) {
-      let newDate = (yyyy-1).toString()+"-01-01";
+    if (year < yyyy - 1) {
+      let newDate = (yyyy - 1).toString() + "-01-01";
       resolve({ status: "Change", newDate: newDate });
-    };
-    if (year>yyyy+1) {
-      let newDate =  (yyyy+1).toString()+"-12-31";
+    }
+    if (year > yyyy + 1) {
+      let newDate = (yyyy + 1).toString() + "-12-31";
       resolve({ status: "Change", newDate: newDate });
-    };
-    resolve({status: "OK"});
+    }
+    resolve({ status: "OK" });
   });
 }
 
-export function getShowForChoosen(choosenLocalUserIds, choosenPeriod, choosenMonth, choosenYear, choosenTemplate, choosenGroup) {
-
-  function Daily() {
+export function getShowForChoosen(
+  choosenLocalUserIds,
+  choosenPeriod,
+  choosenMonth,
+  choosenYear,
+  choosenTemplate,
+  choosenGroup
+) {
+  function daily() {
     return new Promise((resolve, reject) => {
       Axios.get("http://localhost:3001/showdaily", {
         params: {
@@ -586,18 +592,110 @@ export function getShowForChoosen(choosenLocalUserIds, choosenPeriod, choosenMon
         .catch((err) => {
           resolve({ status: "Error", err: err });
         });
-    });  
-  };
+    });
+  }
 
   // console.log("Functions.getShowForChoosen ====>");
   // console.log("choosenLocalUserIds: ", choosenLocalUserIds);
   // console.log("choosenPeriod: ", choosenPeriod);
   // console.log("choosenMonth: ", choosenMonth);
   // console.log("choosenYear: ", choosenYear);
-  console.log("choosenTemplate: ", choosenTemplate, "choosenGroup: ", choosenGroup);
-  if (choosenPeriod==="0") {
-    Daily().then((value) => {
-      console.log("Daily data:", value.data);
+  return new Promise((resolve, reject) => {
+    console.log(
+      "choosenTemplate: ",
+      choosenTemplate,
+      "choosenGroup: ",
+      choosenGroup
+    );
+    if (choosenPeriod === "0") {
+      daily().then((value) => {
+        console.log("Daily data:", value.data);
+        resolve({ status: "OK", data: value.data });
+      });
+    }
+  });
+}
+
+export function prepareDataForGraph(
+  choosenLocalUserIds,
+  choosenPeriod,
+  choosenMonth,
+  choosenYear,
+  choosenTemplate,
+  choosenGroup,
+  data,
+  subgroups,
+  groups
+) {
+  function lastDayOfMonthOfYear(month, year) {
+    if (month > 11) {
+      month = 0;
+      year = year + 1;
+    }
+    let d = new Date(year, month, 0).getDate();
+    return d;
+  }
+
+  function createDailyData(lastDayOfMonth, labels) {
+    console.log("createDailyData labels: ", labels);
+    let tmpData = [];
+    for (let day = 1; day <= lastDayOfMonth; day++) {
+      let tmpDate =
+        choosenYear +
+        "-" +
+        parseInt(choosenMonth).toLocaleString("en-US", {
+          minimumIntegerDigits: 2,
+          useGrouping: false,
+        }) +
+        "-" +
+        day.toLocaleString("en-US", {
+          minimumIntegerDigits: 2,
+          useGrouping: false,
+        });
+      console.log(tmpDate);
+      labels.forEach((label) => {
+        tmpData.push({
+          date: tmpDate,
+          label: 
+        })
+      })
+    }
+  }
+
+  function dailyData() {
+    return new Promise((resolve, reject) => {
+      let lastDayOfMonth = lastDayOfMonthOfYear(choosenMonth, choosenYear);
+      if (choosenTemplate === "0") {
+        createDailyData(lastDayOfMonth, groups);
+      } else if (choosenTemplate === "1") {
+        createDailyData(lastDayOfMonth, subgroups);
+      } else {
+        createDailyData(lastDayOfMonth, subgroups);
+      }
     });
   }
+
+  console.log("data: ", data);
+  return new Promise((resolve, reject) => {
+    if (choosenPeriod === "0") {
+      dailyData().then((value) => {
+        console.log("Daily data:", value.data);
+        resolve({ status: "OK", data: value.data });
+      });
+    }
+  });
+}
+
+export function getSubGroupsForShow(id, group) {
+  return new Promise((resolve, reject) => {
+    Axios.get("http://localhost:3001/getsubgroupsforshow", {
+      params: { id: id, group: group },
+    })
+      .then((resp) => {
+        resolve({ status: "OK", data: resp.data });
+      })
+      .catch((err) => {
+        resolve({ status: "Error", error: err });
+      });
+  });
 }

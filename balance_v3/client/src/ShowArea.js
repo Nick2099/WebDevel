@@ -167,14 +167,34 @@ function ShowArea() {
       'input[name="select_template"]:checked'
     ).value;
     let choosenGroup = document.getElementById("select_group").value;
-    Functions.getShowForChoosen(
-      choosenLocalUserIds,
-      choosenPeriod,
-      choosenMonth,
-      choosenYear,
-      choosenTemplate,
-      choosenGroup
-    );
+    Functions.getSubGroupsForShow(tmpUser.id, choosenGroup).then((value) => {
+      if (value.status==="OK") {
+        let choosenSubGroups = value.data;
+        console.log("subGroups for group", choosenGroup, ":", value.data);
+        Functions.getShowForChoosen(
+          choosenLocalUserIds,
+          choosenPeriod,
+          choosenMonth,
+          choosenYear,
+          choosenTemplate,
+          choosenGroup
+        ).then((value) => {
+          if (value.status === "OK") {
+            Functions.prepareDataForGraph(
+              choosenLocalUserIds,
+              choosenPeriod,
+              choosenMonth,
+              choosenYear,
+              choosenTemplate,
+              choosenGroup,
+              value.data,
+              choosenSubGroups,
+              groups.current
+            );
+          };
+        });
+      }
+    });
   }
 
   return (

@@ -7,10 +7,13 @@
 .dark-mode {
   background-color: black;
   color: white;
+  width: 100%;
 }
 
 .fullWidth {
-  width: 1000px;
+  display: flex;
+  justify-content: center;
+  min-width: 500px;
 }
 
 button {
@@ -280,7 +283,8 @@ textarea {
 }
 
 #ShowArea {
-  width: fit-content;
+  display: block;
+  align-items: baseline;
   text-align: left;
   padding: 5px;
 }
