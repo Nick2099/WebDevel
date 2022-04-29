@@ -609,7 +609,6 @@ export function getShowForChoosen(
     );
     if (choosenPeriod === "0") {
       daily().then((value) => {
-        console.log("Daily data:", value.data);
         resolve({ status: "OK", data: value.data });
       });
     }
@@ -637,29 +636,36 @@ export function prepareDataForGraph(
   }
 
   function createDailyData(lastDayOfMonth, labels) {
-    console.log("createDailyData labels: ", labels);
-    let tmpData = [];
-    for (let day = 1; day <= lastDayOfMonth; day++) {
-      let tmpDate =
-        choosenYear +
-        "-" +
-        parseInt(choosenMonth).toLocaleString("en-US", {
-          minimumIntegerDigits: 2,
-          useGrouping: false,
-        }) +
-        "-" +
-        day.toLocaleString("en-US", {
-          minimumIntegerDigits: 2,
-          useGrouping: false,
+    return new Promise((resolve, reject) => {
+      let tmpData = [];
+      for (let day = 1; day <= lastDayOfMonth; day++) {
+        let tmpDate =
+          choosenYear +
+          "-" +
+          parseInt(choosenMonth).toLocaleString("en-US", {
+            minimumIntegerDigits: 2,
+            useGrouping: false,
+          }) +
+          "-" +
+          day.toLocaleString("en-US", {
+            minimumIntegerDigits: 2,
+            useGrouping: false,
+          });
+        let tmpLine = { date: tmpDate };
+        labels.forEach((label) => {
+          let tmpValue = 0;
+          for (let i = 0; i < data.length; i++) {
+            if (data[i].date === tmpDate && data[i].label === label.id) {
+              tmpValue = data[i].sum;
+            }
+            tmpLine[label.name] = tmpValue;
+          }
         });
-      console.log(tmpDate);
-      labels.forEach((label) => {
-        tmpData.push({
-          date: tmpDate,
-          label: 
-        })
-      })
-    }
+        tmpData.push(tmpLine);
+      }
+      console.log(tmpData);
+      resolve({ status: "OK", data: tmpData });
+    });
   }
 
   function dailyData() {
@@ -675,11 +681,9 @@ export function prepareDataForGraph(
     });
   }
 
-  console.log("data: ", data);
   return new Promise((resolve, reject) => {
     if (choosenPeriod === "0") {
       dailyData().then((value) => {
-        console.log("Daily data:", value.data);
         resolve({ status: "OK", data: value.data });
       });
     }

@@ -40,7 +40,7 @@ function ShowArea() {
   ];
   var noOfLocalUsers = 0;
   const groups = useRef([]);
-  const data = [
+  var data = [
     {
       name: "Page A",
       uv: 4000,
@@ -52,36 +52,6 @@ function ShowArea() {
       uv: 3000,
       pv: 1398,
       amt: 2210,
-    },
-    {
-      name: "Page C",
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: "Page D",
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: "Page E",
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: "Page F",
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: "Page G",
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
     },
   ];
 
@@ -170,7 +140,6 @@ function ShowArea() {
     Functions.getSubGroupsForShow(tmpUser.id, choosenGroup).then((value) => {
       if (value.status==="OK") {
         let choosenSubGroups = value.data;
-        console.log("subGroups for group", choosenGroup, ":", value.data);
         Functions.getShowForChoosen(
           choosenLocalUserIds,
           choosenPeriod,
@@ -190,7 +159,11 @@ function ShowArea() {
               value.data,
               choosenSubGroups,
               groups.current
-            );
+            ).then((value) => {
+              if (value.status==="OK") {
+                data = value.data;
+              }
+            });
           };
         });
       }
@@ -298,7 +271,7 @@ function ShowArea() {
             <Legend />
             <Line
               type="monotone"
-              dataKey="pv"
+              dataKey="Default"
               stroke="yellow"
               activeDot={{ r: 8 }}
             />
