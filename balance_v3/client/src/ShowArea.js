@@ -41,18 +41,13 @@ function ShowArea() {
   var noOfLocalUsers = 0;
   const groups = useRef([]);
   var data = [
-    {
-      name: "Page A",
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: "Page B",
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
+    { date: "2022-04-01", default: 20, pv: 24, amt: 24 },
+    { date: "2022-04-02", default: 30, pv: 13, amt: 22 },
+    { date: "2022-04-03", default: 20, pv: 28, amt: 22 },
+    { date: "2022-04-04", default: 27, pv: 29, amt: 20 },
+    { date: "2022-04-05", default: 18, pv: 18, amt: 21 },
+    { date: "2022-04-06", default: 23, pv: 28, amt: 25 },
+    { date: "2022-04-07", default: 34, pv: 23, amt: 21 },
   ];
 
   useEffect(() => {
@@ -63,6 +58,7 @@ function ShowArea() {
       groups.current = value;
       addGroups();
     });
+    console.log("data: ", data);
   }, []);
 
   function getAllLocalUsers() {
@@ -138,7 +134,7 @@ function ShowArea() {
     ).value;
     let choosenGroup = document.getElementById("select_group").value;
     Functions.getSubGroupsForShow(tmpUser.id, choosenGroup).then((value) => {
-      if (value.status==="OK") {
+      if (value.status === "OK") {
         let choosenSubGroups = value.data;
         Functions.getShowForChoosen(
           choosenLocalUserIds,
@@ -160,15 +156,56 @@ function ShowArea() {
               choosenSubGroups,
               groups.current
             ).then((value) => {
-              if (value.status==="OK") {
+              if (value.status === "OK") {
                 data = value.data;
               }
             });
-          };
+          }
         });
       }
     });
+    // LineChart();
   }
+
+  generateChart () {
+    let data: []
+  }
+
+  const MyLineChart = function () {
+    return (
+      <ResponsiveContainer width="100%" aspect={3}>
+        <LineChart
+          width={600}
+          height={400}
+          data={data}
+          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey="default"
+            stroke="red"
+            fill="#yellow"
+          />{" "}
+          <Line
+            type="monotone"
+            dataKey="pv"
+            stroke="green"
+            fill="#yellow"
+          />{" "}
+          <Line
+            type="monotone"
+            dataKey="amt"
+            stroke="blue"
+            fill="#yellow"
+          />{" "}
+        </LineChart>
+      </ResponsiveContainer>
+    );
+  };
 
   return (
     <div id="ShowArea">
@@ -252,32 +289,7 @@ function ShowArea() {
         </table>
       </div>
       <div className="fullWidth">
-        <ResponsiveContainer width="100%" aspect={3}>
-          <LineChart
-            width={1000}
-            height={300}
-            data={data}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="Default"
-              stroke="yellow"
-              activeDot={{ r: 8 }}
-            />
-            <Line type="monotone" dataKey="uv" stroke="white" />
-          </LineChart>
-        </ResponsiveContainer>
+        <MyLineChart />
       </div>
     </div>
   );
