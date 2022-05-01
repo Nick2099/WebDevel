@@ -376,7 +376,7 @@ app.get("/showdaily", (req, res) => {
   var year = req.query.year;
   var template = req.query.template;
   var group = req.query.group;
-  // console.log(localUserIds, month, year, template, group);
+  console.log(localUserIds, month, year, template, group);
   if (template==="0") {
     // All groups
     db.query(

@@ -40,7 +40,8 @@ function ShowArea() {
   ];
   var noOfLocalUsers = 0;
   const groups = useRef([]);
-  var data = [
+
+  var dataTemplate = [
     { date: "2022-04-01", default: 20, pv: 24, amt: 24 },
     { date: "2022-04-02", default: 30, pv: 13, amt: 22 },
     { date: "2022-04-03", default: 20, pv: 28, amt: 22 },
@@ -50,6 +51,8 @@ function ShowArea() {
     { date: "2022-04-07", default: 34, pv: 23, amt: 21 },
   ];
 
+  const [state1, setState1] = useState([]);
+
   useEffect(() => {
     getAllLocalUsers();
     addMonths();
@@ -58,10 +61,15 @@ function ShowArea() {
       groups.current = value;
       addGroups();
     });
-    console.log("data: ", data);
+    console.log("Run Once!");
+    setState1(dataTemplate);
   }, []);
 
-  function getAllLocalUsers() {
+  useEffect(() => {
+    console.log("setState1 new! ", state1);
+  }, [state1]);
+
+  function getAllLocalUsers() { // ERROR !!!!!!!!!!!
     Functions.getAllLocalUsers(tmpUser.userid).then((value) => {
       Functions.addAllLocalUsers(value.data, tmpUser.id, tmpUser.admin).then(
         (value) => {
@@ -119,9 +127,11 @@ function ShowArea() {
 
   function showChoosen() {
     let choosenLocalUserIds = [];
+    console.log("noOfLocalUsers: ", noOfLocalUsers);
     for (let i = 0; i < noOfLocalUsers; i++) {
       let tmpLocalUserId = document.getElementById("id" + i).value;
       let tmpLocalUserIdChoosen = document.getElementById("id" + i).checked;
+      console.log(tmpLocalUserId, tmpLocalUserIdChoosen);
       if (tmpLocalUserIdChoosen) {
         choosenLocalUserIds.push(tmpLocalUserId);
       }
@@ -133,9 +143,11 @@ function ShowArea() {
       'input[name="select_template"]:checked'
     ).value;
     let choosenGroup = document.getElementById("select_group").value;
-    Functions.getSubGroupsForShow(tmpUser.id, choosenGroup).then((value) => {
-      if (value.status === "OK") {
-        let choosenSubGroups = value.data;
+    console.log("choosenLocalUserIds: ", choosenLocalUserIds);
+    Functions.getSubGroupsForShow(tmpUser.id, choosenGroup).then((value1) => {
+      if (value1.status === "OK") {
+        console.log("1 dio, value1:", value1);
+        let choosenSubGroups = value1.data;
         Functions.getShowForChoosen(
           choosenLocalUserIds,
           choosenPeriod,
@@ -143,8 +155,9 @@ function ShowArea() {
           choosenYear,
           choosenTemplate,
           choosenGroup
-        ).then((value) => {
-          if (value.status === "OK") {
+        ).then((value2) => {
+          if (value2.status === "OK") {
+            console.log("2 dio, value2:", value2);
             Functions.prepareDataForGraph(
               choosenLocalUserIds,
               choosenPeriod,
@@ -152,32 +165,30 @@ function ShowArea() {
               choosenYear,
               choosenTemplate,
               choosenGroup,
-              value.data,
+              value2.data,
               choosenSubGroups,
               groups.current
-            ).then((value) => {
-              if (value.status === "OK") {
-                data = value.data;
-              }
+            ).then((value3) => {
+              console.log("3 dio, value3:", value3);
+              if (value2.status === "OK") {
+                // setState1(value2.data);
+              };
             });
-          }
+          };
         });
       }
     });
     // LineChart();
   }
 
-  generateChart () {
-    let data: []
-  }
-
-  const MyLineChart = function () {
+  const MyLineChart = function (props) {
+    console.log("MyLineChart tmp: ", props);
     return (
       <ResponsiveContainer width="100%" aspect={3}>
         <LineChart
           width={600}
           height={400}
-          data={data}
+          data={props.data}
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
@@ -289,7 +300,7 @@ function ShowArea() {
         </table>
       </div>
       <div className="fullWidth">
-        <MyLineChart />
+        <MyLineChart data={state1}/>
       </div>
     </div>
   );

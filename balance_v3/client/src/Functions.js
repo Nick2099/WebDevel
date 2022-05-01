@@ -576,6 +576,15 @@ export function getShowForChoosen(
   choosenGroup
 ) {
   function daily() {
+    console.log(
+      "choosen: ",
+      choosenLocalUserIds,
+      choosenPeriod,
+      choosenMonth,
+      choosenYear,
+      choosenTemplate,
+      choosenGroup
+    );
     return new Promise((resolve, reject) => {
       Axios.get("http://localhost:3001/showdaily", {
         params: {
@@ -600,13 +609,13 @@ export function getShowForChoosen(
   // console.log("choosenPeriod: ", choosenPeriod);
   // console.log("choosenMonth: ", choosenMonth);
   // console.log("choosenYear: ", choosenYear);
+  console.log(
+    "choosenTemplate: ",
+    choosenTemplate,
+    "choosenGroup: ",
+    choosenGroup
+  );
   return new Promise((resolve, reject) => {
-    console.log(
-      "choosenTemplate: ",
-      choosenTemplate,
-      "choosenGroup: ",
-      choosenGroup
-    );
     if (choosenPeriod === "0") {
       daily().then((value) => {
         resolve({ status: "OK", data: value.data });
@@ -663,7 +672,6 @@ export function prepareDataForGraph(
         });
         tmpData.push(tmpLine);
       }
-      console.log(tmpData);
       resolve({ status: "OK", data: tmpData });
     });
   }
@@ -672,11 +680,17 @@ export function prepareDataForGraph(
     return new Promise((resolve, reject) => {
       let lastDayOfMonth = lastDayOfMonthOfYear(choosenMonth, choosenYear);
       if (choosenTemplate === "0") {
-        createDailyData(lastDayOfMonth, groups);
+        createDailyData(lastDayOfMonth, groups).then((value) => {
+          resolve({ status: "OK", data: value.data });
+        });
       } else if (choosenTemplate === "1") {
-        createDailyData(lastDayOfMonth, subgroups);
+        createDailyData(lastDayOfMonth, subgroups).then((value) => {
+          resolve({ status: "OK", data: value.data });
+        });
       } else {
-        createDailyData(lastDayOfMonth, subgroups);
+        createDailyData(lastDayOfMonth, subgroups).then((value) => {
+          resolve({ status: "OK", data: value.data });
+        });
       }
     });
   }
