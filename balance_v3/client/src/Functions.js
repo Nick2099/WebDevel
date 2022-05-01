@@ -520,7 +520,7 @@ export function addAllLocalUsers(value, id, admin) {
         var inp = document.createElement("input");
         inp.type = "checkbox";
         inp.value = tmpvalue.id;
-        inp.id = "id" + tmpcounter;
+        inp.id = "localUserId" + tmpcounter;
         inp.checked = true;
         td.appendChild(inp);
         tr.appendChild(td);

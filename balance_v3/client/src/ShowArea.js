@@ -38,17 +38,17 @@ function ShowArea() {
     "November",
     "December",
   ];
-  var noOfLocalUsers = 0;
+  const noOfLocalUsers = useRef(0);
   const groups = useRef([]);
 
   var dataTemplate = [
-    { date: "2022-04-01", default: 20, pv: 24, amt: 24 },
-    { date: "2022-04-02", default: 30, pv: 13, amt: 22 },
-    { date: "2022-04-03", default: 20, pv: 28, amt: 22 },
-    { date: "2022-04-04", default: 27, pv: 29, amt: 20 },
-    { date: "2022-04-05", default: 18, pv: 18, amt: 21 },
-    { date: "2022-04-06", default: 23, pv: 28, amt: 25 },
-    { date: "2022-04-07", default: 34, pv: 23, amt: 21 },
+    { date: "2022-04-01", Default: 20, pv: 24, amt: 24 },
+    { date: "2022-04-02", Default: 30, pv: 13, amt: 22 },
+    { date: "2022-04-03", Default: 20, pv: 28, amt: 22 },
+    { date: "2022-04-04", Default: 27, pv: 29, amt: 20 },
+    { date: "2022-04-05", Default: 18, pv: 18, amt: 21 },
+    { date: "2022-04-06", Default: 23, pv: 28, amt: 25 },
+    { date: "2022-04-07", Default: 34, pv: 23, amt: 21 },
   ];
 
   const [state1, setState1] = useState([]);
@@ -61,8 +61,8 @@ function ShowArea() {
       groups.current = value;
       addGroups();
     });
-    console.log("Run Once!");
     setState1(dataTemplate);
+    console.log("Run Once!");
   }, []);
 
   useEffect(() => {
@@ -73,7 +73,7 @@ function ShowArea() {
     Functions.getAllLocalUsers(tmpUser.userid).then((value) => {
       Functions.addAllLocalUsers(value.data, tmpUser.id, tmpUser.admin).then(
         (value) => {
-          noOfLocalUsers = value.noOfLocalUsers;
+          noOfLocalUsers.current = value.noOfLocalUsers;
         }
       );
     });
@@ -127,15 +127,13 @@ function ShowArea() {
 
   function showChoosen() {
     let choosenLocalUserIds = [];
-    console.log("noOfLocalUsers: ", noOfLocalUsers);
-    for (let i = 0; i < noOfLocalUsers; i++) {
-      let tmpLocalUserId = document.getElementById("id" + i).value;
-      let tmpLocalUserIdChoosen = document.getElementById("id" + i).checked;
-      console.log(tmpLocalUserId, tmpLocalUserIdChoosen);
+    for (let i = 0; i < noOfLocalUsers.current; i++) {
+      let tmpLocalUserId = document.getElementById("localUserId" + i).value;
+      let tmpLocalUserIdChoosen = document.getElementById("localUserId" + i).checked;
       if (tmpLocalUserIdChoosen) {
         choosenLocalUserIds.push(tmpLocalUserId);
-      }
-    }
+      };
+    };
     let choosenPeriod = document.getElementById("select_period").value;
     let choosenMonth = document.getElementById("select_month").value;
     let choosenYear = document.getElementById("select_year").value;
@@ -143,10 +141,9 @@ function ShowArea() {
       'input[name="select_template"]:checked'
     ).value;
     let choosenGroup = document.getElementById("select_group").value;
-    console.log("choosenLocalUserIds: ", choosenLocalUserIds);
     Functions.getSubGroupsForShow(tmpUser.id, choosenGroup).then((value1) => {
       if (value1.status === "OK") {
-        console.log("1 dio, value1:", value1);
+        // console.log("1 dio, value1:", value1);
         let choosenSubGroups = value1.data;
         Functions.getShowForChoosen(
           choosenLocalUserIds,
@@ -157,7 +154,7 @@ function ShowArea() {
           choosenGroup
         ).then((value2) => {
           if (value2.status === "OK") {
-            console.log("2 dio, value2:", value2);
+            // console.log("2 dio, value2:", value2);
             Functions.prepareDataForGraph(
               choosenLocalUserIds,
               choosenPeriod,
@@ -170,8 +167,8 @@ function ShowArea() {
               groups.current
             ).then((value3) => {
               console.log("3 dio, value3:", value3);
-              if (value2.status === "OK") {
-                // setState1(value2.data);
+              if (value3.status === "OK") {
+                setState1(value3.data);
               };
             });
           };
@@ -197,7 +194,7 @@ function ShowArea() {
           <Tooltip />
           <Line
             type="monotone"
-            dataKey="default"
+            dataKey="Default"
             stroke="red"
             fill="#yellow"
           />{" "}
