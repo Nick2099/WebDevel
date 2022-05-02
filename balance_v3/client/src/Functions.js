@@ -645,6 +645,7 @@ export function prepareDataForGraph(
   }
 
   function createDailyData(lastDayOfMonth, labels) {
+    let Lines = [];
     return new Promise((resolve, reject) => {
       let tmpData = [];
       for (let day = 1; day <= lastDayOfMonth; day++) {
@@ -671,8 +672,14 @@ export function prepareDataForGraph(
           }
         });
         tmpData.push(tmpLine);
-      }
-      resolve({ status: "OK", data: tmpData });
+      };
+      labels.forEach((label) => {
+        let tmpLine = {};
+        tmpLine.name=label.name;
+        tmpLine.color="#red";
+        Lines.push(tmpLine);
+      });
+      resolve({ status: "OK", data: tmpData, lines: Lines });
     });
   }
 
@@ -681,15 +688,15 @@ export function prepareDataForGraph(
       let lastDayOfMonth = lastDayOfMonthOfYear(choosenMonth, choosenYear);
       if (choosenTemplate === "0") {
         createDailyData(lastDayOfMonth, groups).then((value) => {
-          resolve({ status: "OK", data: value.data });
+          resolve({ status: "OK", data: value.data, lines: value.lines });
         });
       } else if (choosenTemplate === "1") {
         createDailyData(lastDayOfMonth, subgroups).then((value) => {
-          resolve({ status: "OK", data: value.data });
+          resolve({ status: "OK", data: value.data, lines: value.lines });
         });
       } else {
         createDailyData(lastDayOfMonth, subgroups).then((value) => {
-          resolve({ status: "OK", data: value.data });
+          resolve({ status: "OK", data: value.data, lines: value.lines });
         });
       }
     });
@@ -698,7 +705,7 @@ export function prepareDataForGraph(
   return new Promise((resolve, reject) => {
     if (choosenPeriod === "0") {
       dailyData().then((value) => {
-        resolve({ status: "OK", data: value.data });
+        resolve({ status: "OK", data: value.data, lines: value.lines });
       });
     }
   });

@@ -52,6 +52,7 @@ function ShowArea() {
   ];
 
   const [state1, setState1] = useState([]);
+  const [lines, setLines] = useState([]);
 
   useEffect(() => {
     getAllLocalUsers();
@@ -62,6 +63,22 @@ function ShowArea() {
       addGroups();
     });
     setState1(dataTemplate);
+    setLines(
+      [
+        {
+          name: "Default",
+          stroke: "red",
+          line: '<Line type="monotone" dataKey="Default" stroke="red" fill="#yellow" />{" "}',
+        },
+        { name: "pv", stroke: "green" },
+        { name: "amt", stroke: "blue" },
+      ]
+      /*  
+      <Line type="monotone" dataKey="Default" stroke="red" fill="#yellow" />{" "}
+      <Line type="monotone" dataKey="pv" stroke="green" fill="#yellow" />{" "}
+      <Line type="monotone" dataKey="amt" stroke="blue" fill="#yellow" />{" "}
+    */
+    );
     console.log("Run Once!");
   }, []);
 
@@ -69,7 +86,12 @@ function ShowArea() {
     console.log("setState1 new! ", state1);
   }, [state1]);
 
-  function getAllLocalUsers() { // ERROR !!!!!!!!!!!
+  useEffect(() => {
+    console.log("setLines new! ", lines);
+  }, [lines]);
+
+  function getAllLocalUsers() {
+    // ERROR !!!!!!!!!!!
     Functions.getAllLocalUsers(tmpUser.userid).then((value) => {
       Functions.addAllLocalUsers(value.data, tmpUser.id, tmpUser.admin).then(
         (value) => {
@@ -129,11 +151,13 @@ function ShowArea() {
     let choosenLocalUserIds = [];
     for (let i = 0; i < noOfLocalUsers.current; i++) {
       let tmpLocalUserId = document.getElementById("localUserId" + i).value;
-      let tmpLocalUserIdChoosen = document.getElementById("localUserId" + i).checked;
+      let tmpLocalUserIdChoosen = document.getElementById(
+        "localUserId" + i
+      ).checked;
       if (tmpLocalUserIdChoosen) {
         choosenLocalUserIds.push(tmpLocalUserId);
-      };
-    };
+      }
+    }
     let choosenPeriod = document.getElementById("select_period").value;
     let choosenMonth = document.getElementById("select_month").value;
     let choosenYear = document.getElementById("select_year").value;
@@ -154,7 +178,7 @@ function ShowArea() {
           choosenGroup
         ).then((value2) => {
           if (value2.status === "OK") {
-            // console.log("2 dio, value2:", value2);
+            console.log("2 dio, value2:", value2);
             Functions.prepareDataForGraph(
               choosenLocalUserIds,
               choosenPeriod,
@@ -169,9 +193,10 @@ function ShowArea() {
               console.log("3 dio, value3:", value3);
               if (value3.status === "OK") {
                 setState1(value3.data);
-              };
+                setLines(value3.lines);
+              }
             });
-          };
+          }
         });
       }
     });
@@ -180,6 +205,7 @@ function ShowArea() {
 
   const MyLineChart = function (props) {
     console.log("MyLineChart tmp: ", props);
+    let lines = props.lines;
     return (
       <ResponsiveContainer width="100%" aspect={3}>
         <LineChart
@@ -192,24 +218,12 @@ function ShowArea() {
           <XAxis dataKey="date" />
           <YAxis />
           <Tooltip />
-          <Line
-            type="monotone"
-            dataKey="Default"
-            stroke="red"
-            fill="#yellow"
-          />{" "}
-          <Line
-            type="monotone"
-            dataKey="pv"
-            stroke="green"
-            fill="#yellow"
-          />{" "}
-          <Line
-            type="monotone"
-            dataKey="amt"
-            stroke="blue"
-            fill="#yellow"
-          />{" "}
+          {lines.forEach((tmpline) => {
+            return (<Line type="monotone" dataKey="Default" stroke="red" fill="#yellow" />);
+          })}
+          { /* <Line type="monotone" dataKey="Default" stroke="red" fill="#yellow" />{" "} */}
+          <Line type="monotone" dataKey="pv" stroke="green" fill="#yellow" />
+          <Line type="monotone" dataKey="amt" stroke="blue" fill="#yellow" />
         </LineChart>
       </ResponsiveContainer>
     );
@@ -297,7 +311,7 @@ function ShowArea() {
         </table>
       </div>
       <div className="fullWidth">
-        <MyLineChart data={state1}/>
+        <MyLineChart data={state1} lines={lines} />
       </div>
     </div>
   );
