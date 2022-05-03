@@ -65,19 +65,10 @@ function ShowArea() {
     setState1(dataTemplate);
     setLines(
       [
-        {
-          name: "Default",
-          stroke: "red",
-          line: '<Line type="monotone" dataKey="Default" stroke="red" fill="#yellow" />{" "}',
-        },
+        { name: "Default", stroke: "red" },
         { name: "pv", stroke: "green" },
         { name: "amt", stroke: "blue" },
       ]
-      /*  
-      <Line type="monotone" dataKey="Default" stroke="red" fill="#yellow" />{" "}
-      <Line type="monotone" dataKey="pv" stroke="green" fill="#yellow" />{" "}
-      <Line type="monotone" dataKey="amt" stroke="blue" fill="#yellow" />{" "}
-    */
     );
     console.log("Run Once!");
   }, []);
@@ -89,6 +80,12 @@ function ShowArea() {
   useEffect(() => {
     console.log("setLines new! ", lines);
   }, [lines]);
+
+  const linesOptions = lines.map((line) => {
+    return (
+      <Line type="monotone" dataKey={line.name} stroke={line.stroke} fill="#yellow" ></Line>
+    );
+  });
 
   function getAllLocalUsers() {
     // ERROR !!!!!!!!!!!
@@ -205,7 +202,6 @@ function ShowArea() {
 
   const MyLineChart = function (props) {
     console.log("MyLineChart tmp: ", props);
-    let lines = props.lines;
     return (
       <ResponsiveContainer width="100%" aspect={3}>
         <LineChart
@@ -218,12 +214,10 @@ function ShowArea() {
           <XAxis dataKey="date" />
           <YAxis />
           <Tooltip />
-          {lines.forEach((tmpline) => {
-            return (<Line type="monotone" dataKey="Default" stroke="red" fill="#yellow" />);
-          })}
-          { /* <Line type="monotone" dataKey="Default" stroke="red" fill="#yellow" />{" "} */}
+          {linesOptions}
+          { /* <Line type="monotone" dataKey="Default" stroke="red" fill="#yellow" />{" "}
           <Line type="monotone" dataKey="pv" stroke="green" fill="#yellow" />
-          <Line type="monotone" dataKey="amt" stroke="blue" fill="#yellow" />
+          <Line type="monotone" dataKey="amt" stroke="blue" fill="#yellow" />  */}
         </LineChart>
       </ResponsiveContainer>
     );

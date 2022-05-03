@@ -645,7 +645,8 @@ export function prepareDataForGraph(
   }
 
   function createDailyData(lastDayOfMonth, labels) {
-    let Lines = [];
+    let colors = ["red", "blue", "green"];
+    let lines = [];
     return new Promise((resolve, reject) => {
       let tmpData = [];
       for (let day = 1; day <= lastDayOfMonth; day++) {
@@ -673,13 +674,14 @@ export function prepareDataForGraph(
         });
         tmpData.push(tmpLine);
       };
-      labels.forEach((label) => {
+      labels.forEach((label, i) => {
         let tmpLine = {};
         tmpLine.name=label.name;
-        tmpLine.color="#red";
-        Lines.push(tmpLine);
+        let tmpi = i % 3;
+        tmpLine.stroke=colors[tmpi];
+        lines.push(tmpLine);
       });
-      resolve({ status: "OK", data: tmpData, lines: Lines });
+      resolve({ status: "OK", data: tmpData, lines: lines });
     });
   }
 
