@@ -3,8 +3,8 @@ import React, {
   useContext,
   useEffect,
   useRef,
-  createElement,
-  PureComponent,
+  // createElement,
+  // PureComponent,
   // Component,
 } from "react";
 import {
@@ -18,7 +18,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import "./App.css";
-import Axios from "axios";
+// import Axios from "axios";
 import { TmpUserContext } from "./TmpUserContext";
 import * as Functions from "./Functions";
 
@@ -44,15 +44,14 @@ function ShowArea() {
   var dataTemplate = [
     { date: "2022-04-01", Default: 20, pv: 24, amt: 24 },
     { date: "2022-04-02", Default: 30, pv: 13, amt: 22 },
-    { date: "2022-04-03", Default: 20, pv: 28, amt: 22 },
-    { date: "2022-04-04", Default: 27, pv: 29, amt: 20 },
-    { date: "2022-04-05", Default: 18, pv: 18, amt: 21 },
-    { date: "2022-04-06", Default: 23, pv: 28, amt: 25 },
-    { date: "2022-04-07", Default: 34, pv: 23, amt: 21 },
   ];
 
-  const [state1, setState1] = useState([]);
-  const [lines, setLines] = useState([]);
+  const [lines, setLines] = useState([
+    { name: "Default", stroke: "red"},
+  ]);
+  const [graphData, setGraphData] = useState([
+    {date: "2022-04-01", Default: 0}
+  ]);
 
   useEffect(() => {
     getAllLocalUsers();
@@ -62,33 +61,24 @@ function ShowArea() {
       groups.current = value;
       addGroups();
     });
-    setState1(dataTemplate);
-    setLines(
-      [
-        { name: "Default", stroke: "red" },
-        { name: "pv", stroke: "green" },
-        { name: "amt", stroke: "blue" },
-      ]
-    );
     console.log("Run Once!");
   }, []);
 
   useEffect(() => {
-    console.log("setState1 new! ", state1);
-  }, [state1]);
+    console.log("setGraphData new! ", graphData);
+  }, [graphData]);
 
   useEffect(() => {
     console.log("setLines new! ", lines);
   }, [lines]);
 
-  const linesOptions = lines.map((line) => {
+  const linesOptions = lines.map((line, i) => {
     return (
-      <Line type="monotone" dataKey={line.name} stroke={line.stroke} fill="#yellow" ></Line>
+      <Line key={"Line_"+i.toString()} type="monotone" dataKey={line.name} stroke={line.stroke} fill="#yellow" ></Line>
     );
   });
 
   function getAllLocalUsers() {
-    // ERROR !!!!!!!!!!!
     Functions.getAllLocalUsers(tmpUser.userid).then((value) => {
       Functions.addAllLocalUsers(value.data, tmpUser.id, tmpUser.admin).then(
         (value) => {
@@ -175,7 +165,7 @@ function ShowArea() {
           choosenGroup
         ).then((value2) => {
           if (value2.status === "OK") {
-            console.log("2 dio, value2:", value2);
+            // console.log("2 dio, value2:", value2);
             Functions.prepareDataForGraph(
               choosenLocalUserIds,
               choosenPeriod,
@@ -187,9 +177,9 @@ function ShowArea() {
               choosenSubGroups,
               groups.current
             ).then((value3) => {
-              console.log("3 dio, value3:", value3);
+              // console.log("3 dio, value3:", value3);
               if (value3.status === "OK") {
-                setState1(value3.data);
+                setGraphData(value3.data);
                 setLines(value3.lines);
               }
             });
@@ -203,10 +193,10 @@ function ShowArea() {
   const MyLineChart = function (props) {
     console.log("MyLineChart tmp: ", props);
     return (
-      <ResponsiveContainer width="100%" aspect={3}>
+      <ResponsiveContainer width="100%" aspect={2}>
         <LineChart
           width={600}
-          height={400}
+          height={600}
           data={props.data}
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
         >
@@ -215,9 +205,7 @@ function ShowArea() {
           <YAxis />
           <Tooltip />
           {linesOptions}
-          { /* <Line type="monotone" dataKey="Default" stroke="red" fill="#yellow" />{" "}
-          <Line type="monotone" dataKey="pv" stroke="green" fill="#yellow" />
-          <Line type="monotone" dataKey="amt" stroke="blue" fill="#yellow" />  */}
+          { /* <Line type="monotone" dataKey="Default" stroke="red" fill="#yellow" /> */ }
         </LineChart>
       </ResponsiveContainer>
     );
@@ -305,7 +293,7 @@ function ShowArea() {
         </table>
       </div>
       <div className="fullWidth">
-        <MyLineChart data={state1} lines={lines} />
+        <MyLineChart data={graphData} lines={lines} />
       </div>
     </div>
   );

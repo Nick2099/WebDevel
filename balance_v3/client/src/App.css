@@ -13,7 +13,8 @@
 .fullWidth {
   display: flex;
   justify-content: center;
-  min-width: 500px;
+  min-width: 800px;
+  background-color: black;
 }
 
 button {

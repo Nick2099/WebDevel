@@ -645,7 +645,8 @@ export function prepareDataForGraph(
   }
 
   function createDailyData(lastDayOfMonth, labels) {
-    let colors = ["red", "blue", "green"];
+    let colors = ["red", "blue", "green", "darkred", "darkblue", "darkgreen",
+                  "lightblue", "orange", "lightgreen", "darkcyan", "darkmagenta"];
     let lines = [];
     return new Promise((resolve, reject) => {
       let tmpData = [];
@@ -674,10 +675,12 @@ export function prepareDataForGraph(
         });
         tmpData.push(tmpLine);
       };
+      let modulof = colors.length;
+      console.log("modulof: ", modulof);
       labels.forEach((label, i) => {
         let tmpLine = {};
         tmpLine.name=label.name;
-        let tmpi = i % 3;
+        let tmpi = i % modulof;
         tmpLine.stroke=colors[tmpi];
         lines.push(tmpLine);
       });
