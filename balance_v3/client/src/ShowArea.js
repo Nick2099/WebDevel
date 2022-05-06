@@ -154,7 +154,7 @@ function ShowArea() {
     let choosenGroup = document.getElementById("select_group").value;
     Functions.getSubGroupsForShow(tmpUser.id, choosenGroup).then((value1) => {
       if (value1.status === "OK") {
-        // console.log("1 dio, value1:", value1);
+        console.log("1 dio, value1:", value1);
         let choosenSubGroups = value1.data;
         Functions.getShowForChoosen(
           choosenLocalUserIds,
@@ -165,7 +165,7 @@ function ShowArea() {
           choosenGroup
         ).then((value2) => {
           if (value2.status === "OK") {
-            // console.log("2 dio, value2:", value2);
+            console.log("2 dio, value2:", value2);
             Functions.prepareDataForGraph(
               choosenLocalUserIds,
               choosenPeriod,
@@ -177,7 +177,7 @@ function ShowArea() {
               choosenSubGroups,
               groups.current
             ).then((value3) => {
-              // console.log("3 dio, value3:", value3);
+              console.log("3 dio, value3:", value3);
               if (value3.status === "OK") {
                 setGraphData(value3.data);
                 setLines(value3.lines);
@@ -187,7 +187,7 @@ function ShowArea() {
         });
       }
     });
-    // LineChart();
+    
   }
 
   const MyLineChart = function (props) {
@@ -210,6 +210,10 @@ function ShowArea() {
       </ResponsiveContainer>
     );
   };
+
+  function set_templete_1() {
+    document.getElementById("select_group").checked = true;
+  }
 
   return (
     <div id="ShowArea">
@@ -270,9 +274,9 @@ function ShowArea() {
             <tr>
               <td></td>
               <td>
-                <input type="radio" name="select_template" value="1"></input>
+                <input id="select_group" type="radio" name="select_template" value="1"></input>
                 <label>Selected group</label>
-                <select id="select_group"></select>
+                <select id="select_group" onFocus={set_templete_1}></select>
               </td>
             </tr>
             <tr>
@@ -285,7 +289,7 @@ function ShowArea() {
             <tr>
               <td>
                 <button type="button" id="button_show" onClick={showChoosen}>
-                  Show
+                Show
                 </button>
               </td>
             </tr>

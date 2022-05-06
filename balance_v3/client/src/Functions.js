@@ -577,7 +577,7 @@ export function getShowForChoosen(
 ) {
   function daily() {
     console.log(
-      "choosen: ",
+      "getShowForChoosen choosen: ",
       choosenLocalUserIds,
       choosenPeriod,
       choosenMonth,
@@ -645,6 +645,7 @@ export function prepareDataForGraph(
   }
 
   function createDailyData(lastDayOfMonth, labels) {
+    console.log("createDailyData labels: ", labels);
     let colors = ["red", "blue", "green", "darkred", "darkblue", "darkgreen",
                   "lightblue", "orange", "lightgreen", "darkcyan", "darkmagenta"];
     let lines = [];
@@ -700,7 +701,15 @@ export function prepareDataForGraph(
           resolve({ status: "OK", data: value.data, lines: value.lines });
         });
       } else {
-        createDailyData(lastDayOfMonth, subgroups).then((value) => {
+        let type = [
+          {id: 1, name: "Expense"},
+          {id: 2, name: "Income"},
+          {id: 3, name: "Transfer"},
+          {id: 4, name: "Transfer income"},
+          {id: 8, name: "Balance"},
+          {id: 9, name: "Conto"}
+        ];
+        createDailyData(lastDayOfMonth, type).then((value) => {
           resolve({ status: "OK", data: value.data, lines: value.lines });
         });
       }
