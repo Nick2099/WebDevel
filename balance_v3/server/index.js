@@ -380,7 +380,7 @@ app.get("/showdaily", (req, res) => {
     // All groups
     db.query(
       // 'SELECT gr, sgr, type, amount FROM mybalance.records2 WHERE YEAR(date)="'+year+'" AND MONTH(date)="'+month+'" ORDER BY type, gr, sgr',
-      'SELECT DATE_FORMAT(date,"%Y-%m-%d") AS date, gr AS label, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'+year+'" AND MONTH(date)="'
+      'SELECT DATE_FORMAT(date,"%d-%m-%Y") AS date, gr AS label, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'+year+'" AND MONTH(date)="'
       +month+'" AND locuser IN (' + localUserIds + ') GROUP BY date, gr ORDER BY date, gr',
       (err, result) => {
         if (err) {
@@ -393,7 +393,7 @@ app.get("/showdaily", (req, res) => {
   } else if (template==="1") {
     // Choosen Group
     db.query(
-      'SELECT DATE_FORMAT(date,"%Y-%m-%d") AS date, sgr AS label, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'+year+'" AND MONTH(date)="'
+      'SELECT DATE_FORMAT(date,"%d-%m-%Y") AS date, sgr AS label, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'+year+'" AND MONTH(date)="'
       +month+'" AND locuser IN ('+localUserIds+') AND gr="'+group+'" GROUP BY date, sgr ORDER BY date, sgr',
       (err, result) => {
         if (err) {
@@ -406,8 +406,56 @@ app.get("/showdaily", (req, res) => {
   } else if (template==="2") {
     // Income/Expense/Transfer/Conto ==> type
     db.query(
-      'SELECT DATE_FORMAT(date,"%Y-%m-%d") AS date, type AS label, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'+year+'" AND MONTH(date)="'
+      'SELECT DATE_FORMAT(date,"%d-%m-%Y") AS date, type AS label, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'+year+'" AND MONTH(date)="'
       +month+'" AND locuser IN (' + localUserIds + ') GROUP BY date, type ORDER BY date, type',
+      (err, result) => {
+        if (err) {
+          res.send([{error: err}]);
+        } else {
+          res.send(result);
+        }
+      }
+    );  
+  }
+})
+
+app.get("/showmonthly", (req, res) => {
+  var localUserIds = req.query.localUserIds;
+  var month = req.query.month;
+  var year = req.query.year;
+  var template = req.query.template;
+  var group = req.query.group;
+  if (template==="0") {
+    // All groups
+    db.query(
+      'SELECT CONCAT(LPAD(MONTH(date),2,0),"-",YEAR(date)) AS date, gr AS label, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'
+      +year+'" AND locuser IN ('+localUserIds+') GROUP BY month(date), label ORDER BY date, label',
+      (err, result) => {
+        if (err) {
+          res.send([{error: err}]);
+        } else {
+          res.send(result);
+        }
+      }
+    );  
+  } else if (template==="1") {
+    // Choosen Group
+    db.query(
+      'SELECT CONCAT(LPAD(MONTH(date),2,0),"-",YEAR(date)) AS date, sgr AS label, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'
+      +year+'" AND locuser IN ('+localUserIds+') AND gr="'+group+'" GROUP BY MONTH(date), sgr ORDER BY date, sgr',
+      (err, result) => {
+        if (err) {
+          res.send([{error: err}]);
+        } else {
+          res.send(result);
+        }
+      }
+    );  
+  } else if (template==="2") {
+    // Income/Expense/Transfer/Conto ==> type
+    db.query(
+      'SELECT CONCAT(LPAD(MONTH(date),2,0),"-",YEAR(date)) AS date, type AS label, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'
+      +year+'" AND locuser IN (' + localUserIds + ') GROUP BY MONTH(date), type ORDER BY date, type',
       (err, result) => {
         if (err) {
           res.send([{error: err}]);

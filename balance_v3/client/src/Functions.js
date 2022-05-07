@@ -577,7 +577,7 @@ export function getShowForChoosen(
 ) {
   function daily() {
     console.log(
-      "getShowForChoosen choosen: ",
+      "getShowForChoosen daily choosen: ",
       choosenLocalUserIds,
       choosenPeriod,
       choosenMonth,
@@ -587,6 +587,35 @@ export function getShowForChoosen(
     );
     return new Promise((resolve, reject) => {
       Axios.get("http://localhost:3001/showdaily", {
+        params: {
+          localUserIds: choosenLocalUserIds,
+          month: choosenMonth,
+          year: choosenYear,
+          template: choosenTemplate,
+          group: choosenGroup,
+        },
+      })
+        .then((resp) => {
+          resolve({ status: "OK", data: resp.data });
+        })
+        .catch((err) => {
+          resolve({ status: "Error", err: err });
+        });
+    });
+  }
+
+  function monthly() {
+    console.log(
+      "getShowForChoosen monthy choosen: ",
+      choosenLocalUserIds,
+      choosenPeriod,
+      choosenMonth,
+      choosenYear,
+      choosenTemplate,
+      choosenGroup
+    );
+    return new Promise((resolve, reject) => {
+      Axios.get("http://localhost:3001/showmonthly", {
         params: {
           localUserIds: choosenLocalUserIds,
           month: choosenMonth,
@@ -620,6 +649,10 @@ export function getShowForChoosen(
       daily().then((value) => {
         resolve({ status: "OK", data: value.data });
       });
+    } else if (choosenPeriod === "2") {
+      monthly().then((value) => {
+        resolve({ status: "OK", data: value.data });
+      });
     }
   });
 }
@@ -635,6 +668,29 @@ export function prepareDataForGraph(
   subgroups,
   groups
 ) {
+  
+  var colors = [
+    "red",
+    "blue",
+    "green",
+    "darkred",
+    "darkblue",
+    "darkgreen",
+    "lightblue",
+    "orange",
+    "lightgreen",
+    "darkcyan",
+    "darkmagenta",
+  ];
+  var type = [
+    { id: 1, name: "Expense" },
+    { id: 2, name: "Income" },
+    { id: 3, name: "Transfer" },
+    { id: 4, name: "Transfer income" },
+    { id: 8, name: "Balance" },
+    { id: 9, name: "Conto" },
+  ];
+
   function lastDayOfMonthOfYear(month, year) {
     if (month > 11) {
       month = 0;
@@ -646,24 +702,22 @@ export function prepareDataForGraph(
 
   function createDailyData(lastDayOfMonth, labels) {
     console.log("createDailyData labels: ", labels);
-    let colors = ["red", "blue", "green", "darkred", "darkblue", "darkgreen",
-                  "lightblue", "orange", "lightgreen", "darkcyan", "darkmagenta"];
     let lines = [];
     return new Promise((resolve, reject) => {
       let tmpData = [];
       for (let day = 1; day <= lastDayOfMonth; day++) {
         let tmpDate =
-          choosenYear +
+          day.toLocaleString("en-US", {
+            minimumIntegerDigits: 2,
+            useGrouping: false,
+          }) +
           "-" +
           parseInt(choosenMonth).toLocaleString("en-US", {
             minimumIntegerDigits: 2,
             useGrouping: false,
           }) +
           "-" +
-          day.toLocaleString("en-US", {
-            minimumIntegerDigits: 2,
-            useGrouping: false,
-          });
+          choosenYear;
         let tmpLine = { date: tmpDate };
         labels.forEach((label) => {
           let tmpValue = 0;
@@ -675,14 +729,14 @@ export function prepareDataForGraph(
           }
         });
         tmpData.push(tmpLine);
-      };
+      }
       let modulof = colors.length;
       console.log("modulof: ", modulof);
       labels.forEach((label, i) => {
         let tmpLine = {};
-        tmpLine.name=label.name;
+        tmpLine.name = label.name;
         let tmpi = i % modulof;
-        tmpLine.stroke=colors[tmpi];
+        tmpLine.stroke = colors[tmpi];
         lines.push(tmpLine);
       });
       resolve({ status: "OK", data: tmpData, lines: lines });
@@ -701,15 +755,63 @@ export function prepareDataForGraph(
           resolve({ status: "OK", data: value.data, lines: value.lines });
         });
       } else {
-        let type = [
-          {id: 1, name: "Expense"},
-          {id: 2, name: "Income"},
-          {id: 3, name: "Transfer"},
-          {id: 4, name: "Transfer income"},
-          {id: 8, name: "Balance"},
-          {id: 9, name: "Conto"}
-        ];
         createDailyData(lastDayOfMonth, type).then((value) => {
+          resolve({ status: "OK", data: value.data, lines: value.lines });
+        });
+      }
+    });
+  }
+
+  function createMonthlyData(labels) {
+    console.log("createMonthlyData labels: ", labels);
+    let lines = [];
+    return new Promise((resolve, reject) => {
+      let tmpData = [];
+      for (let month = 1; month <= 12; month++) {
+        let tmpDate =
+          parseInt(month).toLocaleString("en-US", {
+            minimumIntegerDigits: 2,
+            useGrouping: false,
+          }) +
+          "-" +
+          choosenYear;
+        let tmpLine = { date: tmpDate };
+        labels.forEach((label) => {
+          let tmpValue = 0;
+          for (let i = 0; i < data.length; i++) {
+            if (data[i].date === tmpDate && data[i].label === label.id) {
+              tmpValue = data[i].sum;
+            }
+            tmpLine[label.name] = tmpValue;
+          }
+        });
+        tmpData.push(tmpLine);
+      }
+      let modulof = colors.length;
+      console.log("modulof: ", modulof);
+      labels.forEach((label, i) => {
+        let tmpLine = {};
+        tmpLine.name = label.name;
+        let tmpi = i % modulof;
+        tmpLine.stroke = colors[tmpi];
+        lines.push(tmpLine);
+      });
+      resolve({ status: "OK", data: tmpData, lines: lines });
+    });
+  }
+
+  function monthlyData() {
+    return new Promise((resolve, reject) => {
+      if (choosenTemplate === "0") {
+        createMonthlyData(groups).then((value) => {
+          resolve({ status: "OK", data: value.data, lines: value.lines });
+        });
+      } else if (choosenTemplate === "1") {
+        createMonthlyData(subgroups).then((value) => {
+          resolve({ status: "OK", data: value.data, lines: value.lines });
+        });
+      } else {
+        createMonthlyData(type).then((value) => {
           resolve({ status: "OK", data: value.data, lines: value.lines });
         });
       }
@@ -721,7 +823,11 @@ export function prepareDataForGraph(
       dailyData().then((value) => {
         resolve({ status: "OK", data: value.data, lines: value.lines });
       });
-    }
+    } else if (choosenPeriod === "2") {
+      monthlyData().then((value) => {
+        resolve({ status: "OK", data: value.data, lines: value.lines });
+      });
+    };
   });
 }
 

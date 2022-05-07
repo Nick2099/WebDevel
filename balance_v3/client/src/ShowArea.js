@@ -41,11 +41,6 @@ function ShowArea() {
   const noOfLocalUsers = useRef(0);
   const groups = useRef([]);
 
-  var dataTemplate = [
-    { date: "2022-04-01", Default: 20, pv: 24, amt: 24 },
-    { date: "2022-04-02", Default: 30, pv: 13, amt: 22 },
-  ];
-
   const [lines, setLines] = useState([
     { name: "Default", stroke: "red"},
   ]);
@@ -54,14 +49,15 @@ function ShowArea() {
   ]);
 
   useEffect(() => {
+    console.log("Run Once!");
     getAllLocalUsers();
     addMonths();
     addYears();
     Functions.getGroups(tmpUser.userid).then((value) => {
+      console.log("getGroups: ", tmpUser.userid, value);
       groups.current = value;
       addGroups();
     });
-    console.log("Run Once!");
   }, []);
 
   useEffect(() => {
@@ -89,6 +85,7 @@ function ShowArea() {
   }
 
   function addGroups() {
+    console.log("addGroups");
     for (let i = 0; i < groups.current.length; i++) {
       let opt = document.createElement("option");
       opt.innerHTML = groups.current[i].name;
@@ -212,7 +209,7 @@ function ShowArea() {
   };
 
   function set_templete_1() {
-    document.getElementById("select_group").checked = true;
+    document.getElementById("select_group_radio").checked = true;
   }
 
   return (
@@ -274,7 +271,7 @@ function ShowArea() {
             <tr>
               <td></td>
               <td>
-                <input id="select_group" type="radio" name="select_template" value="1"></input>
+                <input id="select_group_radio" type="radio" name="select_template" value="1"></input>
                 <label>Selected group</label>
                 <select id="select_group" onFocus={set_templete_1}></select>
               </td>
@@ -298,6 +295,9 @@ function ShowArea() {
       </div>
       <div className="fullWidth">
         <MyLineChart data={graphData} lines={lines} />
+      </div>
+      <div>
+        <br></br>
       </div>
     </div>
   );
