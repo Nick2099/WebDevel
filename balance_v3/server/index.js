@@ -419,6 +419,54 @@ app.get("/showdaily", (req, res) => {
   }
 })
 
+app.get("/showweekly", (req, res) => {
+  var localUserIds = req.query.localUserIds;
+  var month = req.query.month;
+  var year = req.query.year;
+  var template = req.query.template;
+  var group = req.query.group;
+  if (template==="0") {
+    // All groups
+    db.query(
+      'SELECT CONCAT(LPAD(WEEK(date),2,0),"-",YEAR(date)) AS date, gr AS label, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'
+      +year+'" AND locuser IN ('+localUserIds+') GROUP BY WEEK(date), label ORDER BY date, label',
+      (err, result) => {
+        if (err) {
+          res.send([{error: err}]);
+        } else {
+          res.send(result);
+        }
+      }
+    );  
+  } else if (template==="1") {
+    // Choosen Group
+    db.query(
+      'SELECT CONCAT(LPAD(WEEK(date),2,0),"-",YEAR(date)) AS date, sgr AS label, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'
+      +year+'" AND locuser IN ('+localUserIds+') AND gr="'+group+'" GROUP BY WEEK(date), sgr ORDER BY date, sgr',
+      (err, result) => {
+        if (err) {
+          res.send([{error: err}]);
+        } else {
+          res.send(result);
+        }
+      }
+    );  
+  } else if (template==="2") {
+    // Income/Expense/Transfer/Conto ==> type
+    db.query(
+      'SELECT CONCAT(LPAD(WEEK(date),2,0),"-",YEAR(date)) AS date, type AS label, SUM(amount) AS sum FROM mybalance.records2 WHERE YEAR(date)="'
+      +year+'" AND locuser IN (' + localUserIds + ') GROUP BY WEEK(date), type ORDER BY date, type',
+      (err, result) => {
+        if (err) {
+          res.send([{error: err}]);
+        } else {
+          res.send(result);
+        }
+      }
+    );  
+  }
+})
+
 app.get("/showmonthly", (req, res) => {
   var localUserIds = req.query.localUserIds;
   var month = req.query.month;

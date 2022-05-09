@@ -124,7 +124,7 @@ function ShowArea() {
 
   function selectPeriodChange() {
     let selectedPeriod = document.getElementById("select_period").value;
-    if (selectedPeriod > 1) {
+    if (selectedPeriod > 0) {
       document.getElementById("select_month").disabled = true;
     } else {
       document.getElementById("select_month").disabled = false;
@@ -161,6 +161,7 @@ function ShowArea() {
           choosenTemplate,
           choosenGroup
         ).then((value2) => {
+          console.log("Value2: ", value2);
           if (value2.status === "OK") {
             console.log("2 dio, value2:", value2);
             Functions.prepareDataForGraph(

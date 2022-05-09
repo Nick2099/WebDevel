@@ -575,6 +575,7 @@ export function getShowForChoosen(
   choosenTemplate,
   choosenGroup
 ) {
+
   function daily() {
     console.log(
       "getShowForChoosen daily choosen: ",
@@ -587,6 +588,35 @@ export function getShowForChoosen(
     );
     return new Promise((resolve, reject) => {
       Axios.get("http://localhost:3001/showdaily", {
+        params: {
+          localUserIds: choosenLocalUserIds,
+          month: choosenMonth,
+          year: choosenYear,
+          template: choosenTemplate,
+          group: choosenGroup,
+        },
+      })
+        .then((resp) => {
+          resolve({ status: "OK", data: resp.data });
+        })
+        .catch((err) => {
+          resolve({ status: "Error", err: err });
+        });
+    });
+  }
+
+  function weekly() {
+    console.log(
+      "getShowForChoosen monthy choosen: ",
+      choosenLocalUserIds,
+      choosenPeriod,
+      choosenMonth,
+      choosenYear,
+      choosenTemplate,
+      choosenGroup
+    );
+    return new Promise((resolve, reject) => {
+      Axios.get("http://localhost:3001/showweekly", {
         params: {
           localUserIds: choosenLocalUserIds,
           month: choosenMonth,
@@ -649,11 +679,15 @@ export function getShowForChoosen(
       daily().then((value) => {
         resolve({ status: "OK", data: value.data });
       });
+    } else if (choosenPeriod === "1") {
+      weekly().then((value) => {
+        resolve({ status: "OK", data: value.data });
+      });
     } else if (choosenPeriod === "2") {
       monthly().then((value) => {
         resolve({ status: "OK", data: value.data });
       });
-    }
+    };
   });
 }
 
@@ -762,6 +796,63 @@ export function prepareDataForGraph(
     });
   }
 
+  
+  function createWeeklyData(labels) {
+    console.log("createWeeklyData labels: ", labels);
+    let lines = [];
+    return new Promise((resolve, reject) => {
+      let tmpData = [];
+      for (let week = 1; week <= 53; week++) {
+        let tmpDate =
+          parseInt(week).toLocaleString("en-US", {
+            minimumIntegerDigits: 2,
+            useGrouping: false,
+          }) +
+          "-" +
+          choosenYear;
+        let tmpLine = { date: tmpDate };
+        labels.forEach((label) => {
+          let tmpValue = 0;
+          for (let i = 0; i < data.length; i++) {
+            if (data[i].date === tmpDate && data[i].label === label.id) {
+              tmpValue = data[i].sum;
+            }
+            tmpLine[label.name] = tmpValue;
+          }
+        });
+        tmpData.push(tmpLine);
+      }
+      let modulof = colors.length;
+      console.log("modulof: ", modulof);
+      labels.forEach((label, i) => {
+        let tmpLine = {};
+        tmpLine.name = label.name;
+        let tmpi = i % modulof;
+        tmpLine.stroke = colors[tmpi];
+        lines.push(tmpLine);
+      });
+      resolve({ status: "OK", data: tmpData, lines: lines });
+    });
+  }
+
+  function weeklyData() {
+    return new Promise((resolve, reject) => {
+      if (choosenTemplate === "0") {
+        createWeeklyData(groups).then((value) => {
+          resolve({ status: "OK", data: value.data, lines: value.lines });
+        });
+      } else if (choosenTemplate === "1") {
+        createWeeklyData(subgroups).then((value) => {
+          resolve({ status: "OK", data: value.data, lines: value.lines });
+        });
+      } else {
+        createWeeklyData(type).then((value) => {
+          resolve({ status: "OK", data: value.data, lines: value.lines });
+        });
+      }
+    });
+  }
+
   function createMonthlyData(labels) {
     console.log("createMonthlyData labels: ", labels);
     let lines = [];
@@ -821,6 +912,10 @@ export function prepareDataForGraph(
   return new Promise((resolve, reject) => {
     if (choosenPeriod === "0") {
       dailyData().then((value) => {
+        resolve({ status: "OK", data: value.data, lines: value.lines });
+      });
+    } else if (choosenPeriod === "1") {
+      weeklyData().then((value) => {
         resolve({ status: "OK", data: value.data, lines: value.lines });
       });
     } else if (choosenPeriod === "2") {
