@@ -3,7 +3,6 @@ import React, {
   useContext,
   useEffect,
   useRef,
-  // Component,
 } from "react";
 import "./App.css";
 import Axios from "axios";
@@ -12,12 +11,12 @@ import * as Functions from "./Functions";
 // import LoginArea from "./LoginArea";
 
 function SettingsArea() {
-  const [tmpUser, setTmpUser] = useContext(TmpUserContext);
+  const [tmpUser] = useContext(TmpUserContext);
   // const groups = useRef([]);
   // const subgroups = useRef([]);
   const currencies = useRef([]);
   const localUsers = useRef([]);
-  // const maxNoOfLocalUsers = 5;
+  const maxNoOfLocalUsers = 5;
   const maxNameLength = 30;
   const maxEmailLength = 30;
   const maxPasswordLength = 20;
@@ -67,6 +66,7 @@ function SettingsArea() {
     Functions.getLocalUsers(tmpUser.id, tmpUser.userid).then((value) => {
       localUsers.current = value;
       Functions.addLocalUserToTable(localUsers.current);
+      checkNumberOfLocalUsers();
     });
   }, [tmpUser.cur, tmpUser.id, tmpUser.userid]);
   // it looks that those dependencies doesn't have to be set to zero []
@@ -155,6 +155,17 @@ function SettingsArea() {
     });
     Functions.deleteAllRowsInLocalUsersTable();
     Functions.addLocalUserToTable(localUsers.current);
+    checkNumberOfLocalUsers();
+  }
+
+  function checkNumberOfLocalUsers() {
+    if (localUsers.current.length >= maxNoOfLocalUsers) {
+      document.getElementById("registerLocalUserBUtton").disabled = true;
+      document.getElementById("addNewLocalUser").innerText ="Maximum of local users is reached.";
+    } else {
+      document.getElementById("registerLocalUserBUtton").disabled = false;
+      document.getElementById("addNewLocalUser").innerText ="Add new local user";
+    }
   }
 
   return (
@@ -204,7 +215,7 @@ function SettingsArea() {
       </div>
 
       <div id="Part">
-        <h3>Add new local user</h3>
+        <h3 id="addNewLocalUser">Add new local user</h3>
         <table id="localUsers">
           <tbody>
             <tr>
@@ -281,7 +292,7 @@ function SettingsArea() {
             </tr>
           </tbody>
         </table>
-        <button onClick={registerLocalUser}>Register user</button>
+        <button id="registerLocalUserBUtton" onClick={registerLocalUser}>Register user</button>
       </div>
     </div>
   );
