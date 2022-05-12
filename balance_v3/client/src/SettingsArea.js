@@ -65,7 +65,12 @@ function SettingsArea() {
     });
     Functions.getLocalUsers(tmpUser.id, tmpUser.userid).then((value) => {
       localUsers.current = value;
-      Functions.addLocalUserToTable(localUsers.current);
+      Functions.addLocalUsersToTable(localUsers.current);
+      localUsers.current.forEach(tmp => {
+        document.getElementById("delLocalUser" + String(tmp.id)).onclick = function () {
+          deleteLocalUser(tmp.id);
+        };
+      })
       checkNumberOfLocalUsers();
     });
   }, [tmpUser.cur, tmpUser.id, tmpUser.userid]);
@@ -154,7 +159,7 @@ function SettingsArea() {
       adv: props.adv,
     });
     Functions.deleteAllRowsInLocalUsersTable();
-    Functions.addLocalUserToTable(localUsers.current);
+    Functions.addLocalUsersToTable(localUsers.current);
     checkNumberOfLocalUsers();
   }
 
@@ -162,10 +167,24 @@ function SettingsArea() {
     if (localUsers.current.length >= maxNoOfLocalUsers) {
       document.getElementById("registerLocalUserBUtton").disabled = true;
       document.getElementById("addNewLocalUser").innerText ="Maximum of local users is reached.";
+      document.getElementById("emailInput").disabled = true;
+      document.getElementById("nameInput").disabled = true;
+      document.getElementById("pass1Input").disabled = true;
+      document.getElementById("pass2Input").disabled = true;
+      document.getElementById("visibilitycheck").disabled = true;
     } else {
       document.getElementById("registerLocalUserBUtton").disabled = false;
       document.getElementById("addNewLocalUser").innerText ="Add new local user";
+      document.getElementById("emailInput").disabled = false;
+      document.getElementById("nameInput").disabled = false;
+      document.getElementById("pass1Input").disabled = false;
+      document.getElementById("pass2Input").disabled = false;
+      document.getElementById("visibilitycheck").disabled = false;
     }
+  }
+
+  function deleteLocalUser(value) {
+    console.log("Delete local user with ID no.", value);
   }
 
   return (
@@ -208,6 +227,7 @@ function SettingsArea() {
               <th>Name</th>
               <th>E-mail</th>
               <th>Visibility</th>
+              <th></th>
             </tr>
           </thead>
         </table>

@@ -12,7 +12,7 @@ export function getBasicGroups() {
         resolve(resp.data);
       })
       .catch((err) => {
-        console.log("Error: ", err);
+        reject("Error: ", err);
       });
   });
 }
@@ -235,7 +235,7 @@ export function getLocalUsers(valueid, valueuserid) {
   });
 }
 
-export function addLocalUserToTable(tmp) {
+export function addLocalUsersToTable(tmp) {
   let tbody = document.createElement("tbody");
   tbody.id = "localUsersBody";
   document.getElementById("localUsers").appendChild(tbody);
@@ -244,18 +244,18 @@ export function addLocalUserToTable(tmp) {
       let tr = document.createElement("tr");
       tr.name = "tr" + String(tmpone.id);
       let td1 = document.createElement("td");
-      let input1 = document.createElement("input");
-      input1.value = tmpone.name;
-      input1.id = "nameLocalUser" + String(tmpone.id);
-      input1.maxLength = maxNameLength;
-      td1.appendChild(input1);
+      let label1 = document.createElement("label");
+      label1.innerHTML = tmpone.name;
+      label1.id = "nameLocalUser" + String(tmpone.id);
+      label1.maxLength = maxNameLength;
+      td1.appendChild(label1);
       tr.appendChild(td1);
       let td2 = document.createElement("td");
-      let input2 = document.createElement("input");
-      input2.value = tmpone.email;
-      input2.id = "emailLocalUser" + String(tmpone.id);
-      input2.maxLength = maxEmailLength;
-      td2.appendChild(input2);
+      let label2 = document.createElement("label");
+      label2.innerHTML = tmpone.email;
+      label2.id = "emailLocalUser" + String(tmpone.id);
+      label2.maxLength = maxEmailLength;
+      td2.appendChild(label2);
       tr.appendChild(td2);
       let td3 = document.createElement("td");
       let input3 = document.createElement("input");
@@ -268,6 +268,14 @@ export function addLocalUserToTable(tmp) {
       input3.id = "advLocalUser" + String(tmpone.id);
       td3.appendChild(input3);
       tr.appendChild(td3);
+      let td4 = document.createElement("td");
+      let button4 = document.createElement("button");
+      button4.type = "button";
+      button4.innerHTML = "Delete";
+      button4.onclick = "deleteLocalUser";
+      button4.id = "delLocalUser" + String(tmpone.id);
+      td4.appendChild(button4);
+      tr.appendChild(td4);
       document.getElementById("localUsersBody").appendChild(tr);
     });
   });
@@ -504,7 +512,7 @@ export function getAllLocalUsers(valueuserid) {
         resolve({ status: "OK", data: resp.data });
       })
       .catch((err) => {
-        console.log({ status: "Error: ", err: err });
+        reject({ status: "Error: ", err: err });
       });
   });
 }
@@ -577,15 +585,6 @@ export function getShowForChoosen(
 ) {
 
   function daily() {
-    console.log(
-      "getShowForChoosen daily choosen: ",
-      choosenLocalUserIds,
-      choosenPeriod,
-      choosenMonth,
-      choosenYear,
-      choosenTemplate,
-      choosenGroup
-    );
     return new Promise((resolve, reject) => {
       Axios.get("http://localhost:3001/showdaily", {
         params: {
@@ -606,15 +605,6 @@ export function getShowForChoosen(
   }
 
   function weekly() {
-    console.log(
-      "getShowForChoosen monthy choosen: ",
-      choosenLocalUserIds,
-      choosenPeriod,
-      choosenMonth,
-      choosenYear,
-      choosenTemplate,
-      choosenGroup
-    );
     return new Promise((resolve, reject) => {
       Axios.get("http://localhost:3001/showweekly", {
         params: {
@@ -635,15 +625,6 @@ export function getShowForChoosen(
   }
 
   function monthly() {
-    console.log(
-      "getShowForChoosen monthy choosen: ",
-      choosenLocalUserIds,
-      choosenPeriod,
-      choosenMonth,
-      choosenYear,
-      choosenTemplate,
-      choosenGroup
-    );
     return new Promise((resolve, reject) => {
       Axios.get("http://localhost:3001/showmonthly", {
         params: {
@@ -663,17 +644,6 @@ export function getShowForChoosen(
     });
   }
 
-  // console.log("Functions.getShowForChoosen ====>");
-  // console.log("choosenLocalUserIds: ", choosenLocalUserIds);
-  // console.log("choosenPeriod: ", choosenPeriod);
-  // console.log("choosenMonth: ", choosenMonth);
-  // console.log("choosenYear: ", choosenYear);
-  console.log(
-    "choosenTemplate: ",
-    choosenTemplate,
-    "choosenGroup: ",
-    choosenGroup
-  );
   return new Promise((resolve, reject) => {
     if (choosenPeriod === "0") {
       daily().then((value) => {
@@ -735,7 +705,6 @@ export function prepareDataForGraph(
   }
 
   function createDailyData(lastDayOfMonth, labels) {
-    console.log("createDailyData labels: ", labels);
     let lines = [];
     return new Promise((resolve, reject) => {
       let tmpData = [];
@@ -765,7 +734,6 @@ export function prepareDataForGraph(
         tmpData.push(tmpLine);
       }
       let modulof = colors.length;
-      console.log("modulof: ", modulof);
       labels.forEach((label, i) => {
         let tmpLine = {};
         tmpLine.name = label.name;
@@ -798,7 +766,6 @@ export function prepareDataForGraph(
 
   
   function createWeeklyData(labels) {
-    console.log("createWeeklyData labels: ", labels);
     let lines = [];
     return new Promise((resolve, reject) => {
       let tmpData = [];
@@ -823,7 +790,6 @@ export function prepareDataForGraph(
         tmpData.push(tmpLine);
       }
       let modulof = colors.length;
-      console.log("modulof: ", modulof);
       labels.forEach((label, i) => {
         let tmpLine = {};
         tmpLine.name = label.name;
@@ -854,7 +820,6 @@ export function prepareDataForGraph(
   }
 
   function createMonthlyData(labels) {
-    console.log("createMonthlyData labels: ", labels);
     let lines = [];
     return new Promise((resolve, reject) => {
       let tmpData = [];
@@ -879,7 +844,6 @@ export function prepareDataForGraph(
         tmpData.push(tmpLine);
       }
       let modulof = colors.length;
-      console.log("modulof: ", modulof);
       labels.forEach((label, i) => {
         let tmpLine = {};
         tmpLine.name = label.name;

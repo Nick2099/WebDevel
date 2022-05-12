@@ -41,16 +41,14 @@ function ShowArea() {
   const noOfLocalUsers = useRef(0);
   const groups = useRef([]);
 
-  const [lines, setLines] = useState([
-    { name: "Default", stroke: "red"},
-  ]);
+  const [lines, setLines] = useState([{ name: "Default", stroke: "red" }]);
   const [graphData, setGraphData] = useState([
-    {date: "2022-04-01", Default: 0}
+    { date: "2022-04-01", Default: 0 },
   ]);
 
   useEffect(() => {
     console.log("Run Once!");
-    getAllLocalUsers();
+    getLocalUsers();
     addMonths();
     addYears();
     Functions.getGroups(tmpUser.userid).then((value) => {
@@ -70,18 +68,28 @@ function ShowArea() {
 
   const linesOptions = lines.map((line, i) => {
     return (
-      <Line key={"Line_"+i.toString()} type="monotone" dataKey={line.name} stroke={line.stroke} fill="#yellow" ></Line>
+      <Line
+        key={"Line_" + i.toString()}
+        type="monotone"
+        dataKey={line.name}
+        stroke={line.stroke}
+        fill="#yellow"
+      ></Line>
     );
   });
 
-  function getAllLocalUsers() {
-    Functions.getAllLocalUsers(tmpUser.userid).then((value) => {
-      Functions.addAllLocalUsers(value.data, tmpUser.id, tmpUser.admin).then(
-        (value) => {
-          noOfLocalUsers.current = value.noOfLocalUsers;
-        }
-      );
-    });
+  function getLocalUsers() {
+    Functions.getAllLocalUsers(tmpUser.userid)
+      .then((value) => {
+        Functions.addAllLocalUsers(value.data, tmpUser.id, tmpUser.admin).then(
+          (value) => {
+            noOfLocalUsers.current = value.noOfLocalUsers;
+          }
+        );
+      })
+      .catch((value) => {
+        alert(value.err);
+      });
   }
 
   function addGroups() {
@@ -185,7 +193,6 @@ function ShowArea() {
         });
       }
     });
-    
   }
 
   const MyLineChart = function (props) {
@@ -203,7 +210,7 @@ function ShowArea() {
           <YAxis />
           <Tooltip />
           {linesOptions}
-          { /* <Line type="monotone" dataKey="Default" stroke="red" fill="#yellow" /> */ }
+          {/* <Line type="monotone" dataKey="Default" stroke="red" fill="#yellow" /> */}
         </LineChart>
       </ResponsiveContainer>
     );
@@ -272,7 +279,12 @@ function ShowArea() {
             <tr>
               <td></td>
               <td>
-                <input id="select_group_radio" type="radio" name="select_template" value="1"></input>
+                <input
+                  id="select_group_radio"
+                  type="radio"
+                  name="select_template"
+                  value="1"
+                ></input>
                 <label>Selected group</label>
                 <select id="select_group" onFocus={set_templete_1}></select>
               </td>
@@ -287,7 +299,7 @@ function ShowArea() {
             <tr>
               <td>
                 <button type="button" id="button_show" onClick={showChoosen}>
-                Show
+                  Show
                 </button>
               </td>
             </tr>
