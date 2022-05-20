@@ -4,6 +4,7 @@ about_gitignore.txt
 
 # My directories/backup
 mybackup
+template-client-server
 
 # Logs
 logs
