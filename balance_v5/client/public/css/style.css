@@ -21,7 +21,8 @@ nav li {
     list-style: none;
     color: white;
     background-color: blue;
-    border-right: 2px solid skyblue;
+    /* border-right: 2px solid skyblue; */
+    transition: 0.3s;
 }
 
 nav li:last-of-type {
@@ -30,7 +31,9 @@ nav li:last-of-type {
 
 nav a {
     text-decoration: none;
-    color: white;
+    color: rgb(0, 0, 32);
+    font-weight: 600;
+    transition: 0.3s;
 }
 
 footer {
@@ -41,4 +44,8 @@ footer {
     color: white;
     text-align: center;
     padding: 5px 0px;
+}
+
+nav a:hover {
+    color: white;
 }
