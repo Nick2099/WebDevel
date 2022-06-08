@@ -1,15 +1,15 @@
 import React, { useRef } from "react";
 
 function Login() {
-  const name = useRef();
-  const pass = useRef();
+  const email = useRef(null);
+  const pass = useRef(null);
 
   return (
     <div>
       <h1>Login</h1>
       <div>
         <label>User name</label>
-        <input ref={name} type="text" />
+        <input ref={email} type="text" placeholder="E-mail address" />
       </div>
       <div>
         <label>Password</label>
