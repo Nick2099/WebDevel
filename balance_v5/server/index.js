@@ -16,18 +16,36 @@ const db = Mysql.createConnection({
   database: process.env.DB_DATA,
 });
 
-app.get("/doesuserexists", (req, res) => {
+app.get("/doesuserexists", async (req, res, next) => {
   db.query(
     'SELECT id FROM mybalance5.user WHERE email="' + req.query.email + '"',
     (err, result) => {
       if (err) {
-        res.send([{ error: err }]);
+        res.send({status: "Error", error: err})
       } else {
-        res.send(result);
+        res.send({status: "OK", value: result})
       }
     }
   );
 });
+
+app.post("/addtologfile", async (req, res) => {
+  const datetime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+  const user_id = req.body.user_id;
+  const error_id = req.body.error_id;
+  const error_txt = req.body.error_txt;
+  db.query(
+    'INSERT INTO mybalance5.log (datetime, user_id, error_id, error_txt) VALUES (?,?,?,?)',
+    [datetime, user_id, error_id, error_txt],
+    (err, result) => {
+      if (err) {
+        res.send({status: "Error", error: err});
+      } else {
+        res.send({status: "OK"})
+      }
+    }
+  );
+})
 
 app.listen(3001, () => {
   console.log("Server is running on port 3001!");

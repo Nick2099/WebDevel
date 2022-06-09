@@ -7,38 +7,50 @@ function Register() {
   const pass_repeat = useRef(null);
   const name = useRef(null);
   const family = useRef("");
-  const [ok, setOk] = useState({email: false, password: false, pass_repeat: false, name: false, family: false});
+  const [ok, setOk] = useState({
+    email: false,
+    password: false,
+    pass_repeat: false,
+    name: false,
+    family: false,
+  });
+  const [register, setRegister] = useState(false);
 
   function registerNewUser() {
     console.log("registerNewUser", email.current.value);
     MyFunctions.doesUserExists(email.current.value)
-    .then((value) => {
-      console.log("Value: ", value);
-    })
-    .catch((error) => {
-      console.log("Error: ", error);
-    })
+      .then((value) => {
+        if ((value.status === "Error")) {
+          let error_tmp = MyFunctions.errorToText(value.error)
+          MyFunctions.addToLogFile(0, 1, error_tmp);
+        } else {
+          console.log("==> Uspjesno!");
+        }
+      })
+      .catch((error) => {
+        alert(`Error: ${error}`)
+      });
   }
 
   function handleName() {
-    if ((name.current.value).length>1) 
-    setOk((prevOK) => {
-      return {...prevOK, name: true};}
-    );
-  };  
+    if (name.current.value.length > 1)
+      setOk((prevOk) => {
+        return { ...prevOk, name: true };
+      });
+  }
 
   function handleFamily() {
-    if ((family.current.value).length>2) 
-    setOk((prevOK) => {
-      return {...prevOK, family: true};}
-    );
-  };  
+    if (family.current.value.length > 2)
+      setOk((prevOk) => {
+        return { ...prevOk, family: true };
+      });
+  }
 
   useEffect(() => {
     console.log(ok);
-  }, [ok]);
-
-
+    setRegister(ok.email && ok.password && ok.pass_repeat && ok.family && ok.name);
+    console.log("register: ", register);
+  }, [ok, register]);
 
   return (
     <div>
@@ -57,11 +69,11 @@ function Register() {
       </div>
       <div>
         <label>Name</label>
-        <input ref={name} type="text" onChange={handleName}/>
+        <input ref={name} type="text" onChange={handleName} />
       </div>
       <div>
         <label>Family name</label>
-        <input ref={family} type="text" onChange={handleFamily}/>
+        <input ref={family} type="text" onChange={handleFamily} />
       </div>
       <div>
         <button onClick={registerNewUser}>Register</button>
