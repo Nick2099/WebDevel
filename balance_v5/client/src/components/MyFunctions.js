@@ -21,15 +21,14 @@ export function errorToText(error) {
   return error_tmp;
 }
 
-export function doesUserExists(email) {
+export function getUserID(email) {
   return new Promise((resolve, reject) => {
-    Axios.get("http://localhost:3001/doesuserexists", {
+    Axios.get("http://localhost:3001/getuserid", {
       params: { email: email },
     })
       .then((resp) => {
-        let result = false;
-        if (resp.data.length > 0) result = true;
-        resolve(result);
+        if (resp.data.length > 0) resolve(resp.data[0].id);
+        else resolve(0);
       })
       .catch((err) => {
         reject(err);
@@ -49,9 +48,44 @@ export function isEmailAddress(str) {
 
 export function isPasswordValid(str) {
   return new Promise((resolve) => {
-    var pattern = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+    var pattern = new RegExp(
+      "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
+    );
     // (?=.*[!@#$%^&*]) =>  The string must contain at least one special character, but without
     //                      reserved RegEx characters to avoid conflict
     resolve(pattern.test(str));
+  });
+}
+
+export function registerNewUser(params) {
+  return new Promise((resolve, reject) => {
+    console.log(params);
+    Axios.post("http://localhost:3001/registernewuser", {
+      email: params.email,
+      pass: params.pass,
+      name: params.name,
+      family: params.family,
+    })
+      .then((value) => {
+        resolve("OK");
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
+export function updateMasterId(id) {
+  return new Promise((resolve, reject) => {
+    console.log(id);
+    Axios.post("http://localhost:3001/updatemasterid", {
+      id: id,
+    })
+      .then((value) => {
+        resolve("OK");
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 }

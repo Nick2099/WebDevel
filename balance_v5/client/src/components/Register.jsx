@@ -16,14 +16,28 @@ function Register() {
   });
   const [register, setRegister] = useState(false);
 
-  function registerNewUser() {
+  function handleRegisterNewUser() {
     if (register) {
-      MyFunctions.doesUserExists(email.current.value)
+      MyFunctions.getUserID(email.current.value)
         .then((value) => {
-          if (value) {
+          console.log("value: ", value);
+          if (value>0) {
             console.log("User with same email address already exists!");
           } else {
-            console.log("To login....");
+            console.log("Registering....");
+            MyFunctions.registerNewUser({
+              email: email.current.value,
+              pass: pass.current.value,
+              name: name.current.value,
+              family: family.current.value,
+            })
+            .then((value) => {
+              MyFunctions.addToLogFile(0, 2, "");
+              MyFunctions.getUserID(email.current.value)
+              .then((value) => {
+                MyFunctions.updateMasterId(value);
+              })
+            });
           }
         })
         .catch((error) => {
@@ -79,10 +93,10 @@ function Register() {
     var x = document.getElementById("pass");
     if (x.type === "password") {
       x.type = "text";
-      document.getElementById("pass_repeat").type="text";
+      document.getElementById("pass_repeat").type = "text";
     } else {
       x.type = "password";
-      document.getElementById("pass_repeat").type="password";
+      document.getElementById("pass_repeat").type = "password";
     }
   }
 
@@ -133,7 +147,7 @@ function Register() {
         <label>{ok.family ? "✔️" : ""}</label>
       </div>
       <div>
-        <button onClick={registerNewUser}>Register</button>
+        <button onClick={handleRegisterNewUser}>Register</button>
       </div>
       <div>
         <label>Notes:</label>
