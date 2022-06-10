@@ -23,10 +23,10 @@ function App() {
   }, [todos]);
 
   function toggleTodo(id) {
-    const newTodos = [...todos]
-    const todo = newTodos.find(todo => todo.id === id)
-    todo.complete = !todo.complete
-    setTodos(newTodos)
+    const newTodos = [...todos];
+    const todo = newTodos.find(todo => todo.id === id);
+    todo.complete = !todo.complete;
+    setTodos(newTodos);
   }
 
   function handleAddTodo(e) {
@@ -46,8 +46,8 @@ function App() {
   }
 
   function handleClearTodos() {
-    const newTodos = todos.filter(todo => !todo.complete)
-    setTodos(newTodos)
+    const newTodos = todos.filter(todo => !todo.complete);
+    setTodos(newTodos);
   }
 
   return (

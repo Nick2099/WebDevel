@@ -9,7 +9,7 @@ function Register() {
   const family = useRef("");
   const [ok, setOk] = useState({
     email: false,
-    password: false,
+    pass: false,
     pass_repeat: false,
     name: false,
     family: false,
@@ -17,19 +17,44 @@ function Register() {
   const [register, setRegister] = useState(false);
 
   function registerNewUser() {
-    console.log("registerNewUser", email.current.value);
-    MyFunctions.doesUserExists(email.current.value)
-      .then((value) => {
-        if ((value.status === "Error")) {
-          let error_tmp = MyFunctions.errorToText(value.error)
+    if (register) {
+      MyFunctions.doesUserExists(email.current.value)
+        .then((value) => {
+          console.log("registerNewUser doesUserExists:", value);
+        })
+        .catch((error) => {
+          let error_tmp = MyFunctions.errorToText(error.response.data);
           MyFunctions.addToLogFile(0, 1, error_tmp);
-        } else {
-          console.log("==> Uspjesno!");
-        }
-      })
-      .catch((error) => {
-        alert(`Error: ${error}`)
+        });
+    } else {
+      alert("Not all criterias are fullfiled");
+    }
+  }
+
+  function handleEmail() {
+    MyFunctions.isEmailAddress(email.current.value).then((value) => {
+      setOk((prevOk) => {
+        return { ...prevOk, email: value };
       });
+    });
+  }
+
+  function handlePassword() {
+    MyFunctions.isPasswordValid(pass.current.value).then((value) => {
+      setOk((prevOk) => {
+        return { ...prevOk, pass: value };
+      });
+    })
+  }
+
+  function handleRepeat() {
+    let tmp = false;
+    if (pass.current.value===pass_repeat.current.value) {
+      tmp = true;
+    };
+    setOk((prevOk) => {
+      return { ...prevOk, pass_repeat: tmp };
+    });
   }
 
   function handleName() {
@@ -48,7 +73,9 @@ function Register() {
 
   useEffect(() => {
     console.log(ok);
-    setRegister(ok.email && ok.password && ok.pass_repeat && ok.family && ok.name);
+    setRegister(
+      ok.email && ok.pass && ok.pass_repeat && ok.family && ok.name
+    );
     console.log("register: ", register);
   }, [ok, register]);
 
@@ -57,15 +84,20 @@ function Register() {
       <h1>Register</h1>
       <div>
         <label>User name</label>
-        <input ref={email} type="text" placeholder="E-mail address" />
+        <input
+          ref={email}
+          type="text"
+          onChange={handleEmail}
+          placeholder="E-mail address"
+        />
       </div>
       <div>
         <label>Password</label>
-        <input ref={pass} type="password" />
+        <input ref={pass} type="password" onChange={handlePassword}/>
       </div>
       <div>
         <label>Repeat password</label>
-        <input ref={pass_repeat} type="password" />
+        <input ref={pass_repeat} type="password" onChange={handleRepeat}/>
       </div>
       <div>
         <label>Name</label>
