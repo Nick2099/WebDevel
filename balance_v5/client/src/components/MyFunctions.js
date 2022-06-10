@@ -50,6 +50,8 @@ export function isEmailAddress(str) {
 export function isPasswordValid(str) {
   return new Promise((resolve) => {
     var pattern = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+    // (?=.*[!@#$%^&*]) =>  The string must contain at least one special character, but without
+    //                      reserved RegEx characters to avoid conflict
     resolve(pattern.test(str));
   });
 }
