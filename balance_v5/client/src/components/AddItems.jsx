@@ -1,6 +1,6 @@
 import React from "react";
 
-function AddItems() {
+function Additems() {
     return (
         <div>
             <h1>Add items!</h1>
@@ -8,4 +8,4 @@ function AddItems() {
     );
 }
 
-export default AddItems;
+export default Additems;

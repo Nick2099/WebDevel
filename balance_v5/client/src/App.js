@@ -9,7 +9,7 @@ import {
   Contact,
   Login,
   Register,
-  AddItems,
+  Additems,
   Logout,
 } from "./components";
 
@@ -24,8 +24,8 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/additems" element={<AddItems />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path="/additems" element={<Additems />} />
       </Routes>
       <Footer />
     </Router>
