@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as MyFunctions from "../components/MyFunctions";
+// import { useNavigate } from "react-router-dom";
 
 function Register() {
   const email = useRef(null);
@@ -15,6 +16,7 @@ function Register() {
     family: false,
   });
   const [register, setRegister] = useState(false);
+  // const navigate = useNavigate();
 
   function handleRegisterNewUser() {
     if (register) {
@@ -22,7 +24,8 @@ function Register() {
         .then((value) => {
           console.log("value: ", value);
           if (value>0) {
-            console.log("User with same email address already exists!");
+            // User with same email address already exists!
+            // navigate("/userexist");
           } else {
             console.log("Registering....");
             MyFunctions.registerNewUser({
@@ -36,7 +39,8 @@ function Register() {
               MyFunctions.getUserID(email.current.value)
               .then((value) => {
                 MyFunctions.updateMasterId(value);
-              })
+                sessionStorage.setItem("user_id", value.toString());
+              });
             });
           }
         })
@@ -54,6 +58,13 @@ function Register() {
       setOk((prevOk) => {
         return { ...prevOk, email: value };
       });
+    });
+  }
+
+  function handleEmailAfter() {
+    let tmp = email.current.value;
+    setOk((prevOk) => {
+      return { ...prevOk, email: tmp.toLowerCase() };
     });
   }
 
@@ -113,6 +124,7 @@ function Register() {
           ref={email}
           type="text"
           onChange={handleEmail}
+          onBlur={handleEmailAfter}
           placeholder="E-mail address"
         />
         <label>{ok.email ? "✔️" : ""}</label>

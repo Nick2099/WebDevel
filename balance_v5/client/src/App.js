@@ -12,6 +12,7 @@ import {
 } from "./components";
 
 function App() {
+  sessionStorage.setItem("user_id", "0") // when user_id>0 then user is loged in
   return (
     <Router>
       <Navigation />
