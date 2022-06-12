@@ -16,8 +16,8 @@ nav ul {
 }
 
 nav li {
+    padding: 5px 0px;
     width: auto;
-    padding: 5px 10px;
     list-style: none;
     color: white;
     background-color: blue;
@@ -30,6 +30,7 @@ nav li:last-of-type {
 }
 
 nav a {
+    padding: 0px 10px;
     text-decoration: none;
     color: rgb(0, 0, 32);
     font-weight: 600;

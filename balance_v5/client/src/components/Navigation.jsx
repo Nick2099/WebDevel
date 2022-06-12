@@ -14,13 +14,35 @@ function Navigation() {
               <NavLink to="/about">About</NavLink>
             </li>
             <li>
-              <NavLink to="/contact">Contact</NavLink>  
+              <NavLink to="/contact">Contact</NavLink>
             </li>
             <li>
-              <NavLink to="/login">Login</NavLink>
+              {sessionStorage.getItem("user_id") === "0" ? (
+                <NavLink to="/login">Login</NavLink>
+              ) : (
+                ""
+              )}
             </li>
             <li>
-              <NavLink to="/register">Register</NavLink>
+            {sessionStorage.getItem("user_id") === "0" ? (
+                <NavLink to="/register">Register</NavLink>
+              ) : (
+                ""
+              )}
+            </li>
+            <li>
+              {sessionStorage.getItem("user_id") === "0" ? (
+                ""
+              ) : (
+                <NavLink to="/additems">Entries</NavLink>
+              )}
+            </li>
+            <li>
+              {sessionStorage.getItem("user_id") === "0" ? (
+                ""
+              ) : (
+                <NavLink to="/logout">Log out</NavLink>
+              )}
             </li>
           </ul>
         </div>

@@ -59,7 +59,6 @@ export function isPasswordValid(str) {
 
 export function registerNewUser(params) {
   return new Promise((resolve, reject) => {
-    console.log(params);
     Axios.post("http://localhost:3001/registernewuser", {
       email: params.email,
       pass: params.pass,
@@ -77,7 +76,6 @@ export function registerNewUser(params) {
 
 export function updateMasterId(id) {
   return new Promise((resolve, reject) => {
-    console.log(id);
     Axios.post("http://localhost:3001/updatemasterid", {
       id: id,
     })

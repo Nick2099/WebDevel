@@ -14,43 +14,28 @@ function Register() {
     pass_repeat: false,
     name: false,
     family: false,
+    email_exist: false,
   });
   const [register, setRegister] = useState(false);
   // const navigate = useNavigate();
 
   function handleRegisterNewUser() {
     if (register) {
-      MyFunctions.getUserID(email.current.value)
-        .then((value) => {
-          console.log("value: ", value);
-          if (value>0) {
-            // User with same email address already exists!
-            // navigate("/userexist");
-          } else {
-            console.log("Registering....");
-            MyFunctions.registerNewUser({
-              email: email.current.value,
-              pass: pass.current.value,
-              name: name.current.value,
-              family: family.current.value,
-            })
-            .then((value) => {
-              MyFunctions.addToLogFile(0, 2, "");
-              MyFunctions.getUserID(email.current.value)
-              .then((value) => {
-                MyFunctions.updateMasterId(value);
-                sessionStorage.setItem("user_id", value.toString());
-              });
-            });
-          }
-        })
-        .catch((error) => {
-          let error_tmp = MyFunctions.errorToText(error.response.data);
-          MyFunctions.addToLogFile(0, 1, error_tmp);
+      MyFunctions.registerNewUser({
+        email: email.current.value,
+        pass: pass.current.value,
+        name: name.current.value,
+        family: family.current.value,
+      }).then((value) => {
+        MyFunctions.addToLogFile(0, 2, "");
+        MyFunctions.getUserID(email.current.value).then((value) => {
+          MyFunctions.updateMasterId(value);
+          sessionStorage.setItem("user_id", value.toString());
         });
+      });
     } else {
       alert("Not all criterias are fullfiled");
-    }
+    };
   }
 
   function handleEmail() {
@@ -62,9 +47,20 @@ function Register() {
   }
 
   function handleEmailAfter() {
-    let tmp = email.current.value;
-    setOk((prevOk) => {
-      return { ...prevOk, email: tmp.toLowerCase() };
+    // email.toLowerCase
+    var x = document.getElementById("email");
+    x.value = x.value.toLowerCase();
+    // checking if user with same email already exists
+    MyFunctions.getUserID(email.current.value).then((value) => {
+      if (value > 0) {
+        setOk((prevOk) => {
+          return { ...prevOk, email_exist: true };
+        });
+      } else {
+        setOk((prevOk) => {
+          return { ...prevOk, email_exist: false };
+        });
+      }
     });
   }
 
@@ -112,7 +108,14 @@ function Register() {
   }
 
   useEffect(() => {
-    setRegister(ok.email && ok.pass && ok.pass_repeat && ok.family && ok.name);
+    setRegister(
+      ok.email &&
+        ok.pass &&
+        ok.pass_repeat &&
+        ok.family &&
+        ok.name &&
+        !ok.email_exist
+    );
   }, [ok, register]);
 
   return (
@@ -121,13 +124,15 @@ function Register() {
       <div>
         <label>User name</label>
         <input
+          id="email"
           ref={email}
           type="text"
           onChange={handleEmail}
           onBlur={handleEmailAfter}
           placeholder="E-mail address"
         />
-        <label>{ok.email ? "✔️" : ""}</label>
+        <label>{ok.email && !ok.email_exist ? "✔️" : ""}</label>
+        <label>{ok.email_exist ? "Already registered!" : ""}</label>
       </div>
       <div>
         <label>Password</label>

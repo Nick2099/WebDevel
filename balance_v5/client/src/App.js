@@ -9,6 +9,8 @@ import {
   Contact,
   Login,
   Register,
+  AddItems,
+  Logout,
 } from "./components";
 
 function App() {
@@ -22,6 +24,8 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/additems" element={<AddItems />} />
+        <Route path="/logout" element={<Logout />} />
       </Routes>
       <Footer />
     </Router>
