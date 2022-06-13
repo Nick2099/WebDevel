@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as MyFunctions from "../components/MyFunctions";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function Register() {
+function Register({ logedin, handleLogedin }) {
   const email = useRef(null);
   const pass = useRef(null);
   const pass_repeat = useRef(null);
@@ -17,7 +17,7 @@ function Register() {
     email_exist: false,
   });
   const [register, setRegister] = useState(false);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   function handleRegisterNewUser() {
     if (register) {
@@ -28,16 +28,18 @@ function Register() {
         family: family.current.value,
       }).then((value) => {
         MyFunctions.addToLogFile(0, 2, "");
-        MyFunctions.getUserID(email.current.value).then((value) => {
-          MyFunctions.updateMasterId(value);
-          sessionStorage.setItem("user_id", value.toString());
+        MyFunctions.getUserID(email.current.value).then((value1) => {
+          MyFunctions.updateMasterId(value1);
+          sessionStorage.setItem("user_id", value1);
+          handleLogedin(value1);
+          navigate("/");
         });
       });
     } else {
       alert("Not all criterias are fullfiled");
-    };
+    }
   }
-
+  
   function handleEmail() {
     MyFunctions.isEmailAddress(email.current.value).then((value) => {
       setOk((prevOk) => {

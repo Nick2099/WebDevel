@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-function Navigation() {
+function Navigation({logedin}) {
   return (
     <div className="navigation">
       <nav>
@@ -16,34 +16,29 @@ function Navigation() {
             <li>
               <NavLink to="/contact">Contact</NavLink>
             </li>
-            <li>
-              {sessionStorage.getItem("user_id") === "0" ? (
-                <NavLink to="/login">Login</NavLink>
-              ) : (
-                ""
-              )}
-            </li>
-            <li>
-            {sessionStorage.getItem("user_id") === "0" ? (
-                <NavLink to="/register">Register</NavLink>
-              ) : (
-                ""
-              )}
-            </li>
-            <li>
-              {sessionStorage.getItem("user_id") === "0" ? (
-                ""
-              ) : (
+            {logedin === 0 ? (
+              <>
+                <li>
+                  <NavLink to="/login">Login</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/register">Register</NavLink>
+                </li>
+              </>
+            ) : (
+              ""
+            )}
+            {logedin === 0 ? (
+              "" ) : (
+              <>
+                <li>
                 <NavLink to="/additems">Entries</NavLink>
-              )}
-            </li>
-            <li>
-              {sessionStorage.getItem("user_id") === "0" ? (
-                ""
-              ) : (
+                </li>
+                <li>
                 <NavLink to="/logout">Log out</NavLink>
-              )}
-            </li>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </nav>

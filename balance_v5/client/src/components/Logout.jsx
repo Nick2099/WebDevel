@@ -1,12 +1,16 @@
-import React from "react";
-import { Navigate } from "react-router-dom";
+import React, { useEffect} from "react";
+import { useNavigate } from "react-router-dom";
 
-function Logout() {
-    sessionStorage.setItem("user_id", "0") // when user_id>0 then user is loged in
-    console.log(sessionStorage.getItem("user_id"));
-    return (
-        <Navigate replace to="/" />
-    );
+function Logout({logedin, handleLogedin}) {
+    const navigate = useNavigate();
+    // delete all items in sessionStorage and set user_id=0 (when user are not loged in)
+    sessionStorage.clear();
+    sessionStorage.setItem("user_id", 0)
+    // set logedin value (number of loged user) to 0 => logout
+    useEffect(() => {
+        handleLogedin(0);
+        navigate("/");
+    },[])
 }
 
 export default Logout;
