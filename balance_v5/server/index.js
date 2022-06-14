@@ -87,6 +87,59 @@ app.post("/updatemasterid", async (req, res) => {
   );
 });
 
+app.get("/login", (req, res) => {
+  db.query(
+    'SELECT id, password, name, family, master_id, admin, wrong_login, demo_only FROM mybalance5.user WHERE email="' +
+      req.query.email +
+      '"',
+    (err, result) => {
+      if (err) {
+        res.status(400).send(err);
+      } else {
+        if (result.length > 0) {
+          let ok = bcrypt.compareSync(req.query.password, result[0].password);
+          if (ok) {
+            result[0].password = "";
+            res.send(result);
+          } else {
+            res.status(401).send({user_id: result[0].id, error_id: 5, error_txt: "Wrong password"});
+          }
+        } else {
+          res.status(404).send({user_id: 0, error_id: 4, error_txt: "User '"+req.query.email+"' doesn't exist"});
+        }
+      }
+    }
+  );
+});
+
+app.post("/updatewronglogin", async (req, res) => {
+  const id = req.body.id;
+  const wrong_login = req.body.wrong_login;
+  if (wrong_login===1) {
+    db.query(
+      "UPDATE mybalance5.user SET wrong_login = " + 3 + " WHERE id = " + id,
+      (err, result) => {
+        if (err) {
+          res.status(400).send(err);
+        } else {
+          res.send(result);
+        }
+      }
+    );
+  } else {
+    db.query(
+      "UPDATE mybalance5.user SET wrong_login = 0 WHERE id = " + id,
+      (err, result) => {
+        if (err) {
+          res.status(400).send(err);
+        } else {
+          res.send(result);
+        }
+      }
+    );
+  }
+});
+
 app.listen(3001, () => {
   console.log("Server is running on port 3001!");
 });

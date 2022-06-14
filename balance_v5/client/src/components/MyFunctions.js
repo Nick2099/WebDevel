@@ -87,3 +87,33 @@ export function updateMasterId(id) {
       });
   });
 }
+
+export function login({email, password}) {
+  return new Promise((resolve, reject) => {
+    Axios.get("http://localhost:3001/login", {
+      params: { email: email, password: password },
+    })
+      .then((resp) => {
+        resolve(resp.data[0]);
+      })
+      .catch((err) => {
+        console.log("login err:", err.response.data);
+        reject(err.response.data);
+      });
+ });
+}
+
+export function updateWrongLogin({id, wrong_login}) {
+  return new Promise((resolve, reject) => {
+    Axios.post("http://localhost:3001/updatewronglogin", {
+      id: id,
+      wrong_login: wrong_login,
+    })
+      .then((value) => {
+        resolve("OK");
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  })
+}
