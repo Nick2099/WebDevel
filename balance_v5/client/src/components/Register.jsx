@@ -27,12 +27,18 @@ function Register({ logedin, handleLogedin }) {
         name: name.current.value,
         family: family.current.value,
       }).then((value) => {
-        MyFunctions.addToLogFile(0, 2, "");
         MyFunctions.getUserID(email.current.value).then((value1) => {
           MyFunctions.updateMasterId(value1);
           sessionStorage.setItem("user_id", value1);
+          sessionStorage.setItem("name", name.current.value);
+          sessionStorage.setItem("family", family.current.value);
+          sessionStorage.setItem("master_id", value1);
+          sessionStorage.setItem("admin", 1);
+          sessionStorage.setItem("wrong_login", 0);
+          sessionStorage.setItem("demo_only", 0);
           handleLogedin(value1);
-          navigate("/");
+          MyFunctions.addToLogFile(value1, 2, "");
+          navigate("/additems");
         });
       });
     } else {
@@ -76,7 +82,7 @@ function Register({ logedin, handleLogedin }) {
 
   function handleRepeat() {
     let tmp = false;
-    if (pass.current.value === pass_repeat.current.value) tmp = true;
+    if ((pass.current.value === pass_repeat.current.value) && (pass.current.value.length>0)) tmp = true;
     setOk((prevOk) => {
       return { ...prevOk, pass_repeat: tmp };
     });
@@ -119,6 +125,19 @@ function Register({ logedin, handleLogedin }) {
         !ok.email_exist
     );
   }, [ok, register]);
+
+  function handleReset() {
+    email.current.value = "";
+    handleEmail();
+    pass.current.value = "";
+    handlePassword();
+    pass_repeat.current.value = "";
+    handleRepeat();
+    name.current.value = "";
+    handleName();
+    family.current.value = "";
+    handleFamily();
+  }
 
   return (
     <div>
@@ -167,6 +186,9 @@ function Register({ logedin, handleLogedin }) {
       </div>
       <div>
         <button onClick={handleRegisterNewUser}>Register</button>
+      </div>
+      <div>
+        <button onClick={handleReset}>Reset</button>
       </div>
       <div>
         <label>Notes:</label>

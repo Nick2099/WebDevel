@@ -12,10 +12,10 @@ import {
   Additems,
   Logout,
 } from "./components";
+const user_id=0;
+sessionStorage.setItem("user_id", user_id); // when user_id>0 then user is loged in
 
 function App() {
-  const user_id=0;
-  sessionStorage.setItem("user_id", user_id); // when user_id>0 then user is loged in
   const [logedin, setLogedin] = useState(user_id);
 
   function handleLogedin(tmp) {

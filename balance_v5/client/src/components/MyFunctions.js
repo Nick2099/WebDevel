@@ -1,10 +1,10 @@
 import Axios from "axios";
 
-export function addToLogFile(userID, errorID, errorTxt) {
+export function addToLogFile(userID, actionID, additionalTxt) {
   Axios.post("http://localhost:3001/addtologfile", {
     user_id: userID,
-    error_id: errorID,
-    error_txt: errorTxt,
+    action_id: actionID,
+    additional_txt: additionalTxt,
   }).catch((err) => {
     alert("Error in addToLogFile");
   });
@@ -94,11 +94,10 @@ export function login({email, password}) {
       params: { email: email, password: password },
     })
       .then((resp) => {
-        resolve(resp.data[0]);
+        resolve(resp.data);
       })
       .catch((err) => {
-        console.log("login err:", err.response.data);
-        reject(err.response.data);
+        reject(err);
       });
  });
 }
