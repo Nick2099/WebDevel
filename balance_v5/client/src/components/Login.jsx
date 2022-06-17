@@ -24,35 +24,41 @@ function Login({ logedin, handleLogedin }) {
         password: pass.current.value,
       })
         .then((value) => {
-          console.log("value:", value);
-          if (value.status === "OK") {
-            MyFunctions.addToLogFile(value.id, 3, "");
-            sessionStorage.clear();
-            sessionStorage.setItem("user_id", value.id);
-            sessionStorage.setItem("name", value.name);
-            sessionStorage.setItem("family", value.family);
-            sessionStorage.setItem("master_id", value.master_id);
-            sessionStorage.setItem("admin", value.admin);
-            sessionStorage.setItem("wrong_login", value.wrong_login);
-            sessionStorage.setItem("demo_only", value.demo_only);
-            handleLogedin(value.id);
-            MyFunctions.updateWrongLogin({ id: value.id, wrong_login: 0 });
-            navigate("/additems");
-          } else if (value.status === "Wrong password") {
-            MyFunctions.updateWrongLogin({
-              id: value.id,
-              wrong_login: value.wrong_login + 1,
-            });
-            MyFunctions.addToLogFile(value.id, 5, "");
-            alert("Wrong password!");
-          } else {
-            // user don't exists!
+          if (value.status==="User don't exists!") {
             alert("User don't exits!");
             MyFunctions.addToLogFile(0, 4, value.email); //user_id is 0 when does not exists
+          } else {
+            if (value.wrong_login>3) {
+              MyFunctions.updateWrongLogin({
+                id: value.id,
+                wrong_login: value.wrong_login + 1,
+              });
+              MyFunctions.addToLogFile(value.id, 5, "");
+              alert("Your account is locked!");  
+            } else if (value.status === "Wrong password") {
+              MyFunctions.updateWrongLogin({
+                id: value.id,
+                wrong_login: value.wrong_login + 1,
+              });
+              MyFunctions.addToLogFile(value.id, 5, "");
+              alert("Wrong password!");
+            } else {
+              MyFunctions.addToLogFile(value.id, 3, "");
+              sessionStorage.clear();
+              sessionStorage.setItem("user_id", value.id);
+              sessionStorage.setItem("name", value.name);
+              sessionStorage.setItem("family", value.family);
+              sessionStorage.setItem("master_id", value.master_id);
+              sessionStorage.setItem("admin", value.admin);
+              sessionStorage.setItem("wrong_login", value.wrong_login);
+              sessionStorage.setItem("demo_only", value.demo_only);
+              handleLogedin(value.id);
+              MyFunctions.updateWrongLogin({ id: value.id, wrong_login: 0 });
+              navigate("/additems");  
+            }
           }
         })
         .catch((err) => {
-          console.log("handleLoginRequest err:", err);
           MyFunctions.addToLogFile(
             0,
             1,

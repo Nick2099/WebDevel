@@ -35,6 +35,9 @@ function Navigation({logedin}) {
                 <NavLink to="/additems">Entries</NavLink>
                 </li>
                 <li>
+                <NavLink to="/settings">Settings</NavLink>
+                </li>
+                <li>
                 <NavLink to="/logout">Log out</NavLink>
                 </li>
               </>

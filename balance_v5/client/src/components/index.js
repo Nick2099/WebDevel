@@ -7,3 +7,4 @@ export { default as Login } from "./Login";
 export { default as Register } from "./Register";
 export { default as Additems } from "./Additems";
 export { default as Logout } from "./Logout";
+export { default as Settings } from "./Settings";
