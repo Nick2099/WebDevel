@@ -50,7 +50,7 @@ export function isPasswordValid(str) {
   return new Promise((resolve) => {
     var pattern = new RegExp(
       "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
-    );
+    ); 
     // (?=.*[!@#$%^&*]) =>  The string must contain at least one special character, but without
     //                      reserved RegEx characters to avoid conflict
     resolve(pattern.test(str));
@@ -88,7 +88,7 @@ export function updateMasterId(id) {
   });
 }
 
-export function login({email, password}) {
+export function login({ email, password }) {
   return new Promise((resolve, reject) => {
     Axios.get("http://localhost:3001/login", {
       params: { email: email, password: password },
@@ -99,10 +99,10 @@ export function login({email, password}) {
       .catch((err) => {
         reject(err);
       });
- });
+  });
 }
 
-export function updateWrongLogin({id, wrong_login}) {
+export function updateWrongLogin({ id, wrong_login }) {
   return new Promise((resolve, reject) => {
     Axios.post("http://localhost:3001/updatewronglogin", {
       id: id,
@@ -114,5 +114,19 @@ export function updateWrongLogin({id, wrong_login}) {
       .catch((err) => {
         reject(err);
       });
-  })
+  });
+}
+
+export function getLocalUsers(master_id) {
+  return new Promise((resolve, reject) => {
+    Axios.get("http://localhost:3001/getlocalusers", {
+      params: { master_id: master_id },
+    })
+      .then((resp) => {
+        resolve(resp.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
 }
