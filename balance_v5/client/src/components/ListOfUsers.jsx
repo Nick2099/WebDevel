@@ -1,7 +1,7 @@
 import React from "react";
 import ListOfUsersUser from "./ListOfUsersUser";
 
-export default function ListOfUsers({ users, id, admin, toggleAdmin }) {
+export default function ListOfUsers({ users, id, admin, toggleAdmin, resetWrongLogins, updateName, updateFamily }) {
   return (
     <>
       <table>
@@ -25,6 +25,9 @@ export default function ListOfUsers({ users, id, admin, toggleAdmin }) {
                 id={id}
                 admin={admin}
                 toggleAdmin={toggleAdmin}
+                resetWrongLogins={resetWrongLogins}
+                updateName={updateName}
+                updateFamily={updateFamily}
               />
             );
           })}

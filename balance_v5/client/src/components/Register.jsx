@@ -7,7 +7,7 @@ function Register({ logedin, handleLogedin }) {
   const pass = useRef(null);
   const pass_repeat = useRef(null);
   const name = useRef(null);
-  const family = useRef("");
+  const family = useRef(null);
   const [ok, setOk] = useState({
     email: false,
     pass: false,

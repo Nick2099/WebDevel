@@ -27,12 +27,25 @@ function Settings({ logedin }) {
 
   function toggleAdmin(id) {
     const newUsers = [...users];
-    const user = newUsers.find(user => user.user_id === id);
-    if (user.admin===0)
-      user.admin = 1;
-    else
-      user.admin = 0;
+    const user = newUsers.find((user) => user.user_id === id);
+    if (user.admin === 0) user.admin = 1;
+    else user.admin = 0;
     setUsers(newUsers); // changes have to be saved in MySQL table
+  }
+
+  function resetWrongLogins(id) {
+    const newUsers = [...users];
+    const user = newUsers.find((user) => user.user_id === id);
+    user.wrong_login = 0;
+    setUsers(newUsers); // changes have to be saved in MySQL table
+  }
+
+  function updateName({id, name}) {
+    const newUsers = [...users];
+    const user = newUsers.find((user) => user.user_id === id);
+    user.name = name;
+    setUsers(newUsers); // changes have to be saved in MySQL table
+    console.log("users: ", users);
   }
 
   return (
@@ -62,7 +75,14 @@ function Settings({ logedin }) {
           <label>Demo: {demo_only ? "No" : "Yes"}</label>
         </div>
         <div>
-          <ListOfUsers users={users} id={id} admin={admin} toggleAdmin={toggleAdmin} />
+          <ListOfUsers
+            users={users}
+            id={id}
+            admin={admin}
+            toggleAdmin={toggleAdmin}
+            resetWrongLogins={resetWrongLogins}
+            updateName={updateName}
+          />
         </div>
       </div>
       <div></div>
