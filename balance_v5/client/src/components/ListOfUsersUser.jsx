@@ -9,15 +9,12 @@ export default function ListOfUsersUser({
   updateName,
   updateFamily,
 }) {
-  console.log("user: ", user.name, user.family);
   const name = useRef(user.name);
   const family = useRef(user.family);
-  console.log("name, family: ", name.current.value, family.current.value);
   const [ok, setOk] = useState({
     name: false,
     family: false,
   });
-  const [change, setChange] = useState(false);
 
   if (typeof id !== "string") id = toString(id);
   if (typeof admin !== "string") admin = toString(admin);
@@ -78,11 +75,6 @@ export default function ListOfUsersUser({
       document.getElementById("family").focus();
     }
   }
-
-  useEffect(() => {
-    setChange(ok.name && ok.family);
-    console.log("change: ", change);
-  }, [ok]);
 
   return (
     <tr>

@@ -40,13 +40,31 @@ function Settings({ logedin }) {
     setUsers(newUsers); // changes have to be saved in MySQL table
   }
 
-  function updateName({id, name}) {
+  function updateName({ id, name }) {
     const newUsers = [...users];
     const user = newUsers.find((user) => user.user_id === id);
     user.name = name;
     setUsers(newUsers); // changes have to be saved in MySQL table
-    console.log("users: ", users);
   }
+
+  function updateFamily({ id, family }) {
+    const newUsers = [...users];
+    const user = newUsers.find((user) => user.user_id === id);
+    user.family = family;
+    setUsers(newUsers); // changes have to be saved in MySQL table
+  }
+
+  function saveChanges() {
+    console.log("Saving....");
+  }
+
+  function resetChanges() {
+    console.log("Reseting....");
+  }
+
+  useEffect(() => {
+    console.log("users: ", users);
+  }, [users]);
 
   return (
     <div>
@@ -82,10 +100,14 @@ function Settings({ logedin }) {
             toggleAdmin={toggleAdmin}
             resetWrongLogins={resetWrongLogins}
             updateName={updateName}
+            updateFamily={updateFamily}
           />
         </div>
       </div>
-      <div></div>
+      <div>
+        <button onClick={saveChanges}>Save changes</button>
+        <button onClick={resetChanges}>Reset</button>
+      </div>
     </div>
   );
 }
