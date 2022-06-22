@@ -1,5 +1,4 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as MyFunctions from "../components/MyFunctions";
 import ListOfUsers from "./ListOfUsers";
 
@@ -11,8 +10,6 @@ function Settings({ logedin }) {
   const admin = sessionStorage.getItem("admin");
   const wrong_login = sessionStorage.getItem("wrong_login");
   const demo_only = sessionStorage.getItem("demo_only");
-
-  // const [localUser, setLocalUser] = useState([]);
   const [users, setUsers] = useState([]);
 
   // admin 1: user can add local users
@@ -21,10 +18,12 @@ function Settings({ logedin }) {
 
   useEffect(() => {
     MyFunctions.getLocalUsers(master_id).then((value) => {
+      console.log("Run once! Value: ", value);
       setUsers(value);
+      sessionStorage.setItem("usersDefault", JSON.stringify(value));
     });
   }, []); // run once
-
+  
   function toggleAdmin(id) {
     const newUsers = [...users];
     const user = newUsers.find((user) => user.user_id === id);
@@ -52,6 +51,7 @@ function Settings({ logedin }) {
     const user = newUsers.find((user) => user.user_id === id);
     user.family = family;
     setUsers(newUsers); // changes have to be saved in MySQL table
+
   }
 
   function saveChanges() {
@@ -59,8 +59,12 @@ function Settings({ logedin }) {
   }
 
   function resetChanges() {
-    console.log("Reseting....");
-  }
+    console.log("Reseting... ");
+    let tmp = JSON.parse(sessionStorage.getItem('usersDefault'));
+    console.log("usersDefault: ", tmp);
+    setUsers();
+    setUsers(tmp);
+  };
 
   useEffect(() => {
     console.log("users: ", users);

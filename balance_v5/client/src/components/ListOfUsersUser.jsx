@@ -18,8 +18,8 @@ export default function ListOfUsersUser({
 
   if (typeof id !== "string") id = toString(id);
   if (typeof admin !== "string") admin = toString(admin);
-  let tmp = false;
-  if (admin === "2" && user.admin !== 2) tmp = true;
+  let show = false;
+  if (admin === "2" && user.admin !== 2) show = true;
 
   useEffect(() => {
     handleName();
@@ -104,11 +104,11 @@ export default function ListOfUsersUser({
       </td>
       <td>
         {user.admin === 2 ? "Super" : user.admin === 1 ? "Yes" : "No"}
-        {tmp ? <button onClick={handleChangeAdmin}>Change</button> : ""}
+        {show ? <button onClick={handleChangeAdmin}>Change</button> : ""}
       </td>
       <td>
         {user.wrong_login}
-        {tmp ? <button onClick={handleResetWrongLogins}>Reset</button> : ""}
+        {show ? <button onClick={handleResetWrongLogins}>Reset</button> : ""}
       </td>
       <td>{user.demo_only ? "Yes" : "No"}</td>
     </tr>
