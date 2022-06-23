@@ -2,6 +2,7 @@ import React from "react";
 import ListOfUsersUser from "./ListOfUsersUser";
 
 export default function ListOfUsers({ users, id, admin, toggleAdmin, resetWrongLogins, updateName, updateFamily }) {
+  console.log("ListOfUsers");
   return (
     <>
       <table>

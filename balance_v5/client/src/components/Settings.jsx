@@ -3,6 +3,7 @@ import * as MyFunctions from "../components/MyFunctions";
 import ListOfUsers from "./ListOfUsers";
 
 function Settings({ logedin }) {
+  console.log("Settings");
   const id = sessionStorage.getItem("user_id");
   const name = sessionStorage.getItem("name");
   const family = sessionStorage.getItem("family");
@@ -18,12 +19,17 @@ function Settings({ logedin }) {
 
   useEffect(() => {
     MyFunctions.getLocalUsers(master_id).then((value) => {
-      console.log("Run once! Value: ", value);
       setUsers(value);
       sessionStorage.setItem("usersDefault", JSON.stringify(value));
     });
   }, []); // run once
-  
+
+  /*
+  useEffect(() => {
+    console.log("users: ", users);
+  }, [users])
+  */
+ 
   function toggleAdmin(id) {
     const newUsers = [...users];
     const user = newUsers.find((user) => user.user_id === id);
@@ -59,16 +65,9 @@ function Settings({ logedin }) {
   }
 
   function resetChanges() {
-    console.log("Reseting... ");
     let tmp = JSON.parse(sessionStorage.getItem('usersDefault'));
-    console.log("usersDefault: ", tmp);
-    setUsers();
     setUsers(tmp);
   };
-
-  useEffect(() => {
-    console.log("users: ", users);
-  }, [users]);
 
   return (
     <div>

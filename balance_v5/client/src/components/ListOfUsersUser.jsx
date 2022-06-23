@@ -9,6 +9,7 @@ export default function ListOfUsersUser({
   updateName,
   updateFamily,
 }) {
+  console.log("ListOfUsersUser");
   const name = useRef(user.name);
   const family = useRef(user.family);
   const [ok, setOk] = useState({
@@ -26,6 +27,13 @@ export default function ListOfUsersUser({
     handleFamily();
   }, []);
 
+  useEffect(() => {
+    console.log("ListOfUsersUser useEffect on user");
+    if (document.getElementById("name"+user.user_id).value!==user.name)
+    document.getElementById("name"+user.user_id).value=user.name;
+    document.getElementById("family"+user.user_id).value=user.family;
+  }, [user])
+
   function handleChangeAdmin() {
     toggleAdmin(user.user_id);
   }
@@ -34,8 +42,8 @@ export default function ListOfUsersUser({
     resetWrongLogins(user.user_id);
   }
 
-  function setName() {
-    updateName({ id: user.user_id, name: name.current.value });
+  function setName(tmp) {
+    updateName({ id: user.user_id, name: tmp });
   }
 
   function setFamily() {
@@ -55,7 +63,7 @@ export default function ListOfUsersUser({
     if (ok.name) {
       setName(name.current);
     } else {
-      document.getElementById("name").focus();
+      document.getElementById("name"+user.user_id).focus();
     }
   }
 
@@ -72,7 +80,7 @@ export default function ListOfUsersUser({
     if (ok.family) {
       setFamily(family.current);
     } else {
-      document.getElementById("family").focus();
+      document.getElementById("family"+user.user_id).focus();
     }
   }
 
@@ -82,7 +90,7 @@ export default function ListOfUsersUser({
       <td>{user.email}</td>
       <td>
         <input
-          id="name"
+          id={"name"+user.user_id}
           ref={name}
           type="text"
           defaultValue={name.current}
@@ -93,7 +101,7 @@ export default function ListOfUsersUser({
       </td>
       <td>
         <input
-          id="family"
+          id={"family"+user.user_id}
           ref={family}
           type="text"
           defaultValue={family.current}
