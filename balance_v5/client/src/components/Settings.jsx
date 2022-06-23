@@ -5,12 +5,12 @@ import ListOfUsers from "./ListOfUsers";
 function Settings({ logedin }) {
   console.log("Settings");
   const id = sessionStorage.getItem("user_id");
-  const name = sessionStorage.getItem("name");
-  const family = sessionStorage.getItem("family");
+  // const name = sessionStorage.getItem("name");
+  // const family = sessionStorage.getItem("family");
   const master_id = sessionStorage.getItem("master_id");
   const admin = sessionStorage.getItem("admin");
-  const wrong_login = sessionStorage.getItem("wrong_login");
-  const demo_only = sessionStorage.getItem("demo_only");
+  // const wrong_login = sessionStorage.getItem("wrong_login");
+  // const demo_only = sessionStorage.getItem("demo_only");
   const [users, setUsers] = useState([]);
 
   // admin 1: user can add local users
@@ -29,7 +29,7 @@ function Settings({ logedin }) {
     console.log("users: ", users);
   }, [users])
   */
- 
+
   function toggleAdmin(id) {
     const newUsers = [...users];
     const user = newUsers.find((user) => user.user_id === id);
@@ -74,6 +74,7 @@ function Settings({ logedin }) {
       {" "}
       <h1>Settings!</h1>
       <div>
+        {/* 
         <div>
           <label>ID: {id}</label>
         </div>
@@ -95,6 +96,7 @@ function Settings({ logedin }) {
         <div>
           <label>Demo: {demo_only ? "No" : "Yes"}</label>
         </div>
+        */}
         <div>
           <ListOfUsers
             users={users}

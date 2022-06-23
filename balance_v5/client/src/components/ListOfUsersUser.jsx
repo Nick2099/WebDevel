@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+import { MyVariable } from "../components/MyVariables";
 
 export default function ListOfUsersUser({
   user,
@@ -52,7 +53,7 @@ export default function ListOfUsersUser({
 
   function handleName() {
     let tmp = false;
-    if (name.current.value.length > 1) tmp = true;
+    if (name.current.value.length >= MyVariable.minimumLengthForName) tmp = true;
     setOk((prevOk) => {
       return { ...prevOk, name: tmp };
     });
@@ -69,7 +70,7 @@ export default function ListOfUsersUser({
 
   function handleFamily() {
     let tmp = false;
-    if (family.current.value.length > 1) tmp = true;
+    if (family.current.value.length >= MyVariable.minimumLengthForFamily) tmp = true;
     setOk((prevOk) => {
       return { ...prevOk, family: tmp };
     });
