@@ -3,7 +3,6 @@ import * as MyFunctions from "../components/MyFunctions";
 import ListOfUsers from "./ListOfUsers";
 
 function Settings({ logedin }) {
-  console.log("Settings");
   const id = sessionStorage.getItem("user_id");
   // const name = sessionStorage.getItem("name");
   // const family = sessionStorage.getItem("family");
@@ -18,10 +17,7 @@ function Settings({ logedin }) {
   //          new admins can delete main admin (id = master_id)
 
   useEffect(() => {
-    MyFunctions.getLocalUsers(master_id).then((value) => {
-      setUsers(value);
-      sessionStorage.setItem("usersDefault", JSON.stringify(value));
-    });
+    loadLocalUsers();
   }, []); // run once
 
   /*
@@ -29,6 +25,13 @@ function Settings({ logedin }) {
     console.log("users: ", users);
   }, [users])
   */
+
+  function loadLocalUsers() {
+    MyFunctions.getLocalUsers(master_id).then((value) => {
+      setUsers(value);
+      sessionStorage.setItem("usersDefault", JSON.stringify(value));
+    });
+  }
 
   function toggleAdmin(id) {
     const newUsers = [...users];
@@ -62,6 +65,9 @@ function Settings({ logedin }) {
 
   function saveChanges() {
     console.log("Saving....");
+    users.forEach(user => {
+      MyFunctions.updateLocalUser(user);
+    });
   }
 
   function resetChanges() {
@@ -74,29 +80,6 @@ function Settings({ logedin }) {
       {" "}
       <h1>Settings!</h1>
       <div>
-        {/* 
-        <div>
-          <label>ID: {id}</label>
-        </div>
-        <div>
-          <label>Name: {name}</label>
-        </div>
-        <div>
-          <label>Family name: {family}</label>
-        </div>
-        <div>
-          <label>Admin: {admin ? "Yes" : "No"}</label>
-        </div>
-        <div>
-          <label>Master ID: {master_id}</label>
-        </div>
-        <div>
-          <label>Wrong login: {wrong_login}</label>
-        </div>
-        <div>
-          <label>Demo: {demo_only ? "No" : "Yes"}</label>
-        </div>
-        */}
         <div>
           <ListOfUsers
             users={users}

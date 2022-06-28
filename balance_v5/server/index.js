@@ -149,6 +149,24 @@ app.get("/getlocalusers", async (req, res) => {
   );
 });
 
+app.post("/updatelocaluser", async (req, res) => {
+  const user = req.body.user;
+  /*
+  db.query(
+    "UPDATE mybalance5.user SET wrong_login = " +
+      wrong_login +
+      " WHERE id = " +
+      id,
+    (err, result) => {
+      if (err) {
+        res.status(400).send(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+  */
+});
 
 app.listen(3001, () => {
   console.log("Server is running on port 3001!");

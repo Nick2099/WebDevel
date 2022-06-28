@@ -10,7 +10,6 @@ export default function ListOfUsersUser({
   updateName,
   updateFamily,
 }) {
-  console.log("ListOfUsersUser");
   const name = useRef(user.name);
   const family = useRef(user.family);
   const [ok, setOk] = useState({
@@ -29,9 +28,9 @@ export default function ListOfUsersUser({
   }, []);
 
   useEffect(() => {
-    console.log("ListOfUsersUser useEffect on user");
     if (document.getElementById("name"+user.user_id).value!==user.name)
     document.getElementById("name"+user.user_id).value=user.name;
+    if (document.getElementById("family"+user.user_id).value!==user.family)
     document.getElementById("family"+user.user_id).value=user.family;
   }, [user])
 
@@ -43,8 +42,8 @@ export default function ListOfUsersUser({
     resetWrongLogins(user.user_id);
   }
 
-  function setName(tmp) {
-    updateName({ id: user.user_id, name: tmp });
+  function setName() {
+    updateName({ id: user.user_id, name: name.current.value });
   }
 
   function setFamily() {

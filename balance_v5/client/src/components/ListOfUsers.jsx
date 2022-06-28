@@ -2,7 +2,6 @@ import React from "react";
 import ListOfUsersUser from "./ListOfUsersUser";
 
 export default function ListOfUsers({ users, id, admin, toggleAdmin, resetWrongLogins, updateName, updateFamily }) {
-  console.log("ListOfUsers");
   // ID column is probably not needed.... Delete?
   return (
     <>
