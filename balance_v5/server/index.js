@@ -138,7 +138,9 @@ app.post("/updatewronglogin", async (req, res) => {
 
 app.get("/getlocalusers", async (req, res) => {
   db.query(
-    'SELECT id AS user_id, email, name, family, admin, wrong_login, demo_only FROM mybalance5.user WHERE master_id="' + req.query.master_id + '"',
+    'SELECT id AS user_id, email, name, family, admin, wrong_login, demo_only FROM mybalance5.user WHERE master_id="' +
+      req.query.master_id +
+      '"',
     (err, result) => {
       if (err) {
         res.status(400).send(err);
@@ -151,12 +153,17 @@ app.get("/getlocalusers", async (req, res) => {
 
 app.post("/updatelocaluser", async (req, res) => {
   const user = req.body.user;
-  /*
   db.query(
-    "UPDATE mybalance5.user SET wrong_login = " +
-      wrong_login +
-      " WHERE id = " +
-      id,
+    'UPDATE mybalance5.user SET name = "' +
+      user.name +
+      '", family = "' +
+      user.family +
+      '", admin= ' +
+      user.admin +
+      ', wrong_login = ' +
+      user.wrong_login +
+      ' WHERE id = ' +
+      user.user_id,
     (err, result) => {
       if (err) {
         res.status(400).send(err);
@@ -165,7 +172,6 @@ app.post("/updatelocaluser", async (req, res) => {
       }
     }
   );
-  */
 });
 
 app.listen(3001, () => {

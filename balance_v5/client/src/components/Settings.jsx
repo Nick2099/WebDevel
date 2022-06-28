@@ -64,7 +64,6 @@ function Settings({ logedin }) {
   }
 
   function saveChanges() {
-    console.log("Saving....");
     users.forEach(user => {
       MyFunctions.updateLocalUser(user);
     });

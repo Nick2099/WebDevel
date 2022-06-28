@@ -133,7 +133,6 @@ export function getLocalUsers(master_id) {
 
 export function updateLocalUser(user) {
   return new Promise((resolve, reject) => {
-    console.log("updateLocalUser user: ", user);
     Axios.post("http://localhost:3001/updatelocaluser", {
       user: user,
     })
