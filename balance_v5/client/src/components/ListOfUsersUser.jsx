@@ -111,7 +111,7 @@ export default function ListOfUsersUser({
         <label>{ok.family ? "✔️" : "❌"}</label>
       </td>
       <td>
-        {user.admin === 2 ? "Super" : user.admin === 1 ? "Yes" : "No"}
+        {user.admin === 2 ? "Main" : user.admin === 1 ? "Yes" : "No"}
         {show ? <button onClick={handleChangeAdmin}>Change</button> : ""}
       </td>
       <td>

@@ -144,3 +144,8 @@ export function updateLocalUser(user) {
       });
   }); 
 }
+
+export function addLocalUser(props) {
+  console.log("addLocalUser: ", props);
+  // have to save user
+}

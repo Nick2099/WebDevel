@@ -1,12 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
 import * as MyFunctions from "../components/MyFunctions";
 import { useNavigate } from "react-router-dom";
+import { MyVariable } from "../components/MyVariables";
+
 
 function Login({ logedin, handleLogedin }) {
   const email = useRef(null);
   const pass = useRef(null);
-  const emailMin = 5;
-  const passMin = 7;
   const [ok, setOk] = useState({
     email: false,
     pass: false,
@@ -15,10 +15,7 @@ function Login({ logedin, handleLogedin }) {
   const navigate = useNavigate();
 
   function handleLoginRequest() {
-    if (
-      email.current.value.length > emailMin &&
-      pass.current.value.length > passMin
-    ) {
+    if (login) {
       MyFunctions.login({
         email: email.current.value,
         password: pass.current.value,
@@ -70,7 +67,7 @@ function Login({ logedin, handleLogedin }) {
           );
         });
     } else {
-      alert("Minimum length of email or/and password are not fulfiled!");
+      alert("E-mail address is not valid or/and password doesn't fulfil minimum length!");
     }
   }
 
@@ -84,17 +81,16 @@ function Login({ logedin, handleLogedin }) {
   }
 
   function handleEmail() {
-    let tmp = false;
-    if (email.current.value.length > emailMin) tmp = true;
-    setOk((prevOk) => {
-      return { ...prevOk, email: tmp };
+    MyFunctions.isEmailAddress(email.current.value).then((value) => {
+      setOk((prevOk) => {
+        return { ...prevOk, email: value };
+      });
     });
-
   }
 
   function handlePassword() {
     let tmp = false;
-    if (pass.current.value.length > passMin) tmp = true;
+    if (pass.current.value.length >= MyVariable.minimumLengthOfPassword) tmp = true;
     setOk((prevOk) => {
       return { ...prevOk, pass: tmp };
     });
