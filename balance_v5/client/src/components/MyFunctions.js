@@ -146,6 +146,17 @@ export function updateLocalUser(user) {
 }
 
 export function addLocalUser(props) {
-  console.log("addLocalUser: ", props);
+  return new Promise((resolve, reject) => {
+    Axios.post("http://localhost:3001/addlocaluser", {
+      email: props.email,
+      master_id: props.master_id,
+    })
+      .then((value) => {
+        resolve("OK");
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  }); 
   // have to save user
 }

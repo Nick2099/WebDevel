@@ -10,6 +10,7 @@ export default function ListOfUsersUser({
   updateName,
   updateFamily,
 }) {
+  console.log("user.name:",user.name);
   const name = useRef(user.name);
   const family = useRef(user.family);
   const [ok, setOk] = useState({

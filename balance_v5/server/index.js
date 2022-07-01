@@ -160,10 +160,32 @@ app.post("/updatelocaluser", async (req, res) => {
       user.family +
       '", admin= ' +
       user.admin +
-      ', wrong_login = ' +
+      ", wrong_login = " +
       user.wrong_login +
-      ' WHERE id = ' +
+      " WHERE id = " +
       user.user_id,
+    (err, result) => {
+      if (err) {
+        res.status(400).send(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+app.post("/addlocaluser", async (req, res) => {
+  const email = req.body.email;
+  const password = "";
+  const name = "";
+  const family = "";
+  const master_id = req.body.master_id;
+  const admnin = 0;
+  const wrong_login = 0;
+  const demo_only = 0;
+  db.query(
+    "INSERT INTO mybalance5.user (email, password, name, family, master_id, admin, wrong_login, demo_only) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+    [email, password, name, family, master_id, admnin, wrong_login, demo_only],
     (err, result) => {
       if (err) {
         res.status(400).send(err);

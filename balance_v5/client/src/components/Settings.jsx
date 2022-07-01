@@ -111,6 +111,27 @@ function Settings({ logedin }) {
     });
   }
 
+  function handleAddLocalUser() {
+    MyFunctions.addLocalUser({
+      email: email.current.value,
+      master_id: master_id,
+    }).then(() => {
+      MyFunctions.getUserID(email.current.value).then((value) => {
+        const newUsers = [...users];
+        newUsers.push({
+          user_id: value,
+          email: email.current.value,
+          name: "-",
+          family: "-",
+          admin: 0,
+          wrong_login: 0,
+          demo_only: 0,
+        });
+        setUsers(newUsers);
+      });
+    });
+  }
+
   return (
     <div>
       {" "}
@@ -148,16 +169,7 @@ function Settings({ logedin }) {
               <label>{ok.email_exist ? "Already registered!" : ""}</label>
             </div>
             <div>
-              <button
-                onClick={() =>
-                  MyFunctions.addLocalUser({
-                    email: email.current.value,
-                    master_id: master_id,
-                  })
-                }
-              >
-                Add new local user
-              </button>
+              <button onClick={handleAddLocalUser}>Add new local user</button>
             </div>
           </>
         ) : (
