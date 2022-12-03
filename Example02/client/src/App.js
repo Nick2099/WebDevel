@@ -23,9 +23,13 @@ function App() {
   }, [todos]);
 
   function toggleTodo(id) {
+    console.log("toggleTodo(id) id:", id);
     const newTodos = [...todos];
+    console.log("toggleTodo(id) newTodos:", newTodos);
     const todo = newTodos.find(todo => todo.id === id);
+    console.log("toggleTodo(id) todo:", todo);
     todo.complete = !todo.complete;
+    console.log("toggleTodo(id) todo:", todo);
     setTodos(newTodos);
   }
 
