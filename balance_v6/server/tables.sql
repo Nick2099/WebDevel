@@ -4,6 +4,7 @@ drop table if exists account;
 drop table if exists account_type;
 drop table if exists subgroup;
 drop table if exists maingroup;
+drop table if exists maingroup_type;
 drop table if exists user_v6;
 drop table if exists master_type;
 drop table if exists admin_type;
@@ -42,11 +43,18 @@ create table user_v6 (
     foreign key (admin_type_id) references admin_type(id)
 );
 
+create table maingroup_type (
+    id tinyint unsigned primary key auto_increment,
+    title varchar(10)
+);
+insert into maingroup_type (title) values ('Income'), ('Expense'), ('Control'), ('Difference');
+
 create table maingroup (
     id mediumint unsigned primary key auto_increment,
     master_id mediumint unsigned,
     title varchar(30),
-    kind char(1)
+    type tinyint unsigned,
+    foreign key (type) references maingroup_type(id)
 );
 
 create table subgroup (
