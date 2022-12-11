@@ -61,6 +61,7 @@ app.get("/test", async (req, res) => {
   );
 });
 
+// Checked - works OK
 app.post("/registernewuser", async (req, res) => {
   const master_id = 0;
   const master_type_id = 1;
@@ -91,21 +92,24 @@ app.post("/registernewuser", async (req, res) => {
   });
 });
 
+// Checked - works OK
 app.post("/updatemasterid", async (req, res) => {
   const id = req.body.id;
   db.query(
-    'UPDATE '+database+'.user SET master_id = ' + id + ' WHERE id = ' + id,
+    'UPDATE '+database+'.users SET master_id = ' + id + ' WHERE id = ' + id,
     (queryError, queryResult) => {
-      if (err) {
+      if (queryError) {
         res.status(400).send(queryError);
         writeLogError("/updatemasterid ",queryError);
       } else {
         res.send(queryResult);
+        writeLogLog("/updatemasterid ",queryResult);
       }
     }
   );
 });
 
+// Checked - works OK
 app.get("/getuserid", async (req, res) => {
   db.query(
     'SELECT id FROM '+database+'.users WHERE email="' + req.query.email + '"',
@@ -115,6 +119,39 @@ app.get("/getuserid", async (req, res) => {
         writeLogError("/getuserid ",queryError);
       } else {
         res.send(queryResult);
+        writeLogLog("/getuserid ",queryResult);
+      }
+    }
+  );
+});
+
+// Have to be changed and checked
+app.get("/login", (req, res) => {
+  db.query(
+    'SELECT id, master_id, master_type_id, admin_type_id, email, pass, firstname, familyname, stay_loged, wrong_logins FROM '
+     + database +'.users WHERE email="' + req.query.email + '"',
+    (queryError, queryResult) => {
+      if (queryError) {
+        res.status(400).send(queryError);
+        writeLogError("/login ",queryError);
+      } else {
+        if (queryResult.length > 0) {
+          let ok = bcrypt.compareSync(req.query.password, queryResult[0].pass);
+          queryResult[0].pass = "";
+          if (ok) {
+            queryResult[0].status = "OK";
+            res.send(queryResult[0]);
+          } else {
+            queryResult[0].status = "Wrong password";
+            res.send(queryResult[0]);
+          }
+        } else {
+          res.send({
+            status: "User don't exists!",
+            id: 0,
+            email: req.query.email,
+          });
+        }
       }
     }
   );

@@ -1,5 +1,6 @@
 import Axios from "axios";
 
+/*
 export function addToLogFile(userID, actionID, additionalTxt) {
   Axios.post("http://localhost:3001/addtologfile", {
     user_id: userID,
@@ -9,6 +10,7 @@ export function addToLogFile(userID, actionID, additionalTxt) {
     alert("Error in addToLogFile");
   });
 }
+*/
 
 export function errorToText(error) {
   let error_tmp =
@@ -57,6 +59,7 @@ export function isPasswordValid(str) {
   });
 }
 
+// Checked - works OK
 export function registerNewUser(params) {
   return new Promise((resolve, reject) => {
     Axios.post("http://localhost:3001/registernewuser", {
@@ -74,6 +77,7 @@ export function registerNewUser(params) {
   });
 }
 
+// Checked - works OK
 export function updateMasterId(id) {
   return new Promise((resolve, reject) => {
     Axios.post("http://localhost:3001/updatemasterid", {
@@ -88,6 +92,7 @@ export function updateMasterId(id) {
   });
 }
 
+// To check!
 export function login({ email, password }) {
   return new Promise((resolve, reject) => {
     Axios.get("http://localhost:3001/login", {

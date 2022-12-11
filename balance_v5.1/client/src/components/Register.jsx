@@ -19,6 +19,7 @@ function Register({ logedin, handleLogedin }) {
   const [register, setRegister] = useState(false);
   const navigate = useNavigate();
 
+  // Checked - works OK
   function handleRegisterNewUser() {
     if (register) {
       MyFunctions.registerNewUser({
@@ -34,10 +35,9 @@ function Register({ logedin, handleLogedin }) {
           sessionStorage.setItem("family", family.current.value);
           sessionStorage.setItem("master_id", value1);
           sessionStorage.setItem("admin", 1);
-          sessionStorage.setItem("wrong_login", 0);
+          sessionStorage.setItem("wrong_logins", 0);
           sessionStorage.setItem("demo_only", 0);
           handleLogedin(value1);
-          MyFunctions.addToLogFile(value1, 2, "");
           navigate("/additems");
         });
       });
