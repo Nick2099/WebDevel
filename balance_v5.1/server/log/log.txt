@@ -1,0 +1,1 @@
+2022-12-11 01:21:53 /registernewuser {"fieldCount":0,"affectedRows":1,"insertId":2,"serverStatus":2,"warningCount":1,"message":"","protocol41":true,"changedRows":0}

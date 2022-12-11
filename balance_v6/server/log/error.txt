@@ -11,3 +11,4 @@
 2022-12-07 00:30:51 {"code":"ER_NO_SUCH_TABLE","errno":1146,"sqlMessage":"Table 'balance_v6.account_typ' doesn't exist","sqlState":"42S02","index":0,"sql":"SELECT id, title FROM balance_v6.account_typ"}
 2022-12-07 00:31:43 {"code":"ER_NO_SUCH_TABLE","errno":1146,"sqlMessage":"Table 'balance_v6.account_typ' doesn't exist","sqlState":"42S02","index":0,"sql":"SELECT id, title FROM balance_v6.account_typ"}
 2022-12-07 00:33:30 /test  {"code":"ER_NO_SUCH_TABLE","errno":1146,"sqlMessage":"Table 'balance_v6.account_typ' doesn't exist","sqlState":"42S02","index":0,"sql":"SELECT id, title FROM balance_v6.account_typ"}
+2022-12-09 23:12:06 /test  {"errno":-4078,"code":"ECONNREFUSED","syscall":"connect","address":"127.0.0.1","port":3306,"fatal":true}
