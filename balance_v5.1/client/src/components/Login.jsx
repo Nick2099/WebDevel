@@ -22,12 +22,12 @@ function Login({ logedin, handleLogedin }) {
       })
         .then((value) => {
           console.log("handleLoginRequest value:", value);
-          if (value.status==="User don't exists!") {
+          if (value.status!=="OK") {
             alert("User don't exits!");
             // MyFunctions.addToLogFile(0, 4, value.email); //user_id is 0 when does not exists
           } else {
-            console.log("handleLoginRequest value:", value);
             if (value.wrong_logins>3) {
+              console.log("handleLoginRequest wrong_logins:", value.wrong_logins);
               MyFunctions.updateWrongLogin({
                 id: value.id,
                 wrong_logins: value.wrong_logins + 1,

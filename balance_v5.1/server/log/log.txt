@@ -4,3 +4,34 @@
 2022-12-11 21:36:22 /registernewuser {"fieldCount":0,"affectedRows":1,"insertId":5,"serverStatus":2,"warningCount":1,"message":"","protocol41":true,"changedRows":0}
 2022-12-11 21:48:38 /registernewuser {"fieldCount":0,"affectedRows":1,"insertId":6,"serverStatus":2,"warningCount":1,"message":"","protocol41":true,"changedRows":0}
 2022-12-11 21:51:37 /registernewuser {"fieldCount":0,"affectedRows":1,"insertId":7,"serverStatus":2,"warningCount":1,"message":"","protocol41":true,"changedRows":0}
+2022-12-12 22:34:19 /getuserid  []
+2022-12-12 22:34:30 /registernewuser {"fieldCount":0,"affectedRows":1,"insertId":1,"serverStatus":2,"warningCount":1,"message":"","protocol41":true,"changedRows":0}
+2022-12-12 22:34:30 /getuserid  [{"id":1}]
+2022-12-12 22:34:30 /updatemasterid  {"fieldCount":0,"affectedRows":1,"insertId":0,"serverStatus":2,"warningCount":0,"message":"(Rows matched: 1  Changed: 1  Warnings: 0","protocol41":true,"changedRows":1}
+2022-12-12 22:43:40 /getuserid  []
+2022-12-12 22:43:54 /registernewuser {"fieldCount":0,"affectedRows":1,"insertId":2,"serverStatus":2,"warningCount":1,"message":"","protocol41":true,"changedRows":0}
+2022-12-12 22:43:54 /getuserid  [{"id":2}]
+2022-12-12 22:43:54 /updatemasterid  {"fieldCount":0,"affectedRows":1,"insertId":0,"serverStatus":2,"warningCount":0,"message":"(Rows matched: 1  Changed: 1  Warnings: 0","protocol41":true,"changedRows":1}
+2022-12-12 22:45:37 /getuserid  []
+2022-12-12 22:45:47 /registernewuser {"fieldCount":0,"affectedRows":1,"insertId":3,"serverStatus":2,"warningCount":1,"message":"","protocol41":true,"changedRows":0}
+2022-12-12 22:45:47 /getuserid  [{"id":3}]
+2022-12-12 22:45:47 /updatemasterid  {"fieldCount":0,"affectedRows":1,"insertId":0,"serverStatus":2,"warningCount":0,"message":"(Rows matched: 1  Changed: 1  Warnings: 0","protocol41":true,"changedRows":1}
+2022-12-12 22:47:48 /getuserid  []
+2022-12-12 22:48:02 /registernewuser {"fieldCount":0,"affectedRows":1,"insertId":4,"serverStatus":2,"warningCount":1,"message":"","protocol41":true,"changedRows":0}
+2022-12-12 22:48:02 /getuserid  [{"id":4}]
+2022-12-12 22:48:02 /updatemasterid  {"fieldCount":0,"affectedRows":1,"insertId":0,"serverStatus":2,"warningCount":0,"message":"(Rows matched: 1  Changed: 1  Warnings: 0","protocol41":true,"changedRows":1}
+2022-12-12 22:49:26 /getuserid  []
+2022-12-12 22:49:36 /registernewuser {"fieldCount":0,"affectedRows":1,"insertId":5,"serverStatus":2,"warningCount":1,"message":"","protocol41":true,"changedRows":0}
+2022-12-12 22:49:36 /getuserid  [{"id":5}]
+2022-12-12 22:49:36 /updatemasterid  {"fieldCount":0,"affectedRows":1,"insertId":0,"serverStatus":2,"warningCount":0,"message":"(Rows matched: 1  Changed: 1  Warnings: 0","protocol41":true,"changedRows":1}
+2022-12-12 22:55:56 /registernewuser {"fieldCount":0,"affectedRows":1,"insertId":6,"serverStatus":2,"warningCount":1,"message":"","protocol41":true,"changedRows":0}
+2022-12-12 22:55:56 /getuserid  [{"id":6}]
+2022-12-12 22:55:56 /updatemasterid  {"fieldCount":0,"affectedRows":1,"insertId":0,"serverStatus":2,"warningCount":0,"message":"(Rows matched: 1  Changed: 1  Warnings: 0","protocol41":true,"changedRows":1}
+2022-12-12 22:57:39 /getuserid  []
+2022-12-12 22:57:52 /registernewuser {"fieldCount":0,"affectedRows":1,"insertId":7,"serverStatus":2,"warningCount":1,"message":"","protocol41":true,"changedRows":0}
+2022-12-12 22:57:52 /getuserid  [{"id":7}]
+2022-12-12 22:57:52 /updatemasterid  {"fieldCount":0,"affectedRows":1,"insertId":0,"serverStatus":2,"warningCount":0,"message":"(Rows matched: 1  Changed: 1  Warnings: 0","protocol41":true,"changedRows":1}
+2022-12-12 22:59:06 /getuserid  []
+2022-12-12 22:59:17 /registernewuser {"fieldCount":0,"affectedRows":1,"insertId":8,"serverStatus":2,"warningCount":1,"message":"","protocol41":true,"changedRows":0}
+2022-12-12 22:59:17 /getuserid  [{"id":8}]
+2022-12-12 22:59:17 /updatemasterid  {"fieldCount":0,"affectedRows":1,"insertId":0,"serverStatus":2,"warningCount":0,"message":"(Rows matched: 1  Changed: 1  Warnings: 0","protocol41":true,"changedRows":1}

@@ -40,6 +40,7 @@ create table users (
     last_access datetime,
     stay_loged smallint unsigned,
     wrong_logins smallint unsigned,
+    locked_until datetime,
     foreign key (master_type_id) references master_type(id),
     foreign key (admin_type_id) references admin_type(id)
 );
