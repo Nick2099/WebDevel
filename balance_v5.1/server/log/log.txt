@@ -35,3 +35,12 @@
 2022-12-12 22:59:17 /registernewuser {"fieldCount":0,"affectedRows":1,"insertId":8,"serverStatus":2,"warningCount":1,"message":"","protocol41":true,"changedRows":0}
 2022-12-12 22:59:17 /getuserid  [{"id":8}]
 2022-12-12 22:59:17 /updatemasterid  {"fieldCount":0,"affectedRows":1,"insertId":0,"serverStatus":2,"warningCount":0,"message":"(Rows matched: 1  Changed: 1  Warnings: 0","protocol41":true,"changedRows":1}
+2022-12-13 22:39:05 /updateWrongLogins  {"fieldCount":0,"affectedRows":1,"insertId":0,"serverStatus":2,"warningCount":0,"message":"(Rows matched: 1  Changed: 1  Warnings: 0","protocol41":true,"changedRows":1}
+2022-12-13 22:39:33 /updateWrongLogins  {"fieldCount":0,"affectedRows":1,"insertId":0,"serverStatus":2,"warningCount":0,"message":"(Rows matched: 1  Changed: 1  Warnings: 0","protocol41":true,"changedRows":1}
+2022-12-13 22:40:01 /updateWrongLogins  {"fieldCount":0,"affectedRows":1,"insertId":0,"serverStatus":2,"warningCount":0,"message":"(Rows matched: 1  Changed: 1  Warnings: 0","protocol41":true,"changedRows":1}
+2022-12-13 22:40:34 /login  {"id":8,"status":"loged in"}
+2022-12-13 22:40:34 /updateWrongLogins  {"fieldCount":0,"affectedRows":1,"insertId":0,"serverStatus":2,"warningCount":1,"message":"(Rows matched: 1  Changed: 1  Warnings: 1","protocol41":true,"changedRows":1}
+2022-12-13 22:45:35 /login  {"id":8,"status":"loged in"}
+2022-12-13 22:52:52 /login  {"id":8,"status":"loged in"}
+2022-12-13 22:53:56 /login  {"id":8,"status":"loged in"}
+2022-12-13 23:33:54 /login  {"id":8,"status":"loged in"}

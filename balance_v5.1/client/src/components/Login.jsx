@@ -22,51 +22,28 @@ function Login({ logedin, handleLogedin }) {
       })
         .then((value) => {
           console.log("handleLoginRequest value:", value);
-          if (value.status!=="OK") {
+          if (value.status==="User don't exists!") {
             alert("User don't exits!");
-            // MyFunctions.addToLogFile(0, 4, value.email); //user_id is 0 when does not exists
           } else {
             if (value.wrong_logins>3) {
-              console.log("handleLoginRequest wrong_logins:", value.wrong_logins);
-              MyFunctions.updateWrongLogin({
-                id: value.id,
-                wrong_logins: value.wrong_logins + 1,
-              });
-              // MyFunctions.addToLogFile(value.id, 5, "");
               alert("Your account is locked!");  
             } else if (value.status === "Wrong password") {
-              MyFunctions.updateWrongLogin({
-                id: value.id,
-                wrong_logins: value.wrong_logins + 1,
-              });
-              // MyFunctions.addToLogFile(value.id, 5, "");
               alert("Wrong password!");
             } else {
-              // MyFunctions.addToLogFile(value.id, 3, "");
               sessionStorage.clear();
               sessionStorage.setItem("user_id", value.id);
-              sessionStorage.setItem("name", value.name);
-              sessionStorage.setItem("family", value.family);
+              sessionStorage.setItem("name", value.firstname);
+              sessionStorage.setItem("family", value.familyname);
               sessionStorage.setItem("master_id", value.master_id);
-              sessionStorage.setItem("admin", value.admin);
-              sessionStorage.setItem("wrong_logins", value.wrong_logins);
-              sessionStorage.setItem("demo_only", value.demo_only);
+              sessionStorage.setItem("master_type_id", value.master_type_id);
+              sessionStorage.setItem("admin_type_id", value.admin_type_id);
               handleLogedin(value.id);
-              MyFunctions.updateWrongLogin({ id: value.id, wrong_logins: 0 });
               navigate("/additems");  
             }
           }
         })
         .catch((err) => {
-          /* MyFunctions.addToLogFile(
-            0,
-            1,
-            "sql: '" +
-              err.response.data.sql +
-              "' sqlMessage: '" +
-              err.response.data.sqlMessage +
-              "'"
-          ); */
+          alert(err);
         });
     } else {
       alert("E-mail address is not valid or/and password doesn't fulfil minimum length!");

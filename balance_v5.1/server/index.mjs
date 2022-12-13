@@ -22,8 +22,7 @@ function numberToMinLength2(num) {
 }
 
 function mySQLDateTime(minutes = 0) {
-  var currentdate = new Date(new Date().getTime()+minutes*60000);
-  // console.log("currentdate", currentdate);
+  var currentdate = new Date(new Date().getTime() + minutes * 60000);
   var datetime =
     currentdate.getFullYear() +
     "-" +
@@ -157,7 +156,7 @@ app.get("/getuserid", async (req, res) => {
   );
 });
 
-// Have to be changed and checked
+// Checked - have to add control for locked account!
 app.get("/login", (req, res) => {
   db.query(
     "SELECT id, master_id, master_type_id, admin_type_id, email, pass, firstname, familyname, stay_loged, wrong_logins FROM " +
@@ -172,6 +171,9 @@ app.get("/login", (req, res) => {
       } else {
         if (queryResult.length > 0) {
           let ok = bcrypt.compareSync(req.query.password, queryResult[0].pass);
+          // var now = new Date(mySQLDateTime());
+          // var until = new Date(queryResult[0].locked_until);
+          // console.log("Compare now vs until", now, now>until, date);
           queryResult[0].pass = "";
           if (ok) {
             queryResult[0].status = "OK";
@@ -183,6 +185,9 @@ app.get("/login", (req, res) => {
             updateLoginsData(queryResult[0].id, mySQLDateTime(), 0, "");
           } else {
             queryResult[0].status = "Wrong password";
+            updateLoginsData(queryResult[0].id, mySQLDateTime(),
+              queryResult[0].wrong_logins + 1,
+              mySQLDateTime(queryResult[0].wrong_logins * 2));
             res.send(queryResult[0]);
           }
         } else {
@@ -199,24 +204,20 @@ app.get("/login", (req, res) => {
 
 function updateLoginsData(id, last_access, wrong_logins, locked_until) {
   db.query(
-    'UPDATE ' +
+    "UPDATE " +
       database +
-      '.users SET wrong_logins=' +
+      ".users SET wrong_logins=" +
       wrong_logins +
-      ' AND locked_until="' +
+      ', locked_until="' +
       locked_until +
-      ' AND last_access="' +
+      '", last_access="' +
       last_access +
-      '" WHERE id = ' +
+      '" WHERE id=' +
       id,
     (queryError, queryResult) => {
       if (queryError) {
-        res.status(400).send(queryError);
         writeLogError("/updateWrongLogins ", queryError);
-      } else {
-        res.send(queryResult);
-        writeLogLog("/updateWrongLogins ", queryResult);
-      }
+      };
     }
   );
 }

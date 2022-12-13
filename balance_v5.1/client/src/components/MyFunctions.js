@@ -107,6 +107,7 @@ export function login({ email, password }) {
   });
 }
 
+/*
 export function updateWrongLogin({ id, wrong_login }) {
   return new Promise((resolve, reject) => {
     Axios.post("http://localhost:3001/updatewronglogin", {
@@ -121,6 +122,7 @@ export function updateWrongLogin({ id, wrong_login }) {
       });
   });
 }
+*/
 
 export function getLocalUsers(master_id) {
   return new Promise((resolve, reject) => {
