@@ -25,8 +25,8 @@ function Login({ logedin, handleLogedin }) {
           if (value.status==="User don't exists!") {
             alert("User don't exits!");
           } else {
-            if (value.wrong_logins>3) {
-              alert("Your account is locked!");  
+            if (value.status==="Locked") {
+              alert(value.note);  
             } else if (value.status === "Wrong password") {
               alert("Wrong password!");
             } else {

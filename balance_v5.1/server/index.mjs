@@ -38,6 +38,18 @@ function mySQLDateTime(minutes = 0) {
   return datetime;
 }
 
+function mySQLDateTime2JS(datetime) {
+  var tmp = datetime; //.replace(" ", "T");
+  return new Date(tmp);
+}
+
+function noteLocked(until, now) {
+  var diffMs = (until - now); 
+  var diffMins = Math.ceil(((diffMs % 86400000) % 3600000) / 60000);
+  var note = "Your account is locked. Try again in " + diffMins + " minute(s).";
+  return note;
+}
+
 function writeLogError(file, data) {
   fs.appendFile(
     "log/error.txt",
@@ -159,7 +171,7 @@ app.get("/getuserid", async (req, res) => {
 // Checked - have to add control for locked account!
 app.get("/login", (req, res) => {
   db.query(
-    "SELECT id, master_id, master_type_id, admin_type_id, email, pass, firstname, familyname, stay_loged, wrong_logins FROM " +
+    "SELECT id, master_id, master_type_id, admin_type_id, email, pass, firstname, familyname, stay_loged, wrong_logins, locked_until FROM " +
       database +
       '.users WHERE email="' +
       req.query.email +
@@ -171,24 +183,33 @@ app.get("/login", (req, res) => {
       } else {
         if (queryResult.length > 0) {
           let ok = bcrypt.compareSync(req.query.password, queryResult[0].pass);
-          // var now = new Date(mySQLDateTime());
-          // var until = new Date(queryResult[0].locked_until);
-          // console.log("Compare now vs until", now, now>until, date);
+          var now = new Date();
+          var until = mySQLDateTime2JS(queryResult[0].locked_until);
+          var locked = until>now;
           queryResult[0].pass = "";
-          if (ok) {
-            queryResult[0].status = "OK";
+          if (locked) {
+            var note = noteLocked(until, now);
+            queryResult[0].status = "Locked";
+            queryResult[0].note = note;
             res.send(queryResult[0]);
-            writeLogLog("/login ", {
-              id: queryResult[0].id,
-              status: "loged in",
-            });
-            updateLoginsData(queryResult[0].id, mySQLDateTime(), 0, "");
           } else {
-            queryResult[0].status = "Wrong password";
-            updateLoginsData(queryResult[0].id, mySQLDateTime(),
-              queryResult[0].wrong_logins + 1,
-              mySQLDateTime(queryResult[0].wrong_logins * 2));
-            res.send(queryResult[0]);
+            if (ok) {
+              queryResult[0].status = "OK";
+              res.send(queryResult[0]);
+              writeLogLog("/login ", {
+                id: queryResult[0].id,
+                status: "loged in",
+              });
+              updateLoginsData(queryResult[0].id, mySQLDateTime(), 0, "");
+            } else {
+              queryResult[0].status = "Wrong password";
+              var lockedTime = 0;
+              if (queryResult[0].wrong_logins>1) lockedTime=5;
+              updateLoginsData(queryResult[0].id, mySQLDateTime(),
+                queryResult[0].wrong_logins + 1,
+                mySQLDateTime(lockedTime));
+              res.send(queryResult[0]);
+            }
           }
         } else {
           res.send({
