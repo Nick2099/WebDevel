@@ -28,7 +28,7 @@ function Login({ logedin, handleLogedin }) {
             if (value.status==="Locked") {
               alert(value.note);  
             } else if (value.status === "Wrong password") {
-              alert("Wrong password!");
+              alert(value.note);
             } else {
               sessionStorage.clear();
               sessionStorage.setItem("user_id", value.id);

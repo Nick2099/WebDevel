@@ -21,6 +21,7 @@ function numberToMinLength2(num) {
   return (num < 10 ? "0" : "") + num;
 }
 
+// returns current DateTime, can add also given minutes, in MySQL format
 function mySQLDateTime(minutes = 0) {
   var currentdate = new Date(new Date().getTime() + minutes * 60000);
   var datetime =
@@ -38,15 +39,29 @@ function mySQLDateTime(minutes = 0) {
   return datetime;
 }
 
+// return date in JavaScript format from given MySQL format
 function mySQLDateTime2JS(datetime) {
   var tmp = datetime; //.replace(" ", "T");
   return new Date(tmp);
 }
 
-function noteLocked(until, now) {
-  var diffMs = (until - now); 
-  var diffMins = Math.ceil(((diffMs % 86400000) % 3600000) / 60000);
-  var note = "Your account is locked. Try again in " + diffMins + " minute(s).";
+// return how many minutes a given DateTime is larger than current DateTime, min=0
+function lockedForMinutes(tmpDateTime) {
+  if (tmpDateTime == null) return 0;
+  var now = new Date();
+  var until = mySQLDateTime2JS(tmpDateTime);
+  var ms = until - now;
+  var minutes = Math.ceil(((ms % 86400000) % 3600000) / 60000);
+  if (minutes < 0) minutes = 0;
+  return minutes;
+}
+
+function noteLocked(minutes) {
+  var note =
+    "You had too many incorrect login attempts, so your account is still locked.\n\n" +
+    "You can try again in " +
+    minutes +
+    (minutes == 1 ? " minute." : " minutes.");
   return note;
 }
 
@@ -96,7 +111,7 @@ app.post("/registernewuser", async (req, res) => {
   const pass = req.body.pass;
   const firstname = req.body.name;
   const familyname = req.body.family;
-  const last_access = "";
+  const last_access = null;
   const stay_loged = 2880;
   const wrong_logins = 0;
   bcrypt.genSalt(10, function (errBcrypt, salt) {
@@ -183,12 +198,10 @@ app.get("/login", (req, res) => {
       } else {
         if (queryResult.length > 0) {
           let ok = bcrypt.compareSync(req.query.password, queryResult[0].pass);
-          var now = new Date();
-          var until = mySQLDateTime2JS(queryResult[0].locked_until);
-          var locked = until>now;
           queryResult[0].pass = "";
-          if (locked) {
-            var note = noteLocked(until, now);
+          var lockedFor = lockedForMinutes(queryResult[0].locked_until);
+          if (lockedFor > 0) {
+            var note = noteLocked(lockedFor);
             queryResult[0].status = "Locked";
             queryResult[0].note = note;
             res.send(queryResult[0]);
@@ -200,14 +213,22 @@ app.get("/login", (req, res) => {
                 id: queryResult[0].id,
                 status: "loged in",
               });
-              updateLoginsData(queryResult[0].id, mySQLDateTime(), 0, "");
+              updateLoginsData(queryResult[0].id, mySQLDateTime(), 0, null);
             } else {
-              queryResult[0].status = "Wrong password";
               var lockedTime = 0;
-              if (queryResult[0].wrong_logins>1) lockedTime=5;
-              updateLoginsData(queryResult[0].id, mySQLDateTime(),
-                queryResult[0].wrong_logins + 1,
-                mySQLDateTime(lockedTime));
+              queryResult[0].wrong_logins++;
+              queryResult[0].status = "Wrong password";
+              queryResult[0].note = "Wrong password!";
+              if (queryResult[0].wrong_logins > 2) {
+                lockedTime = 5;
+                queryResult[0].note = "Wrong password!\n Your account is locked for 5 minutes!";
+              };
+              updateLoginsData(
+                queryResult[0].id,
+                mySQLDateTime(),
+                queryResult[0].wrong_logins,
+                mySQLDateTime(lockedTime)
+              );
               res.send(queryResult[0]);
             }
           }
@@ -238,7 +259,7 @@ function updateLoginsData(id, last_access, wrong_logins, locked_until) {
     (queryError, queryResult) => {
       if (queryError) {
         writeLogError("/updateWrongLogins ", queryError);
-      };
+      }
     }
   );
 }
