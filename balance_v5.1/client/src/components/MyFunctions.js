@@ -167,3 +167,7 @@ export function addLocalUser(props) {
   }); 
   // have to save user
 }
+
+export function onlyDateFromDateTime(date) {
+  return date.getFullYear()+"-"+(parseInt(date.getMonth())+1)+"-"+date.getDate();
+}

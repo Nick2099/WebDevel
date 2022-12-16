@@ -21,7 +21,6 @@ function Login({ logedin, handleLogedin }) {
         password: pass.current.value,
       })
         .then((value) => {
-          console.log("handleLoginRequest value:", value);
           if (value.status==="User don't exists!") {
             alert("User don't exits!");
           } else {
@@ -37,6 +36,7 @@ function Login({ logedin, handleLogedin }) {
               sessionStorage.setItem("master_id", value.master_id);
               sessionStorage.setItem("master_type_id", value.master_type_id);
               sessionStorage.setItem("admin_type_id", value.admin_type_id);
+              sessionStorage.setItem("tmpDate", MyFunctions.onlyDateFromDateTime(new Date()));
               handleLogedin(value.id);
               navigate("/additems");  
             }
