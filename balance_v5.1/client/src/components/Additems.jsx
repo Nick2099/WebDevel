@@ -40,23 +40,71 @@ function Additems() {
         dateRef.current.value = tmpDate;
     }, []);
 
+    function deleteItem(id) {
+        const tmpItems = [...items];
+        const newItems = tmpItems.filter(item => item.id !== id);
+        setItems(newItems);
+        if (items.length === 0) amountRef.current.value = totalAmountRef.current.value;
+    };
+
+    /*
+    function handleDate(e) {
+        dateRef.current = e.target.value;
+    };
+    
+    function handleFacility(e) {
+        facilityRef.current = e.target.value;
+    };
+
+    function handlePlace(e) {
+        placeRef.current = e.target.value;
+    };
+    */
+
+    function handleTotalAmount(e) {
+        let tmp = e.target.value;
+        if (tmp === "") tmp = 0; else tmp = Number(tmp);
+        totalAmountRef.current.value = tmp;
+        if (items.length === 0) amountRef.current.value = tmp;
+    };
+
     function handleAccount(e) {
         accountRef.current = e.target.value;
-    }
+    };
 
     function handleGroup(e) {
         setGroupState(e.target.value);
-    }
+    };
 
     function handleSubgroup(e) {
         setSubgroupState(e.target.value);
-    }
+    };
 
     function handleSave() {
         console.log("Saving....");
-    }
+    };
 
     function handleAddItem() {
+        if (dateRef.current.value === "") {
+            alert("Date is not valid!");
+            // set focus too
+            return;
+        };
+        if ((facilityRef.current.value).length < 2) {
+            alert("The length of text for facility is too short!");
+            // set focus too
+            return;
+        };
+        if ((placeRef.current.value).length < 2) {
+            alert("The length of text for place is too short!");
+            // set focus too
+            return;
+        };
+        if (totalAmountRef.current.value === 0 || totalAmountRef.current.value === "") {
+            alert("Total amount can't be 0.");
+            // set focus too
+            return;
+        };
         let tmp = groupOptions.filter(item => item.value === groupState);
         const group = tmp[0].label;
         tmp = subgroupOptions.filter(item => item.value === subgroupState);
@@ -67,7 +115,7 @@ function Additems() {
             return [
                 ...prevItems,
                 {
-                    key: uuidv4(),
+                    id: uuidv4(),
                     group: group,
                     subgroup: subgroup,
                     amount: amount,
@@ -80,7 +128,7 @@ function Additems() {
         setSubgroupState("1");
         amountRef.current.value = 0;
         noteRef.current.value = "";
-    }
+    };
 
     return (
         <div>
@@ -116,7 +164,7 @@ function Additems() {
                             <label>Total amount</label>
                         </td>
                         <td>
-                            <input ref={totalAmountRef} type="number" />
+                            <input ref={totalAmountRef} type="number" onChange={handleTotalAmount} onFocus={handleTotalAmount} />
                         </td>
                     </tr>
                     <tr>
@@ -157,7 +205,7 @@ function Additems() {
                 <button onClick={handleAddItem}>Add item</button>
             </div>
             <div>
-                <Items items={items} />
+                <Items items={items} deleteItem={deleteItem} />
             </div>
             <button onClick={handleSave}>Save</button>
         </div>
