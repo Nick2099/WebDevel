@@ -47,20 +47,6 @@ function Additems() {
         if (items.length === 0) amountRef.current.value = totalAmountRef.current.value;
     };
 
-    /*
-    function handleDate(e) {
-        dateRef.current = e.target.value;
-    };
-    
-    function handleFacility(e) {
-        facilityRef.current = e.target.value;
-    };
-
-    function handlePlace(e) {
-        placeRef.current = e.target.value;
-    };
-    */
-
     function handleTotalAmount(e) {
         let tmp = e.target.value;
         if (tmp === "") tmp = 0; else tmp = Number(tmp);
@@ -87,22 +73,22 @@ function Additems() {
     function handleAddItem() {
         if (dateRef.current.value === "") {
             alert("Date is not valid!");
-            // set focus too
+            document.getElementById("datum").focus();
             return;
         };
         if ((facilityRef.current.value).length < 2) {
             alert("The length of text for facility is too short!");
-            // set focus too
+            document.getElementById("facility").focus();
             return;
         };
         if ((placeRef.current.value).length < 2) {
             alert("The length of text for place is too short!");
-            // set focus too
+            document.getElementById("place").focus();
             return;
         };
-        if (totalAmountRef.current.value === 0 || totalAmountRef.current.value === "") {
+        if (totalAmountRef.current.value === "0" || totalAmountRef.current.value === "") {
             alert("Total amount can't be 0.");
-            // set focus too
+            document.getElementById("totalAmount").focus();
             return;
         };
         let tmp = groupOptions.filter(item => item.value === groupState);
@@ -140,7 +126,7 @@ function Additems() {
                             <label>Date</label>
                         </td>
                         <td>
-                            <input ref={dateRef} type="date" />
+                            <input id="datum" ref={dateRef} type="date" />
                         </td>
                     </tr>
                     <tr>
@@ -148,7 +134,7 @@ function Additems() {
                             <label>Facility (shop, firm, institution...)</label>
                         </td>
                         <td>
-                            <input ref={facilityRef} type="text" />
+                            <input id="facility" ref={facilityRef} type="text" />
                         </td>
                     </tr>
                     <tr>
@@ -156,7 +142,7 @@ function Additems() {
                             <label>Place (city, region, district...)</label>
                         </td>
                         <td>
-                            <input ref={placeRef} type="text" />
+                            <input id="place" ref={placeRef} type="text" />
                         </td>
                     </tr>
                     <tr>
@@ -164,7 +150,7 @@ function Additems() {
                             <label>Total amount</label>
                         </td>
                         <td>
-                            <input ref={totalAmountRef} type="number" onChange={handleTotalAmount} onFocus={handleTotalAmount} />
+                            <input id="totalAmount" ref={totalAmountRef} type="number" onChange={handleTotalAmount} onFocus={handleTotalAmount} />
                         </td>
                     </tr>
                     <tr>

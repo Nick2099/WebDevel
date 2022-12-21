@@ -17,9 +17,9 @@ export default function Items({ items, deleteItem }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {items.map(item => {
+                    {items.map((item, index) => {
                         return (
-                            <Item key={uuidv4()} item={item} deleteItem={deleteItem}/>
+                            <Item key={uuidv4()} item={item} deleteItem={deleteItem} index={index} />
                         )
                     })}
                 </tbody>
