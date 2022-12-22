@@ -21,7 +21,7 @@ export function errorToText(error) {
     " sqlMessage:" +
     error?.sqlMessage;
   return error_tmp;
-}
+};
 
 export function getUserID(email) {
   return new Promise((resolve, reject) => {
@@ -36,7 +36,7 @@ export function getUserID(email) {
         reject(err);
       });
   });
-}
+};
 
 export function isEmailAddress(str) {
   return new Promise((resolve) => {
@@ -46,18 +46,18 @@ export function isEmailAddress(str) {
     var test2 = !str.includes(" ");
     resolve(test1 && test2);
   });
-}
+};
 
 export function isPasswordValid(str) {
   return new Promise((resolve) => {
     var pattern = new RegExp(
       "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
-    ); 
+    );
     // (?=.*[!@#$%^&*]) =>  The string must contain at least one special character, but without
     //                      reserved RegEx characters to avoid conflict
     resolve(pattern.test(str));
   });
-}
+};
 
 // Checked - works OK
 export function registerNewUser(params) {
@@ -75,7 +75,7 @@ export function registerNewUser(params) {
         reject(err);
       });
   });
-}
+};
 
 // Checked - works OK
 export function updateMasterId(id) {
@@ -90,7 +90,7 @@ export function updateMasterId(id) {
         reject(err);
       });
   });
-}
+};
 
 // To check!
 export function login({ email, password }) {
@@ -105,7 +105,7 @@ export function login({ email, password }) {
         reject(err);
       });
   });
-}
+};
 
 /*
 export function updateWrongLogin({ id, wrong_login }) {
@@ -136,7 +136,7 @@ export function getLocalUsers(master_id) {
         reject(err);
       });
   });
-}
+};
 
 export function updateLocalUser(user) {
   return new Promise((resolve, reject) => {
@@ -149,8 +149,8 @@ export function updateLocalUser(user) {
       .catch((err) => {
         reject(err);
       });
-  }); 
-}
+  });
+};
 
 export function addLocalUser(props) {
   return new Promise((resolve, reject) => {
@@ -164,10 +164,37 @@ export function addLocalUser(props) {
       .catch((err) => {
         reject(err);
       });
-  }); 
+  });
   // have to save user
-}
+};
 
 export function onlyDateFromDateTime(date) {
-  return date.getFullYear()+"-"+(parseInt(date.getMonth())+1)+"-"+date.getDate();
-}
+  return date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1) + "-" + date.getDate();
+};
+
+export function checkMinimumLength(refValue, elementId, printedText, len, setFocus = false) {
+  if (refValue < len) {
+    alert("The length of text for " + printedText + " is too short!");
+    if (setFocus) document.getElementById(elementId).focus();
+    return true;
+  } else
+    return false;
+};
+
+export function checkDatum(refValue, elementId, setFocus = false) {
+  if (refValue === "") {
+    alert("Date is not valid!");
+    if (setFocus) document.getElementById(elementId).focus();
+    return true;
+  } else
+    return false;
+};
+
+export function checkAmountIs0(refValue, elementId, printedText, setFocus = false) {
+  if (refValue === "0" || refValue === "") {
+    alert(printedText + " can't be 0.");
+    if (setFocus) document.getElementById(elementId).focus();
+    return true;
+  } else
+    return false;
+};

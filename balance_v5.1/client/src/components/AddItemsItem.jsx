@@ -3,7 +3,7 @@ import React from "react";
 export default function Item({ item, deleteItem, index}) {
     function handleDelete() {
         deleteItem(item.id);
-    }
+    };
 
     if (index!==0) {
         return (

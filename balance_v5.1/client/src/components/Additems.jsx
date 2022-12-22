@@ -40,6 +40,19 @@ function Additems() {
         dateRef.current.value = tmpDate;
     }, []);
 
+    function updateItems1ItemValue() {
+        let sumAmount = 0;
+        if (items.length===0) return;
+        items.forEach((item, index) => {
+            if (index!==0) sumAmount = sumAmount + item.amount;
+            console.log(item.amount, index, sumAmount);
+        });
+        let tmpItems = [...items];
+        tmpItems[0].amount = totalAmountRef.current.value - sumAmount;
+        console.log(tmpItems[0].amount);
+        // setItems(tmpItems);
+    };
+
     function deleteItem(id) {
         const tmpItems = [...items];
         const newItems = tmpItems.filter(item => item.id !== id);
@@ -71,30 +84,18 @@ function Additems() {
     };
 
     function handleAddItem() {
-        if (dateRef.current.value === "") {
-            alert("Date is not valid!");
-            document.getElementById("datum").focus();
-            return;
-        };
-        if ((facilityRef.current.value).length < 2) {
-            alert("The length of text for facility is too short!");
-            document.getElementById("facility").focus();
-            return;
-        };
-        if ((placeRef.current.value).length < 2) {
-            alert("The length of text for place is too short!");
-            document.getElementById("place").focus();
-            return;
-        };
-        if (totalAmountRef.current.value === "0" || totalAmountRef.current.value === "") {
-            alert("Total amount can't be 0.");
-            document.getElementById("totalAmount").focus();
-            return;
-        };
+        if (MyFunctions.checkDatum(dateRef.current.value, "datum", true)) return;
+        if (MyFunctions.checkMinimumLength(facilityRef.current.value, "facility", "facility", 2, true)) return;
+        if (MyFunctions.checkMinimumLength(placeRef.current.value, "place", "place", 2, true)) return;
+        if (MyFunctions.checkAmountIs0(totalAmountRef.current.value, "totalAmount", "Total amount", true)) return;
+        if (MyFunctions.checkAmountIs0(amountRef.current.value, "amount", "Amount", true)) return;
+
         let tmp = groupOptions.filter(item => item.value === groupState);
         const group = tmp[0].label;
+        const groupId = tmp[0].value;
         tmp = subgroupOptions.filter(item => item.value === subgroupState);
         const subgroup = tmp[0].label;
+        const subgroupId = tmp[0].value;
         const amount = Number(amountRef.current.value);
         const note = noteRef.current.value;
         setItems((prevItems) => {
@@ -103,12 +104,15 @@ function Additems() {
                 {
                     id: uuidv4(),
                     group: group,
+                    groupId: groupId,
                     subgroup: subgroup,
+                    subgroupId: subgroupId,
                     amount: amount,
                     note: note,
                 },
             ];
         });
+        updateItems1ItemValue();
         // this part have to be changed: group and subgroup should be set to stil available
         setGroupState("1");
         setSubgroupState("1");
@@ -184,7 +188,7 @@ function Additems() {
                         </option>
                     ))}
                 </select>
-                <input ref={amountRef} type="number" />
+                <input id="amount" ref={amountRef} type="number" />
                 <br></br>
                 <label>Note</label>
                 <input ref={noteRef} type="text" />
