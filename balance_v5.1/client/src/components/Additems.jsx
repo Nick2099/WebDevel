@@ -41,7 +41,6 @@ function Additems() {
     }, []);
 
     async function addItemToItems(tmpItems, group, groupId, subgroup, subgroupId, amount, note) {
-        // let tmpItems = items;
         tmpItems.push(
             {
                 id: uuidv4(),
@@ -53,9 +52,12 @@ function Additems() {
                 note: note,
             },
         );
+        // field "totalAmount" is not editable when there are some items
+        if (tmpItems.length>0) document.getElementById("totalAmount").readOnly=true;
         return tmpItems;
     };
 
+    // recalculate the value for first item in list
     async function updateFirstItemInItems(newItems) {
         document.getElementById("group").focus();
         let sumAmount = 0;
@@ -72,13 +74,17 @@ function Additems() {
         const newItems = tmpItems.filter(item => item.id !== id);
         updateFirstItemInItems(newItems).then((updatedItems) => {
             setItems(updatedItems);
-            if (updatedItems.length === 0) amountRef.current.value = totalAmountRef.current.value;
+            if (updatedItems.length === 0) {
+                amountRef.current.value = totalAmountRef.current.value;
+                document.getElementById("totalAmount").readOnly=false;
+            };
         });
     };
 
     function handleTotalAmount(e) {
         let tmp = e.target.value;
         if (tmp === "") tmp = 0; else tmp = Number(tmp);
+        if (tmp<0) tmp = 0;
         totalAmountRef.current.value = tmp;
         if (items.length === 0) amountRef.current.value = tmp;
     };
@@ -88,11 +94,11 @@ function Additems() {
     };
 
     function handleGroup(e) {
-        setGroupState(e.target.value);
+        // setGroupState(e.target.value);
     };
 
     function handleSubgroup(e) {
-        setSubgroupState(e.target.value);
+        // setSubgroupState(e.target.value);
     };
 
     function handleSave() {
@@ -105,6 +111,9 @@ function Additems() {
         if (MyFunctions.checkMinimumLength(placeRef.current.value, "place", "place", 2, true)) return;
         if (MyFunctions.checkAmountIs0(totalAmountRef.current.value, "totalAmount", "Total amount", true)) return;
         if (MyFunctions.checkAmountIs0(amountRef.current.value, "amount", "Amount", true)) return;
+        if (items.length>0) {
+            if (MyFunctions.checkAmountIsTooBig(amountRef.current.value, "amount", "Amount", true, items[0].amount)) return;
+        };
 
         let tmp = groupOptions.filter(item => item.value === groupState);
         const group = tmp[0].label;

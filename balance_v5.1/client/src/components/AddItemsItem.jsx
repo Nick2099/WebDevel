@@ -11,7 +11,7 @@ export default function Item({ item, deleteItem, index}) {
                 <td>{item.group}</td>
                 <td>{item.subgroup}</td>
                 <td>{item.amount}</td>
-                <td><input></input><button>Add</button></td>
+                <td><input type="number"></input><button>Add</button></td>
                 <td>{item.note}</td>
                 <td><button onClick={handleDelete}>Delete</button></td>
             </tr>

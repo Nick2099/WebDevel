@@ -198,3 +198,13 @@ export function checkAmountIs0(refValue, elementId, printedText, setFocus = fals
   } else
     return false;
 };
+
+export function checkAmountIsTooBig(refValue, elementId, printedText, setFocus = false, maxValue) {
+  if (refValue > maxValue) {
+    alert(printedText + " can't be bigger than " + maxValue +"!\nFor the new entered only the value of first item can be reduced.");
+    if (setFocus) document.getElementById(elementId).focus();
+    return true;
+  } else
+    return false;
+};
+
