@@ -40,24 +40,40 @@ function Additems() {
         dateRef.current.value = tmpDate;
     }, []);
 
-    function updateItems1ItemValue() {
+    async function addItemToItems(tmpItems, group, groupId, subgroup, subgroupId, amount, note) {
+        // let tmpItems = items;
+        tmpItems.push(
+            {
+                id: uuidv4(),
+                group: group,
+                groupId: groupId,
+                subgroup: subgroup,
+                subgroupId: subgroupId,
+                amount: amount,
+                note: note,
+            },
+        );
+        return tmpItems;
+    };
+
+    async function updateFirstItemInItems(newItems) {
+        document.getElementById("group").focus();
         let sumAmount = 0;
-        if (items.length===0) return;
-        items.forEach((item, index) => {
-            if (index!==0) sumAmount = sumAmount + item.amount;
-            console.log(item.amount, index, sumAmount);
+        if (newItems.length === 0) return [];
+        newItems.forEach((item, index) => {
+            if (index !== 0) sumAmount = sumAmount + item.amount;
         });
-        let tmpItems = [...items];
-        tmpItems[0].amount = totalAmountRef.current.value - sumAmount;
-        console.log(tmpItems[0].amount);
-        // setItems(tmpItems);
+        newItems[0].amount = totalAmountRef.current.value - sumAmount;
+        return newItems;
     };
 
     function deleteItem(id) {
         const tmpItems = [...items];
         const newItems = tmpItems.filter(item => item.id !== id);
-        setItems(newItems);
-        if (items.length === 0) amountRef.current.value = totalAmountRef.current.value;
+        updateFirstItemInItems(newItems).then((updatedItems) => {
+            setItems(updatedItems);
+            if (updatedItems.length === 0) amountRef.current.value = totalAmountRef.current.value;
+        });
     };
 
     function handleTotalAmount(e) {
@@ -98,21 +114,12 @@ function Additems() {
         const subgroupId = tmp[0].value;
         const amount = Number(amountRef.current.value);
         const note = noteRef.current.value;
-        setItems((prevItems) => {
-            return [
-                ...prevItems,
-                {
-                    id: uuidv4(),
-                    group: group,
-                    groupId: groupId,
-                    subgroup: subgroup,
-                    subgroupId: subgroupId,
-                    amount: amount,
-                    note: note,
-                },
-            ];
-        });
-        updateItems1ItemValue();
+        addItemToItems(items, group, groupId, subgroup, subgroupId, amount, note).then((newItems) => {
+            updateFirstItemInItems(newItems).then((updatedItems) => {
+                setItems([...updatedItems]);
+            });
+        }
+        );
         // this part have to be changed: group and subgroup should be set to stil available
         setGroupState("1");
         setSubgroupState("1");
@@ -174,14 +181,14 @@ function Additems() {
                 </tbody>
             </table>
             <div>
-                <select value={groupState} onChange={handleGroup}>
+                <select id="group" value={groupState} onChange={handleGroup}>
                     {groupOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                             {option.label}
                         </option>
                     ))}
                 </select>
-                <select value={subgroupState} onChange={handleSubgroup}>
+                <select id="subgroup" value={subgroupState} onChange={handleSubgroup}>
                     {subgroupOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                             {option.label}
