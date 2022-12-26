@@ -168,6 +168,51 @@ export function addLocalUser(props) {
   // have to save user
 };
 
+export async function getAccounts(user_id = 1) {
+  return new Promise((resolve, reject) => {
+    Axios.get("http://localhost:3001/getaccounts", {
+      params: { user_id: user_id },
+    })
+      .then((resp) => {
+        if (resp.data.length > 0) resolve(resp.data);
+        else resolve([]);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
+export async function getGroups(master_id = 1) {
+  return new Promise((resolve, reject) => {
+    Axios.get("http://localhost:3001/getgroups", {
+      params: { master_id: master_id },
+    })
+      .then((resp) => {
+        if (resp.data.length > 0) resolve(resp.data);
+        else resolve([]);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
+export async function getSubroups(maingroup_id) {
+  return new Promise((resolve, reject) => {
+    Axios.get("http://localhost:3001/getsubgroups", {
+      params: { maingroup_id: maingroup_id },
+    })
+      .then((resp) => {
+        if (resp.data.length > 0) resolve(resp.data);
+        else resolve([]);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
 export function onlyDateFromDateTime(date) {
   return date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1) + "-" + date.getDate();
 };

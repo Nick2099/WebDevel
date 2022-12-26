@@ -264,6 +264,60 @@ function updateLoginsData(id, last_access, wrong_logins, locked_until) {
   );
 }
 
+app.get("/getaccounts", async (req, res) => {
+  db.query(
+    "SELECT id, title FROM " +
+      database +
+      '.account WHERE user_id="' +
+      req.query.user_id +
+      '"',
+    (queryError, queryResult) => {
+      if (queryError) {
+        res.status(400).send(queryError);
+        writeLogError("/getaccounts ", queryError);
+      } else {
+        res.send(JSON.stringify(queryResult));
+      }
+    }
+  );
+});
+
+app.get("/getgroups", async (req, res) => {
+  db.query(
+    "SELECT id, title, type FROM " +
+      database +
+      '.maingroup WHERE master_id="' +
+      req.query.master_id +
+      '"',
+    (queryError, queryResult) => {
+      if (queryError) {
+        res.status(400).send(queryError);
+        writeLogError("/getaccounts ", queryError);
+      } else {
+        res.send(JSON.stringify(queryResult));
+      }
+    }
+  );
+});
+
+app.get("/getsubgroups", async (req, res) => {
+  db.query(
+    "SELECT id, title FROM " +
+      database +
+      '.subgroup WHERE maingroup_id="' +
+      req.query.maingroup_id +
+      '"',
+    (queryError, queryResult) => {
+      if (queryError) {
+        res.status(400).send(queryError);
+        writeLogError("/getaccounts ", queryError);
+      } else {
+        res.send(JSON.stringify(queryResult));
+      }
+    }
+  );
+});
+
 app.listen(3001, () => {
   console.log("Server is running on port 3001!");
 });

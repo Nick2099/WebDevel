@@ -9,35 +9,47 @@ function Additems() {
     const placeRef = useRef();
     const totalAmountRef = useRef();
     const accountRef = useRef();
-    const [groupState, setGroupState] = useState("1");
-    const [subgroupState, setSubgroupState] = useState("1");
+    const groupRef = useRef();
+    const subgroupRef = useRef();
     const amountRef = useRef();
     const noteRef = useRef();
     const [items, setItems] = useState([]);
+    const [newAccounts, setNewAccounts] = useState([]);
+    const [groupOptions, setGroupOptions] = useState([]);
+    const [subgroupOptions, setSubgroupOptions] = useState([]);
+    const master_id = sessionStorage.getItem("master_id");
+    let account_user_id = 1;
+    if (sessionStorage.getItem("master_type_id") !== 1) account_user_id = sessionStorage.getItem("user_id");
 
-    // this part have to be replaced with loading data from SQL
-    const accountOptions = [
-        { label: "Cash", value: "1" },
-        { label: "Commerzbank", value: "2" },
-        { label: "Raifeisenbank", value: "3" },
-    ];
-    const groupOptions = [
-        { label: "group1", value: "1" },
-        { label: "group2", value: "2" },
-    ];
-    const subgroupOptions = [
-        { label: "subgroup1", value: "1" },
-        { label: "subgroup2", value: "2" },
-    ];
-
-    // sessionStorage.removeItem("tmpDate");
+    // sessionStorage.removeItem("tmpDate");    // removing tmpDate in sessionStorage for test purposes
     useEffect(() => {
+        // if tmpDate is not existing => setting tmpDate to today
         let tmpDate = sessionStorage.getItem("tmpDate");
         if (tmpDate == null) {
             let tmpDate = MyFunctions.onlyDateFromDateTime(new Date());
             sessionStorage.setItem("tmpDate", tmpDate);
         }
         dateRef.current.value = tmpDate;
+
+        // loading accounts for this user
+        MyFunctions.getAccounts(account_user_id).then(value => {
+            let tmp = [];
+            value.forEach(item => {
+                tmp.push({ value: String(item.id), label: item.title });
+            });
+            setNewAccounts(tmp);
+        });
+
+        MyFunctions.getGroups(master_id).then(value => {
+            let tmp = [];
+            value.forEach((item, index) => {
+                tmp.push({ value: String(item.id), label: item.title });
+                if (index === 0) groupRef.current = String(item.id);
+            });
+            setGroupOptions(tmp);
+            handleGroup();
+        });
+
     }, []);
 
     async function addItemToItems(tmpItems, group, groupId, subgroup, subgroupId, amount, note) {
@@ -53,7 +65,7 @@ function Additems() {
             },
         );
         // field "totalAmount" is not editable when there are some items
-        if (tmpItems.length>0) document.getElementById("totalAmount").readOnly=true;
+        if (tmpItems.length > 0) document.getElementById("totalAmount").readOnly = true;
         return tmpItems;
     };
 
@@ -76,7 +88,7 @@ function Additems() {
             setItems(updatedItems);
             if (updatedItems.length === 0) {
                 amountRef.current.value = totalAmountRef.current.value;
-                document.getElementById("totalAmount").readOnly=false;
+                document.getElementById("totalAmount").readOnly = false;
             };
         });
     };
@@ -84,7 +96,7 @@ function Additems() {
     function handleTotalAmount(e) {
         let tmp = e.target.value;
         if (tmp === "") tmp = 0; else tmp = Number(tmp);
-        if (tmp<0) tmp = 0;
+        if (tmp < 0) tmp = 0;
         totalAmountRef.current.value = tmp;
         if (items.length === 0) amountRef.current.value = tmp;
     };
@@ -94,11 +106,21 @@ function Additems() {
     };
 
     function handleGroup(e) {
-        // setGroupState(e.target.value);
+        if (e !== undefined) {
+            groupRef.current = e.target.value;
+        };
+        MyFunctions.getSubroups(groupRef.current).then(value => {
+            let tmp = [];
+            value.forEach((item, index) => {
+                tmp.push({ value: String(item.id), label: item.title });
+                if (index === 0) subgroupRef.current = String(item.id);
+            });
+            setSubgroupOptions(tmp);
+        });
     };
 
     function handleSubgroup(e) {
-        // setSubgroupState(e.target.value);
+        subgroupRef.current = e.target.value;
     };
 
     function handleSave() {
@@ -106,32 +128,36 @@ function Additems() {
     };
 
     function handleAddItem() {
+        // checking if some of the fields are not OK
         if (MyFunctions.checkDatum(dateRef.current.value, "datum", true)) return;
         if (MyFunctions.checkMinimumLength(facilityRef.current.value, "facility", "facility", 2, true)) return;
         if (MyFunctions.checkMinimumLength(placeRef.current.value, "place", "place", 2, true)) return;
         if (MyFunctions.checkAmountIs0(totalAmountRef.current.value, "totalAmount", "Total amount", true)) return;
         if (MyFunctions.checkAmountIs0(amountRef.current.value, "amount", "Amount", true)) return;
-        if (items.length>0) {
+        if (items.length > 0) {
             if (MyFunctions.checkAmountIsTooBig(amountRef.current.value, "amount", "Amount", true, items[0].amount)) return;
         };
 
-        let tmp = groupOptions.filter(item => item.value === groupState);
+        // collecting data to add as new item
+        let tmp = groupOptions.filter(item => item.value === groupRef.current);
         const group = tmp[0].label;
         const groupId = tmp[0].value;
-        tmp = subgroupOptions.filter(item => item.value === subgroupState);
+        tmp = subgroupOptions.filter(item => item.value === subgroupRef.current);
         const subgroup = tmp[0].label;
         const subgroupId = tmp[0].value;
         const amount = Number(amountRef.current.value);
         const note = noteRef.current.value;
+
+        // adding new item
         addItemToItems(items, group, groupId, subgroup, subgroupId, amount, note).then((newItems) => {
+            // update value of first item
             updateFirstItemInItems(newItems).then((updatedItems) => {
                 setItems([...updatedItems]);
             });
-        }
-        );
+        });
         // this part have to be changed: group and subgroup should be set to stil available
-        setGroupState("1");
-        setSubgroupState("1");
+        // setGroupState("1");
+        // setSubgroupState("1");
         amountRef.current.value = 0;
         noteRef.current.value = "";
     };
@@ -179,7 +205,7 @@ function Additems() {
                         </td>
                         <td>
                             <select defaultValue="1" onChange={handleAccount}>
-                                {accountOptions.map((option) => (
+                                {newAccounts.map((option) => (
                                     <option key={option.value} value={option.value}>
                                         {option.label}
                                     </option>
@@ -190,14 +216,14 @@ function Additems() {
                 </tbody>
             </table>
             <div>
-                <select id="group" value={groupState} onChange={handleGroup}>
+                <select id="group" onChange={handleGroup}>
                     {groupOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                             {option.label}
                         </option>
                     ))}
                 </select>
-                <select id="subgroup" value={subgroupState} onChange={handleSubgroup}>
+                <select id="subgroup" onChange={handleSubgroup}>
                     {subgroupOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                             {option.label}
