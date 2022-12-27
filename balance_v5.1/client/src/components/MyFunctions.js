@@ -198,7 +198,7 @@ export async function getGroups(master_id = 1) {
   });
 };
 
-export async function getSubroups(maingroup_id) {
+export async function getSubgroups(maingroup_id) {
   return new Promise((resolve, reject) => {
     Axios.get("http://localhost:3001/getsubgroups", {
       params: { maingroup_id: maingroup_id },
@@ -246,10 +246,24 @@ export function checkAmountIs0(refValue, elementId, printedText, setFocus = fals
 
 export function checkAmountIsTooBig(refValue, elementId, printedText, setFocus = false, maxValue) {
   if (refValue > maxValue) {
-    alert(printedText + " can't be bigger than " + maxValue +"!\nFor the new entered only the value of first item can be reduced.");
+    alert(printedText + " can't be bigger than " + maxValue + "!\nFor the new entered only the value of first item can be reduced.");
     if (setFocus) document.getElementById(elementId).focus();
     return true;
   } else
     return false;
 };
 
+export function removeOption(options, items) {
+  return new Promise((resolve, reject) => {
+    console.log("removeOption options:", options);
+    let newOptions = options.map(option => {
+      items.forEach(item => {
+        if (option.value===item.subgroupId) option.hide=true;
+      });
+      return option;
+    });    
+    let newOptions2 = newOptions.filter(option => option.hide===false);
+    console.log("removeOption newOptions2:", newOptions2);
+    resolve(newOptions2);
+  })
+};

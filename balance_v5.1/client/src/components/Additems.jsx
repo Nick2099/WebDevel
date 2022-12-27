@@ -66,6 +66,11 @@ function Additems() {
         );
         // field "totalAmount" is not editable when there are some items
         if (tmpItems.length > 0) document.getElementById("totalAmount").readOnly = true;
+
+        MyFunctions.removeOption(subgroupOptions, items).then(tmpNewOptions => {
+            setSubgroupOptions(tmpNewOptions);
+        });
+
         return tmpItems;
     };
 
@@ -109,18 +114,30 @@ function Additems() {
         if (e !== undefined) {
             groupRef.current = e.target.value;
         };
-        MyFunctions.getSubroups(groupRef.current).then(value => {
-            let tmp = [];
+        MyFunctions.getSubgroups(groupRef.current).then(value => {
+            let newSubgroups1 = [];
             value.forEach((item, index) => {
-                tmp.push({ value: String(item.id), label: item.title });
+                newSubgroups1.push({ value: String(item.id), label: item.title, hide: false });
                 if (index === 0) subgroupRef.current = String(item.id);
             });
-            setSubgroupOptions(tmp);
+
+            MyFunctions.removeOption(newSubgroups1, items).then(newSubgroups2 => {
+                setSubgroupOptions(newSubgroups2);
+                handleSubgroup();
+            });
+    
         });
     };
 
     function handleSubgroup(e) {
-        subgroupRef.current = e.target.value;
+        if (e !== undefined) {
+            subgroupRef.current = e.target.value;
+        } else {
+            var select = document.getElementById('subgroup');
+            console.log("subgroupRef: else", select);
+            subgroupRef.current = select.value;
+        };
+        console.log("subgroupRef:", subgroupRef.current);
     };
 
     function handleSave() {
@@ -142,7 +159,9 @@ function Additems() {
         let tmp = groupOptions.filter(item => item.value === groupRef.current);
         const group = tmp[0].label;
         const groupId = tmp[0].value;
+        console.log("subgroupRef.current:", subgroupRef.current);
         tmp = subgroupOptions.filter(item => item.value === subgroupRef.current);
+        console.log("tmp:", tmp);
         const subgroup = tmp[0].label;
         const subgroupId = tmp[0].value;
         const amount = Number(amountRef.current.value);
@@ -225,7 +244,7 @@ function Additems() {
                 </select>
                 <select id="subgroup" onChange={handleSubgroup}>
                     {subgroupOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
+                        <option key={option.value} value={option.value} disabled={option.hide}>
                             {option.label}
                         </option>
                     ))}
