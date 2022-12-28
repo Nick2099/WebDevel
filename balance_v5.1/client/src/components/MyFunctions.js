@@ -255,7 +255,7 @@ export function checkAmountIsTooBig(refValue, elementId, printedText, setFocus =
 
 export function removeOption(options, items) {
   return new Promise((resolve, reject) => {
-    console.log("removeOption options:", options);
+    // console.log("removeOption options:", options);
     let newOptions = options.map(option => {
       items.forEach(item => {
         if (option.value===item.subgroupId) option.hide=true;
@@ -263,7 +263,7 @@ export function removeOption(options, items) {
       return option;
     });    
     let newOptions2 = newOptions.filter(option => option.hide===false);
-    console.log("removeOption newOptions2:", newOptions2);
+    // console.log("removeOption newOptions2:", newOptions2);
     resolve(newOptions2);
   })
 };

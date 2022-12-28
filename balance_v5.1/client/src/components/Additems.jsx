@@ -15,6 +15,7 @@ function Additems() {
     const noteRef = useRef();
     const [items, setItems] = useState([]);
     const [newAccounts, setNewAccounts] = useState([]);
+    const allGroupOptionsRef = useRef([]);
     const [groupOptions, setGroupOptions] = useState([]);
     const [subgroupOptions, setSubgroupOptions] = useState([]);
     const master_id = sessionStorage.getItem("master_id");
@@ -47,6 +48,8 @@ function Additems() {
                 if (index === 0) groupRef.current = String(item.id);
             });
             setGroupOptions(tmp);
+            allGroupOptionsRef.current = tmp;
+            console.log("allGroupOptionsRef.current:", allGroupOptionsRef.current);
             handleGroup();
         });
 
@@ -117,7 +120,7 @@ function Additems() {
         MyFunctions.getSubgroups(groupRef.current).then(value => {
             let newSubgroups1 = [];
             value.forEach((item, index) => {
-                newSubgroups1.push({ value: String(item.id), label: item.title, hide: false });
+                newSubgroups1.push({ value: String(item.id), label: item.title, hide: false, maingroup_id: item.maingroup_id });
                 if (index === 0) subgroupRef.current = String(item.id);
             });
 
@@ -132,12 +135,31 @@ function Additems() {
     function handleSubgroup(e) {
         if (e !== undefined) {
             subgroupRef.current = e.target.value;
-        } else {
-            var select = document.getElementById('subgroup');
-            console.log("subgroupRef: else", select);
-            subgroupRef.current = select.value;
         };
-        console.log("subgroupRef:", subgroupRef.current);
+    };
+
+    function updateSubgroupRef() {
+        subgroupRef.current = document.getElementById('subgroup').value;
+    }
+
+    function updateGroups() {
+        // console.log("items:", items);
+        // console.log("groupOptions:", groupOptions);
+        // console.log("subgroupOptions:", subgroupOptions);
+        let tmpGroups = [];
+        allGroupOptionsRef.current.forEach(group => {
+            console.log("group:", group);
+            let exists = false;
+            subgroupOptions.forEach(subgroup => {
+                console.log("subgroup:", subgroup);
+                if (!subgroup.hide) {
+                    if (String(subgroup.maingroup_id)===String(group.value)) exists = true;
+                    console.log("exists:", exists);
+                };
+            });
+            if (exists) tmpGroups.push(group);
+        });
+        console.log("tmpGroups:", tmpGroups);
     };
 
     function handleSave() {
@@ -159,9 +181,14 @@ function Additems() {
         let tmp = groupOptions.filter(item => item.value === groupRef.current);
         const group = tmp[0].label;
         const groupId = tmp[0].value;
-        console.log("subgroupRef.current:", subgroupRef.current);
+        updateSubgroupRef();
+        // console.log("subgroupRef.current:", subgroupRef.current);
+        if (subgroupRef.current==="") {
+            alert("You have to choose valid subgroup!");
+            return;
+        }
         tmp = subgroupOptions.filter(item => item.value === subgroupRef.current);
-        console.log("tmp:", tmp);
+        // console.log("tmp:", tmp);
         const subgroup = tmp[0].label;
         const subgroupId = tmp[0].value;
         const amount = Number(amountRef.current.value);
@@ -174,6 +201,9 @@ function Additems() {
                 setItems([...updatedItems]);
             });
         });
+
+        updateGroups();
+
         // this part have to be changed: group and subgroup should be set to stil available
         // setGroupState("1");
         // setSubgroupState("1");

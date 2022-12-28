@@ -302,7 +302,7 @@ app.get("/getgroups", async (req, res) => {
 
 app.get("/getsubgroups", async (req, res) => {
   db.query(
-    "SELECT id, title FROM " +
+    "SELECT * FROM " +
       database +
       '.subgroup WHERE maingroup_id="' +
       req.query.maingroup_id +
