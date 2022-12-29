@@ -49,11 +49,16 @@ function Additems() {
             });
             setGroupOptions(tmp);
             allGroupOptionsRef.current = tmp;
-            console.log("allGroupOptionsRef.current:", allGroupOptionsRef.current);
             handleGroup();
         });
 
     }, []);
+
+    /*
+    useEffect(() => {
+        handleGroup();
+    }, [groupOptions]);
+    */
 
     async function addItemToItems(tmpItems, group, groupId, subgroup, subgroupId, amount, note) {
         tmpItems.push(
@@ -114,9 +119,10 @@ function Additems() {
     };
 
     function handleGroup(e) {
+        console.log("handleGroup groupRef.current:", groupRef.current);
         if (e !== undefined) {
             groupRef.current = e.target.value;
-        };
+        }; // else updateGroupRef();
         MyFunctions.getSubgroups(groupRef.current).then(value => {
             let newSubgroups1 = [];
             value.forEach((item, index) => {
@@ -138,28 +144,35 @@ function Additems() {
         };
     };
 
+    async function updateGroupRef() {
+        console.log("updateGroupRef groupRef.current old:", groupRef.current);
+        groupRef.current = document.getElementById('group').value;
+        console.log("updateGroupRef groupRef.current new:", groupRef.current);
+    }
+
     function updateSubgroupRef() {
         subgroupRef.current = document.getElementById('subgroup').value;
     }
 
-    function updateGroups() {
-        // console.log("items:", items);
-        // console.log("groupOptions:", groupOptions);
-        // console.log("subgroupOptions:", subgroupOptions);
-        let tmpGroups = [];
-        allGroupOptionsRef.current.forEach(group => {
-            console.log("group:", group);
-            let exists = false;
-            subgroupOptions.forEach(subgroup => {
-                console.log("subgroup:", subgroup);
-                if (!subgroup.hide) {
-                    if (String(subgroup.maingroup_id)===String(group.value)) exists = true;
-                    console.log("exists:", exists);
-                };
+    async function updateGroups() {
+        new Promise (resolve => {
+            let tmpGroups = [];
+            allGroupOptionsRef.current.forEach(group => {
+                let exists = false;
+                let groupexists = false;
+                subgroupOptions.forEach(subgroup => {
+                    if (!subgroup.hide) {
+                        if (String(subgroup.maingroup_id)===String(group.value)) exists = true;
+                    };
+                    if (String(subgroup.maingroup_id)===String(group.value)) groupexists = true;
+                });
+                if (groupexists && exists) tmpGroups.push(group);
+                if (!groupexists) tmpGroups.push(group);
             });
-            if (exists) tmpGroups.push(group);
-        });
-        console.log("tmpGroups:", tmpGroups);
+            console.log("tmpGroups:", tmpGroups);
+            setGroupOptions(tmpGroups);
+            console.log("groupOptions:", groupOptions);
+        })
     };
 
     function handleSave() {
@@ -202,7 +215,7 @@ function Additems() {
             });
         });
 
-        updateGroups();
+        updateGroups().then(updateGroupRef().then(handleGroup()));
 
         // this part have to be changed: group and subgroup should be set to stil available
         // setGroupState("1");
