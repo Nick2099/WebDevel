@@ -267,3 +267,36 @@ export function removeOption(options, items) {
     resolve(newOptions2);
   })
 };
+
+// NEW functions for groups and subgroups!
+export async function getAllGroups(master_id = 1) {
+  return new Promise((resolve, reject) => {
+    Axios.get("http://localhost:3001/getgroups", {
+      params: { master_id: master_id },
+    })
+    .then((resp) => {
+        if (resp.data.length > 0) resolve(resp.data);
+        else resolve([]);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
+export async function getAllSubgroups(master_id = 1) {
+  return new Promise((resolve, reject) => {
+    Axios.get("http://localhost:3001/getallsubgroups", {
+      params: { master_id: master_id },
+    })
+    .then((resp) => {
+        if (resp.data.length > 0) resolve(resp.data);
+        else resolve([]);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
+

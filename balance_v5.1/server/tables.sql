@@ -108,8 +108,17 @@ create table expense (
 );
 
 # Adding some items to maingroups and subgroups
+# default data for basic users - preddefined groups, subgroups and accounts
+# ***** IMPORTANT! users have to be added through programm
 insert into maingroup (master_id, title, type) values (1, "Income", 1), (1, "Food", 2), (1, "Clothes", 2);
 insert into subgroup (maingroup_id, title) values
     (1, "Salary"), (1, "Side job"), (2, "Food"), (2, "Drinks"), (2, "Sweets"), (3, "Clothes"), (3, "Shoes");
 insert into account (user_id, type_id, title) values
     (1, 1, "Cash"), (1, 2, "Card 1"), (1,2, "Card 2"), (1,3, "Bank account");
+# some data for user 2-Standard and 3-Premium
+insert into maingroup (master_id, title, type) values (2, "Income", 1), (2, "Food", 2), (2, "Clothes", 2), (2, "Home", 2);
+insert into subgroup (maingroup_id, title) values
+    (4, "Salary"), (4, "From rent"), (5, "Food"), (5, "Drinks"), (6, "Accessories"), (6, "Clothes"), (6, "Shoes"), (7, "Electricity"), (7, "Gas"), (7, "Heating");
+insert into account (user_id, type_id, title) values
+    (2, 1, "Cash"), (2, 2, "Card Debit"), (2,2, "Card Credit"), (2,3, "Bank account");
+

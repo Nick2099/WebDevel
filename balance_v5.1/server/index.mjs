@@ -284,15 +284,15 @@ app.get("/getaccounts", async (req, res) => {
 
 app.get("/getgroups", async (req, res) => {
   db.query(
-    "SELECT id, title, type FROM " +
+    "SELECT * FROM " +
       database +
       '.maingroup WHERE master_id="' +
       req.query.master_id +
-      '"',
+      '" ORDER BY maingroup.title',
     (queryError, queryResult) => {
       if (queryError) {
         res.status(400).send(queryError);
-        writeLogError("/getaccounts ", queryError);
+        writeLogError("/getgroups ", queryError);
       } else {
         res.send(JSON.stringify(queryResult));
       }
@@ -310,7 +310,26 @@ app.get("/getsubgroups", async (req, res) => {
     (queryError, queryResult) => {
       if (queryError) {
         res.status(400).send(queryError);
-        writeLogError("/getaccounts ", queryError);
+        writeLogError("/getsubgroups ", queryError);
+      } else {
+        res.send(JSON.stringify(queryResult));
+      }
+    }
+  );
+});
+
+app.get("/getallsubgroups", async (req, res) => {
+  // SELECT subgroup.* FROM subgroup INNER JOIN maingroup ON subgroup.maingroup_id = maingroup.id AND maingroup.master_id = 1;
+  db.query(
+    "SELECT subgroup.* FROM " +
+      database +
+      '.subgroup INNER JOIN ' + database + '.maingroup ON subgroup.maingroup_id = maingroup.id AND maingroup.master_id = "' +
+      req.query.master_id +
+      '" ORDER BY subgroup.maingroup_id, subgroup.title',
+    (queryError, queryResult) => {
+      if (queryError) {
+        res.status(400).send(queryError);
+        writeLogError("/getallsubgroups ", queryError);
       } else {
         res.send(JSON.stringify(queryResult));
       }

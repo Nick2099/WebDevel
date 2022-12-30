@@ -4,33 +4,45 @@ import Items from "./AddItemsLists";
 import { v4 as uuidv4 } from "uuid"; // npm install uuid => function that generates a rendom ID
 
 function Additems() {
+    // header variables/constants
     const dateRef = useRef();
     const facilityRef = useRef();
     const placeRef = useRef();
     const totalAmountRef = useRef();
     const accountRef = useRef();
+    const [newAccounts, setNewAccounts] = useState([]);
+    // OLD item variables/constants
     const groupRef = useRef();
     const subgroupRef = useRef();
     const amountRef = useRef();
     const noteRef = useRef();
-    const [items, setItems] = useState([]);
-    const [newAccounts, setNewAccounts] = useState([]);
     const allGroupOptionsRef = useRef([]);
     const [groupOptions, setGroupOptions] = useState([]);
     const [subgroupOptions, setSubgroupOptions] = useState([]);
+    // item variables/constants
+    const [items, setItems] = useState([]);
+    // master_id
     const master_id = sessionStorage.getItem("master_id");
+    // account_user_id - id 1 if master_type_id is 1 (Basic user) - default groups, subgroups and accounts
     let account_user_id = 1;
     if (sessionStorage.getItem("master_type_id") !== 1) account_user_id = sessionStorage.getItem("user_id");
+
+    // NEW variables/constants... for groups & subgroups
+    let newAllGroupsForUser = [];
+    let newAllSubgroupsForUser = [];
+    const [newTmpOptionsForGroups, setNewTmpOptionsForGroups] = useState([]);
+
 
     // sessionStorage.removeItem("tmpDate");    // removing tmpDate in sessionStorage for test purposes
     useEffect(() => {
         // if tmpDate is not existing => setting tmpDate to today
         let tmpDate = sessionStorage.getItem("tmpDate");
         if (tmpDate == null) {
-            let tmpDate = MyFunctions.onlyDateFromDateTime(new Date());
+            tmpDate = MyFunctions.onlyDateFromDateTime(new Date());
             sessionStorage.setItem("tmpDate", tmpDate);
         }
-        dateRef.current.value = tmpDate;
+        dateRef.current = tmpDate;
+        document.getElementById("datum").value = tmpDate;
 
         // loading accounts for this user
         MyFunctions.getAccounts(account_user_id).then(value => {
@@ -52,13 +64,52 @@ function Additems() {
             handleGroup();
         });
 
+        // code for NEW stuff related with groups and subgroups
+        newGetAllGroupsForUser();
+        newGetAllSubgroupsForUser();
     }, []);
 
-    /*
     useEffect(() => {
-        handleGroup();
-    }, [groupOptions]);
-    */
+        console.log("useEffect for newTmpOptionsForGroups:", newTmpOptionsForGroups);
+    }, [newTmpOptionsForGroups])
+
+    // *********************************************************************************************
+    // NEW functions for new groups and subgroups! Old functions will be added again under new name!
+    // *********************************************************************************************
+
+    function newGetAllGroupsForUser() {
+        MyFunctions.getAllGroups(account_user_id).then(groups => {
+            let tmp = [];
+            groups.forEach(group => {
+                tmp.push({ value: String(group.id), label: group.title, type: group.type });
+            });
+            newAllGroupsForUser = tmp;
+            console.log("newGetAllGroupsForUser newAllGroupsForUser:", newAllGroupsForUser)
+        });
+    };
+
+    function newGetAllSubgroupsForUser() {
+        MyFunctions.getAllSubgroups(account_user_id).then(subgroups => {
+            let tmp = [];
+            subgroups.forEach(subgroup => {
+                tmp.push({ value: String(subgroup.id), label: subgroup.title, maingroup: subgroup.maingroup_id });
+            });
+            newAllSubgroupsForUser = tmp;
+            console.log("newGetAllSubgroupsForUser newAllSubgroupsForUser:", newAllSubgroupsForUser)
+        });
+    };
+
+    function newSetStillAvailableGroups() {
+        return null;
+    };
+
+    function newSetStillAvailableSUbgroups() {
+        return null;
+    };
+
+    // *********************************************************************************************
+    // END of NEW functions
+    // *********************************************************************************************
 
     async function addItemToItems(tmpItems, group, groupId, subgroup, subgroupId, amount, note) {
         tmpItems.push(
@@ -119,7 +170,6 @@ function Additems() {
     };
 
     function handleGroup(e) {
-        console.log("handleGroup groupRef.current:", groupRef.current);
         if (e !== undefined) {
             groupRef.current = e.target.value;
         }; // else updateGroupRef();
@@ -145,9 +195,7 @@ function Additems() {
     };
 
     async function updateGroupRef() {
-        console.log("updateGroupRef groupRef.current old:", groupRef.current);
         groupRef.current = document.getElementById('group').value;
-        console.log("updateGroupRef groupRef.current new:", groupRef.current);
     }
 
     function updateSubgroupRef() {
@@ -169,9 +217,7 @@ function Additems() {
                 if (groupexists && exists) tmpGroups.push(group);
                 if (!groupexists) tmpGroups.push(group);
             });
-            console.log("tmpGroups:", tmpGroups);
             setGroupOptions(tmpGroups);
-            console.log("groupOptions:", groupOptions);
         })
     };
 
@@ -195,13 +241,11 @@ function Additems() {
         const group = tmp[0].label;
         const groupId = tmp[0].value;
         updateSubgroupRef();
-        // console.log("subgroupRef.current:", subgroupRef.current);
         if (subgroupRef.current==="") {
             alert("You have to choose valid subgroup!");
             return;
         }
         tmp = subgroupOptions.filter(item => item.value === subgroupRef.current);
-        // console.log("tmp:", tmp);
         const subgroup = tmp[0].label;
         const subgroupId = tmp[0].value;
         const amount = Number(amountRef.current.value);
