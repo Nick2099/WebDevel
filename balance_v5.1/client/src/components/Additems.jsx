@@ -11,29 +11,21 @@ function Additems() {
     const totalAmountRef = useRef();
     const accountRef = useRef();
     const [newAccounts, setNewAccounts] = useState([]);
-    // OLD item variables/constants
-    const groupRef = useRef();
-    const subgroupRef = useRef();
+    // item variables/constants
     const amountRef = useRef();
     const noteRef = useRef();
-    const allGroupOptionsRef = useRef([]);
-    const [groupOptions, setGroupOptions] = useState([]);
-    const [subgroupOptions, setSubgroupOptions] = useState([]);
-    // item variables/constants
     const [items, setItems] = useState([]);
+    let newAllGroupsForUser = useRef([]);
+    let newAllSubgroupsForUser = useRef([]);
+    const [newTmpOptionsForGroups, setNewTmpOptionsForGroups] = useState([]);
+    const [newTmpOptionsForSubgroups, setNewTmpOptionsForSubgroups] = useState([]);
+    const [newTmpSubgroupsForGroup, setNewTmpSubgroupsForGroup] = useState([]);
     // master_id
     const master_id = sessionStorage.getItem("master_id");
     // account_user_id - id 1 if master_type_id is 1 (Basic user) - default groups, subgroups and accounts
     let account_user_id = 1;
     if (sessionStorage.getItem("master_type_id") !== 1) account_user_id = sessionStorage.getItem("user_id");
 
-    // NEW variables/constants... for groups & subgroups
-    let newAllGroupsForUser = [];
-    let newAllSubgroupsForUser = [];
-    const [newTmpOptionsForGroups, setNewTmpOptionsForGroups] = useState([]);
-
-
-    // sessionStorage.removeItem("tmpDate");    // removing tmpDate in sessionStorage for test purposes
     useEffect(() => {
         // if tmpDate is not existing => setting tmpDate to today
         let tmpDate = sessionStorage.getItem("tmpDate");
@@ -53,64 +45,100 @@ function Additems() {
             setNewAccounts(tmp);
         });
 
-        MyFunctions.getGroups(master_id).then(value => {
-            let tmp = [];
-            value.forEach((item, index) => {
-                tmp.push({ value: String(item.id), label: item.title });
-                if (index === 0) groupRef.current = String(item.id);
+        // loading groups, subgroups, creating still available subgroups, groups and subgroups for choosen group
+        newGetAllGroupsForUser().then(allgroups => {
+            newAllGroupsForUser.current = allgroups;
+            newGetAllSubgroupsForUser().then(allsubgroups => {
+                newAllSubgroupsForUser.current = allsubgroups;
+                newSetStillAvailableSubgroups().then(stillavailablesubgroups => {
+                    setNewTmpOptionsForSubgroups(stillavailablesubgroups);
+                    newSetStillAvailableGroups(stillavailablesubgroups).then(stillavailablegroups => {
+                        setNewTmpOptionsForGroups(stillavailablegroups);
+                    });
+                });
             });
-            setGroupOptions(tmp);
-            allGroupOptionsRef.current = tmp;
-            handleGroup();
         });
-
-        // code for NEW stuff related with groups and subgroups
-        newGetAllGroupsForUser();
-        newGetAllSubgroupsForUser();
     }, []);
 
     useEffect(() => {
-        console.log("useEffect for newTmpOptionsForGroups:", newTmpOptionsForGroups);
-    }, [newTmpOptionsForGroups])
+        newSetSubgroupsForTmpGroups().then(subgroups => {
+            setNewTmpSubgroupsForGroup(subgroups);
+        });
+    }, [newTmpOptionsForGroups]);
+
+    useEffect(() => {
+        console.log("items:", items)
+        newSetStillAvailableSubgroups().then(stillavailablesubgroups => {
+            setNewTmpOptionsForSubgroups(stillavailablesubgroups);
+            newSetStillAvailableGroups(stillavailablesubgroups).then(stillavailablegroups => {
+                setNewTmpOptionsForGroups(stillavailablegroups);
+            });
+        });
+    }, [items]);
 
     // *********************************************************************************************
-    // NEW functions for new groups and subgroups! Old functions will be added again under new name!
+    // NEW functions for new groups and subgroups! Old functions are added again under new name!
     // *********************************************************************************************
 
-    function newGetAllGroupsForUser() {
-        MyFunctions.getAllGroups(account_user_id).then(groups => {
-            let tmp = [];
+    async function newGetAllGroupsForUser() {
+        let tmp = [];
+        await MyFunctions.getAllGroups(account_user_id).then(groups => {
             groups.forEach(group => {
                 tmp.push({ value: String(group.id), label: group.title, type: group.type });
             });
-            newAllGroupsForUser = tmp;
-            console.log("newGetAllGroupsForUser newAllGroupsForUser:", newAllGroupsForUser)
         });
+        return tmp;
     };
 
-    function newGetAllSubgroupsForUser() {
-        MyFunctions.getAllSubgroups(account_user_id).then(subgroups => {
-            let tmp = [];
+    async function newGetAllSubgroupsForUser() {
+        let tmp = [];
+        await MyFunctions.getAllSubgroups(account_user_id).then(subgroups => {
             subgroups.forEach(subgroup => {
                 tmp.push({ value: String(subgroup.id), label: subgroup.title, maingroup: subgroup.maingroup_id });
             });
-            newAllSubgroupsForUser = tmp;
-            console.log("newGetAllSubgroupsForUser newAllSubgroupsForUser:", newAllSubgroupsForUser)
+        });
+        return tmp;
+    };
+
+    async function newSetStillAvailableSubgroups() {
+        let tmp = [];
+        newAllSubgroupsForUser.current.forEach(subgroup => {
+            let itemexists = false;
+            items.forEach(item => {
+                if (String(subgroup.value)===String(item.subgroupId)) itemexists = true;
+            });
+            if (!itemexists) tmp.push(subgroup);
+        });
+        return tmp;
+    };
+
+    async function newSetStillAvailableGroups(subgroups) {
+        let tmp = [];
+        newAllGroupsForUser.current.forEach(group => {
+            let exists = subgroups.some(subgroup => String(subgroup.maingroup)===String(group.value));
+            if (exists) tmp.push(group);
+        })
+        return tmp;
+    };
+
+    async function newSetSubgroupsForTmpGroups() {
+        let groupId = document.getElementById('group').value;
+        let tmp = [];
+        tmp = newTmpOptionsForSubgroups.filter(subgroup => String(subgroup.maingroup)===String(groupId));
+        return tmp
+    }
+
+    function newHandleGroup() {
+        newSetSubgroupsForTmpGroups().then(subgroups => {
+            setNewTmpSubgroupsForGroup(subgroups);
         });
     };
 
-    function newSetStillAvailableGroups() {
-        return null;
-    };
-
-    function newSetStillAvailableSUbgroups() {
-        return null;
-    };
-
     // *********************************************************************************************
-    // END of NEW functions
+    // END of NEW functions - the unused old functions are deleted!
     // *********************************************************************************************
 
+    // adding item to items
     async function addItemToItems(tmpItems, group, groupId, subgroup, subgroupId, amount, note) {
         tmpItems.push(
             {
@@ -123,13 +151,8 @@ function Additems() {
                 note: note,
             },
         );
-        // field "totalAmount" is not editable when there are some items
+        // field "totalAmount" is not editable when there are already some items in items
         if (tmpItems.length > 0) document.getElementById("totalAmount").readOnly = true;
-
-        MyFunctions.removeOption(subgroupOptions, items).then(tmpNewOptions => {
-            setSubgroupOptions(tmpNewOptions);
-        });
-
         return tmpItems;
     };
 
@@ -145,6 +168,7 @@ function Additems() {
         return newItems;
     };
 
+    // deleting item from list
     function deleteItem(id) {
         const tmpItems = [...items];
         const newItems = tmpItems.filter(item => item.id !== id);
@@ -169,58 +193,6 @@ function Additems() {
         accountRef.current = e.target.value;
     };
 
-    function handleGroup(e) {
-        if (e !== undefined) {
-            groupRef.current = e.target.value;
-        }; // else updateGroupRef();
-        MyFunctions.getSubgroups(groupRef.current).then(value => {
-            let newSubgroups1 = [];
-            value.forEach((item, index) => {
-                newSubgroups1.push({ value: String(item.id), label: item.title, hide: false, maingroup_id: item.maingroup_id });
-                if (index === 0) subgroupRef.current = String(item.id);
-            });
-
-            MyFunctions.removeOption(newSubgroups1, items).then(newSubgroups2 => {
-                setSubgroupOptions(newSubgroups2);
-                handleSubgroup();
-            });
-    
-        });
-    };
-
-    function handleSubgroup(e) {
-        if (e !== undefined) {
-            subgroupRef.current = e.target.value;
-        };
-    };
-
-    async function updateGroupRef() {
-        groupRef.current = document.getElementById('group').value;
-    }
-
-    function updateSubgroupRef() {
-        subgroupRef.current = document.getElementById('subgroup').value;
-    }
-
-    async function updateGroups() {
-        new Promise (resolve => {
-            let tmpGroups = [];
-            allGroupOptionsRef.current.forEach(group => {
-                let exists = false;
-                let groupexists = false;
-                subgroupOptions.forEach(subgroup => {
-                    if (!subgroup.hide) {
-                        if (String(subgroup.maingroup_id)===String(group.value)) exists = true;
-                    };
-                    if (String(subgroup.maingroup_id)===String(group.value)) groupexists = true;
-                });
-                if (groupexists && exists) tmpGroups.push(group);
-                if (!groupexists) tmpGroups.push(group);
-            });
-            setGroupOptions(tmpGroups);
-        })
-    };
-
     function handleSave() {
         console.log("Saving....");
     };
@@ -236,21 +208,18 @@ function Additems() {
             if (MyFunctions.checkAmountIsTooBig(amountRef.current.value, "amount", "Amount", true, items[0].amount)) return;
         };
 
-        // collecting data to add as new item
-        let tmp = groupOptions.filter(item => item.value === groupRef.current);
+        let tmpGroup = document.getElementById('group').value;
+        console.log("tmpGroup:", tmpGroup);
+        let tmp = newTmpOptionsForGroups.filter(item => item.value === tmpGroup);
+        console.log("tmp:", tmp);
         const group = tmp[0].label;
         const groupId = tmp[0].value;
-        updateSubgroupRef();
-        if (subgroupRef.current==="") {
-            alert("You have to choose valid subgroup!");
-            return;
-        }
-        tmp = subgroupOptions.filter(item => item.value === subgroupRef.current);
+        let tmpSubroup = document.getElementById('subgroup').value;
+        tmp = newTmpSubgroupsForGroup.filter(item => item.value === tmpSubroup);
         const subgroup = tmp[0].label;
         const subgroupId = tmp[0].value;
-        const amount = Number(amountRef.current.value);
+        const amount = Number(amountRef.current.value).toFixed(2);
         const note = noteRef.current.value;
-
         // adding new item
         addItemToItems(items, group, groupId, subgroup, subgroupId, amount, note).then((newItems) => {
             // update value of first item
@@ -258,12 +227,7 @@ function Additems() {
                 setItems([...updatedItems]);
             });
         });
-
-        updateGroups().then(updateGroupRef().then(handleGroup()));
-
-        // this part have to be changed: group and subgroup should be set to stil available
-        // setGroupState("1");
-        // setSubgroupState("1");
+        
         amountRef.current.value = 0;
         noteRef.current.value = "";
     };
@@ -322,15 +286,15 @@ function Additems() {
                 </tbody>
             </table>
             <div>
-                <select id="group" onChange={handleGroup}>
-                    {groupOptions.map((option) => (
+                <select id="group" onChange={newHandleGroup}>
+                    {newTmpOptionsForGroups.map((option) => (
                         <option key={option.value} value={option.value}>
                             {option.label}
                         </option>
                     ))}
                 </select>
-                <select id="subgroup" onChange={handleSubgroup}>
-                    {subgroupOptions.map((option) => (
+                <select id="subgroup">
+                    {newTmpSubgroupsForGroup.map((option) => (
                         <option key={option.value} value={option.value} disabled={option.hide}>
                             {option.label}
                         </option>
