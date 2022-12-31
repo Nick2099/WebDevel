@@ -253,6 +253,15 @@ export function checkAmountIsTooBig(refValue, elementId, printedText, setFocus =
     return false;
 };
 
+export function checkGroupIsValid(group) {
+  console.log("checkGroupIsValid group:", Number(group));
+  if (Number(group)===0) {
+    alert("There are no more groups and subgroups to add!");
+    return false;
+  };
+  return true;
+};
+
 export function removeOption(options, items) {
   return new Promise((resolve, reject) => {
     // console.log("removeOption options:", options);

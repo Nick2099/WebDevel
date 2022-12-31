@@ -157,15 +157,15 @@ function Additems() {
     };
 
     // recalculate the value for first item in list
-    async function updateFirstItemInItems(newItems) {
+    async function updateFirstItemInItems(tmpItems) {
         document.getElementById("group").focus();
         let sumAmount = 0;
-        if (newItems.length === 0) return [];
-        newItems.forEach((item, index) => {
-            if (index !== 0) sumAmount = sumAmount + item.amount;
+        if (tmpItems.length === 0) return [];
+        tmpItems.forEach((item, index) => {
+            if (index !== 0) sumAmount = sumAmount + Number(item.amount);
         });
-        newItems[0].amount = totalAmountRef.current.value - sumAmount;
-        return newItems;
+        tmpItems[0].amount = Number(totalAmountRef.current.value) - sumAmount;
+        return tmpItems;
     };
 
     // deleting item from list
@@ -203,15 +203,13 @@ function Additems() {
         if (MyFunctions.checkMinimumLength(facilityRef.current.value, "facility", "facility", 2, true)) return;
         if (MyFunctions.checkMinimumLength(placeRef.current.value, "place", "place", 2, true)) return;
         if (MyFunctions.checkAmountIs0(totalAmountRef.current.value, "totalAmount", "Total amount", true)) return;
+        let tmpGroup = document.getElementById('group').value;
+        if (!MyFunctions.checkGroupIsValid(tmpGroup)) return;
         if (MyFunctions.checkAmountIs0(amountRef.current.value, "amount", "Amount", true)) return;
         if (items.length > 0) {
             if (MyFunctions.checkAmountIsTooBig(amountRef.current.value, "amount", "Amount", true, items[0].amount)) return;
         };
-
-        let tmpGroup = document.getElementById('group').value;
-        console.log("tmpGroup:", tmpGroup);
         let tmp = newTmpOptionsForGroups.filter(item => item.value === tmpGroup);
-        console.log("tmp:", tmp);
         const group = tmp[0].label;
         const groupId = tmp[0].value;
         let tmpSubroup = document.getElementById('subgroup').value;
