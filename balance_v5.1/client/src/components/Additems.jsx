@@ -58,22 +58,27 @@ function Additems() {
                 });
             });
         });
+        // The following line removes the error that is displayed with the hook
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
         newSetSubgroupsForTmpGroups().then(subgroups => {
             setNewTmpSubgroupsForGroup(subgroups);
         });
+        // The following line removes the error that is displayed with the hook
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newTmpOptionsForGroups]);
 
     useEffect(() => {
-        console.log("items:", items)
         newSetStillAvailableSubgroups().then(stillavailablesubgroups => {
             setNewTmpOptionsForSubgroups(stillavailablesubgroups);
             newSetStillAvailableGroups(stillavailablesubgroups).then(stillavailablegroups => {
                 setNewTmpOptionsForGroups(stillavailablegroups);
             });
         });
+        // The following line removes the error that is displayed with the hook
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [items]);
 
     // *********************************************************************************************
@@ -105,7 +110,7 @@ function Additems() {
         newAllSubgroupsForUser.current.forEach(subgroup => {
             let itemexists = false;
             items.forEach(item => {
-                if (String(subgroup.value)===String(item.subgroupId)) itemexists = true;
+                if (String(subgroup.value) === String(item.subgroupId)) itemexists = true;
             });
             if (!itemexists) tmp.push(subgroup);
         });
@@ -115,7 +120,7 @@ function Additems() {
     async function newSetStillAvailableGroups(subgroups) {
         let tmp = [];
         newAllGroupsForUser.current.forEach(group => {
-            let exists = subgroups.some(subgroup => String(subgroup.maingroup)===String(group.value));
+            let exists = subgroups.some(subgroup => String(subgroup.maingroup) === String(group.value));
             if (exists) tmp.push(group);
         })
         return tmp;
@@ -124,7 +129,7 @@ function Additems() {
     async function newSetSubgroupsForTmpGroups() {
         let groupId = document.getElementById('group').value;
         let tmp = [];
-        tmp = newTmpOptionsForSubgroups.filter(subgroup => String(subgroup.maingroup)===String(groupId));
+        tmp = newTmpOptionsForSubgroups.filter(subgroup => String(subgroup.maingroup) === String(groupId));
         return tmp
     }
 
@@ -152,7 +157,10 @@ function Additems() {
             },
         );
         // field "totalAmount" is not editable when there are already some items in items
-        if (tmpItems.length > 0) document.getElementById("totalAmount").readOnly = true;
+        if (tmpItems.length > 0) {
+            document.getElementById("totalAmount").readOnly = true;
+            // document.getElementById("amount").readOnly = false;
+        };
         return tmpItems;
     };
 
@@ -181,12 +189,36 @@ function Additems() {
         });
     };
 
+    function updateItem(id, addNumber) {
+        const newItems = [...items];
+        if (addNumber > Number(items[0].amount)) {
+            addNumber = items[0].amount;
+        };
+        let index = newItems.findIndex(item => item.id === id);
+        if ((addNumber < 0) && (Number(newItems[index].amount) < -addNumber)) {
+            addNumber = -Number(newItems[index].amount);
+        };
+        newItems[index].amount = Number(newItems[index].amount) + addNumber;
+        updateFirstItemInItems(newItems).then((updatedItems) => {
+            setItems(updatedItems);
+        });
+    };
+
     function handleTotalAmount(e) {
         let tmp = e.target.value;
         if (tmp === "") tmp = 0; else tmp = Number(tmp);
         if (tmp < 0) tmp = 0;
         totalAmountRef.current.value = tmp;
         if (items.length === 0) amountRef.current.value = tmp;
+    };
+    
+    function blurTotalAmount() {
+        totalAmountRef.current.value = parseFloat(totalAmountRef.current.value).toFixed(2);
+        amountRef.current.value = parseFloat(amountRef.current.value).toFixed(2);
+    };
+
+    function blurAmount() {
+        amountRef.current.value = parseFloat(amountRef.current.value).toFixed(2);
     };
 
     function handleAccount(e) {
@@ -216,7 +248,8 @@ function Additems() {
         tmp = newTmpSubgroupsForGroup.filter(item => item.value === tmpSubroup);
         const subgroup = tmp[0].label;
         const subgroupId = tmp[0].value;
-        const amount = Number(amountRef.current.value).toFixed(2);
+        // const amount = Number(amountRef.current.value).toFixed(2);
+        const amount = Number(amountRef.current.value);
         const note = noteRef.current.value;
         // adding new item
         addItemToItems(items, group, groupId, subgroup, subgroupId, amount, note).then((newItems) => {
@@ -225,7 +258,7 @@ function Additems() {
                 setItems([...updatedItems]);
             });
         });
-        
+
         amountRef.current.value = 0;
         noteRef.current.value = "";
     };
@@ -264,7 +297,7 @@ function Additems() {
                             <label>Total amount</label>
                         </td>
                         <td>
-                            <input id="totalAmount" ref={totalAmountRef} type="number" onChange={handleTotalAmount} onFocus={handleTotalAmount} />
+                            <input id="totalAmount" ref={totalAmountRef} type="number" onChange={handleTotalAmount} onFocus={handleTotalAmount} onBlur={blurTotalAmount} />
                         </td>
                     </tr>
                     <tr>
@@ -298,14 +331,14 @@ function Additems() {
                         </option>
                     ))}
                 </select>
-                <input id="amount" ref={amountRef} type="number" />
+                <input id="amount" ref={amountRef} type="number"  onBlur={blurAmount}/>
                 <br></br>
                 <label>Note</label>
                 <input ref={noteRef} type="text" />
                 <button onClick={handleAddItem}>Add item</button>
             </div>
             <div>
-                <Items items={items} deleteItem={deleteItem} />
+                <Items items={items} deleteItem={deleteItem} updateItem={updateItem} />
             </div>
             <button onClick={handleSave}>Save</button>
         </div>

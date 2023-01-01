@@ -107,23 +107,6 @@ export function login({ email, password }) {
   });
 };
 
-/*
-export function updateWrongLogin({ id, wrong_login }) {
-  return new Promise((resolve, reject) => {
-    Axios.post("http://localhost:3001/updatewronglogin", {
-      id: id,
-      wrong_login: wrong_login,
-    })
-      .then((value) => {
-        resolve("OK");
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
-}
-*/
-
 export function getLocalUsers(master_id) {
   return new Promise((resolve, reject) => {
     Axios.get("http://localhost:3001/getlocalusers", {
@@ -213,8 +196,13 @@ export async function getSubgroups(maingroup_id) {
   });
 };
 
+function pad(num, size = 2) {
+  num = num.toString();
+  while (num.length < size) num = "0" + num;
+  return num;
+}
 export function onlyDateFromDateTime(date) {
-  return date.getFullYear() + "-" + (parseInt(date.getMonth()) + 1) + "-" + date.getDate();
+  return date.getFullYear() + "-" + pad((parseInt(date.getMonth()) + 1)) + "-" + pad(date.getDate());
 };
 
 export function checkMinimumLength(refValue, elementId, printedText, len, setFocus = false) {
@@ -254,7 +242,6 @@ export function checkAmountIsTooBig(refValue, elementId, printedText, setFocus =
 };
 
 export function checkGroupIsValid(group) {
-  console.log("checkGroupIsValid group:", Number(group));
   if (Number(group)===0) {
     alert("There are no more groups and subgroups to add!");
     return false;
@@ -264,7 +251,6 @@ export function checkGroupIsValid(group) {
 
 export function removeOption(options, items) {
   return new Promise((resolve, reject) => {
-    // console.log("removeOption options:", options);
     let newOptions = options.map(option => {
       items.forEach(item => {
         if (option.value===item.subgroupId) option.hide=true;
@@ -272,7 +258,6 @@ export function removeOption(options, items) {
       return option;
     });    
     let newOptions2 = newOptions.filter(option => option.hide===false);
-    // console.log("removeOption newOptions2:", newOptions2);
     resolve(newOptions2);
   })
 };

@@ -1,8 +1,14 @@
 import React from "react";
 
-export default function Item({ item, deleteItem, index}) {
+export default function Item({ item, deleteItem, index, updateItem}) {
     function handleDelete() {
         deleteItem(item.id);
+    };
+
+    function handleAdd() {
+        let addNumber = document.getElementById("addNumber"+index).value;
+        console.log("addNumber", index, ":", addNumber);
+        updateItem(item.id, Number(addNumber));
     };
 
     if (index!==0) {
@@ -10,8 +16,8 @@ export default function Item({ item, deleteItem, index}) {
             <tr>
                 <td>{item.group}</td>
                 <td>{item.subgroup}</td>
-                <td>{item.amount}</td>
-                <td><input type="number"></input><button>Add</button></td>
+                <td>{parseFloat(item.amount).toFixed(2)}</td>
+                <td><input id={"addNumber"+index} type="number"></input><button onClick={handleAdd}>Add</button></td>
                 <td>{item.note}</td>
                 <td><button onClick={handleDelete}>Delete</button></td>
             </tr>
@@ -21,7 +27,7 @@ export default function Item({ item, deleteItem, index}) {
             <tr>
                 <td>{item.group}</td>
                 <td>{item.subgroup}</td>
-                <td>{item.amount}</td>
+                <td>{parseFloat(item.amount).toFixed(2)}</td>
                 <td></td>
                 <td>{item.note}</td>
                 <td><button onClick={handleDelete}>Delete</button></td>

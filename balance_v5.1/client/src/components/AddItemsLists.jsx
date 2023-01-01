@@ -2,7 +2,7 @@ import React from 'react'
 import Item from './AddItemsItem';
 import { v4 as uuidv4 } from "uuid";
 
-export default function Items({ items, deleteItem }) {
+export default function Items({ items, deleteItem, updateItem }) {
     return (
         <>
             <table>
@@ -19,7 +19,7 @@ export default function Items({ items, deleteItem }) {
                 <tbody>
                     {items.map((item, index) => {
                         return (
-                            <Item key={uuidv4()} item={item} deleteItem={deleteItem} index={index} />
+                            <Item key={uuidv4()} item={item} deleteItem={deleteItem} index={index} updateItem={updateItem} />
                         )
                     })}
                 </tbody>
