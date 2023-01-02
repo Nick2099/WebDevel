@@ -204,6 +204,13 @@ function Additems() {
         });
     };
 
+    function updateNote(id, newNote) {
+        const newItems = [...items];
+        let index = newItems.findIndex(item => item.id === id);
+        newItems[index].note = newNote;
+        setItems(newItems);
+    };
+
     function handleTotalAmount(e) {
         let tmp = e.target.value;
         if (tmp === "") tmp = 0; else tmp = Number(tmp);
@@ -338,7 +345,7 @@ function Additems() {
                 <button onClick={handleAddItem}>Add item</button>
             </div>
             <div>
-                <Items items={items} deleteItem={deleteItem} updateItem={updateItem} />
+                <Items items={items} deleteItem={deleteItem} updateItem={updateItem} updateNote={updateNote}/>
             </div>
             <button onClick={handleSave}>Save</button>
         </div>
