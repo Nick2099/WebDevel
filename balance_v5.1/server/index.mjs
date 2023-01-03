@@ -337,6 +337,24 @@ app.get("/getallsubgroups", async (req, res) => {
   );
 });
 
+app.get("/getlocalusers", async (req, res) => {
+  db.query(
+    "SELECT * FROM " +
+      database +
+      '.users WHERE master_id="' +
+      req.query.master_id +
+      '"',
+    (queryError, queryResult) => {
+      if (queryError) {
+        res.status(400).send(queryError);
+        writeLogError("/getlocalusers ", queryError);
+      } else {
+        res.send(JSON.stringify(queryResult));
+      }
+    }
+  );
+});
+
 app.listen(3001, () => {
   console.log("Server is running on port 3001!");
 });

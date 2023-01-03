@@ -21,7 +21,7 @@ function Additems() {
     const [newTmpOptionsForSubgroups, setNewTmpOptionsForSubgroups] = useState([]);
     const [newTmpSubgroupsForGroup, setNewTmpSubgroupsForGroup] = useState([]);
     // master_id
-    const master_id = sessionStorage.getItem("master_id");
+    // const master_id = sessionStorage.getItem("master_id");
     // account_user_id - id 1 if master_type_id is 1 (Basic user) - default groups, subgroups and accounts
     let account_user_id = 1;
     if (sessionStorage.getItem("master_type_id") !== 1) account_user_id = sessionStorage.getItem("user_id");

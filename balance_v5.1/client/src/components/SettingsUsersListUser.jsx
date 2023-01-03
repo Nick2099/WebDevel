@@ -10,88 +10,96 @@ export default function SettingsUsersListUser({
   updateName,
   updateFamily,
 }) {
-  console.log("user.name:",user.name);
-  const name = useRef(user.name);
-  const family = useRef(user.family);
+  // console.log("SettingsUsersListUser");
+  // console.log("user:",user);
+  // console.log("id:",id);
+  // console.log("admin:",admin);
+  let name = useRef(user.firstname);
+  const family = useRef(user.familyname);
+  // console.log("name:", name.current, "family:", family.current);
   const [ok, setOk] = useState({
     name: false,
     family: false,
   });
-
+  
   if (typeof id !== "string") id = toString(id);
   if (typeof admin !== "string") admin = toString(admin);
   let show = false;
   if (admin === "2" && user.admin !== 2) show = true;
-
+  
   useEffect(() => {
+    console.log("useEffect []");
     handleName();
     handleFamily();
   }, []);
 
   useEffect(() => {
-    if (document.getElementById("name"+user.user_id).value!==user.name)
-    document.getElementById("name"+user.user_id).value=user.name;
-    if (document.getElementById("family"+user.user_id).value!==user.family)
-    document.getElementById("family"+user.user_id).value=user.family;
-  }, [user])
+    console.log("useEffect [user]");
+    if (document.getElementById("name"+user.id).value!==user.firstname)
+    document.getElementById("name"+user.id).value=user.firstname;
+    if (document.getElementById("family"+user.id).value!==user.familyname)
+    document.getElementById("family"+user.id).value=user.familyname;
+  }, [user]);
 
   function handleChangeAdmin() {
-    toggleAdmin(user.user_id);
-  }
+    toggleAdmin(user.id);
+  };
 
   function handleResetWrongLogins() {
-    resetWrongLogins(user.user_id);
-  }
+    resetWrongLogins(user.id);
+  };
 
   function setName() {
-    updateName({ id: user.user_id, name: name.current.value });
-  }
+    updateName({ id: user.id, name: name.current });
+  };
 
   function setFamily() {
-    updateFamily({ id: user.user_id, family: family.current.value });
-  }
+    updateFamily({ id: user.id, family: family.current });
+  };
 
   function handleName() {
+    console.log("handleName:", name.current.value);
     let tmp = false;
     if (name.current.value.length >= MyConstant.minimumLengthForName) tmp = true;
     setOk((prevOk) => {
       return { ...prevOk, name: tmp };
     });
-  }
+  };
 
   function handleNameAfter() {
     handleName();
     if (ok.name) {
       setName(name.current);
     } else {
-      document.getElementById("name"+user.user_id).focus();
+      document.getElementById("name"+user.id).focus();
     }
-  }
+  };
 
   function handleFamily() {
+    console.log("handleFamily family.current.value:", family.current.value);
     let tmp = false;
     if (family.current.value.length >= MyConstant.minimumLengthForFamily) tmp = true;
     setOk((prevOk) => {
       return { ...prevOk, family: tmp };
     });
-  }
+  };
 
   function handleFamilyAfter() {
     handleFamily();
     if (ok.family) {
       setFamily(family.current);
     } else {
-      document.getElementById("family"+user.user_id).focus();
+      document.getElementById("family"+user.id).focus();
     }
-  }
+  };
 
   return (
     <tr>
-      <td>{user.user_id}</td>
+      <td>{user.id}</td>
       <td>{user.email}</td>
       <td>
         <input
-          id={"name"+user.user_id}
+          id={"name"+user.id}
           ref={name}
           type="text"
           defaultValue={name.current}
@@ -102,7 +110,7 @@ export default function SettingsUsersListUser({
       </td>
       <td>
         <input
-          id={"family"+user.user_id}
+          id={"family"+user.id}
           ref={family}
           type="text"
           defaultValue={family.current}

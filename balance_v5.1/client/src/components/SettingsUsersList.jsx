@@ -1,7 +1,14 @@
 import React from "react";
+import { login } from "./MyFunctions";
 import SettingsUsersListUser from "./SettingsUsersListUser";
 
 export default function SettingsUsersList({ users, id, admin, toggleAdmin, resetWrongLogins, updateName, updateFamily }) {
+  /*
+  console.log("SettingsUsersList");
+  console.log("users:", users);
+  console.log("id:", id);
+  console.log("admin:", admin);
+  */
   // ID column is probably not needed.... Delete?
   return (
     <>
@@ -21,7 +28,7 @@ export default function SettingsUsersList({ users, id, admin, toggleAdmin, reset
           {users.map((user) => {
             return (
               <SettingsUsersListUser
-                key={user.user_id}
+                key={user.id}
                 user={user}
                 id={id}
                 admin={admin}
