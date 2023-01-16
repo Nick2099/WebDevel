@@ -96,3 +96,15 @@
 2023-01-01 22:20:18 /login  {"id":1,"status":"loged in"}
 2023-01-02 23:26:10 /login  {"id":2,"status":"loged in"}
 2023-01-03 22:36:30 /login  {"id":1,"status":"loged in"}
+2023-01-16 22:57:01 /login  {"id":2,"status":"loged in"}
+2023-01-16 23:10:28 /getuserid  [{"id":2}]
+2023-01-16 23:10:34 /getuserid  [{"id":1}]
+2023-01-16 23:10:40 /getuserid  []
+2023-01-16 23:11:02 /getuserid  []
+2023-01-16 23:11:17 /getuserid  []
+2023-01-16 23:11:25 /getuserid  []
+2023-01-16 23:11:37 /getuserid  []
+2023-01-16 23:11:54 /getuserid  []
+2023-01-16 23:11:56 /getuserid  []
+2023-01-16 23:12:19 /getuserid  []
+2023-01-16 23:16:33 /getuserid  []

@@ -339,7 +339,7 @@ app.get("/getallsubgroups", async (req, res) => {
 
 app.get("/getlocalusers", async (req, res) => {
   db.query(
-    "SELECT * FROM " +
+    "SELECT id, master_id, master_type_id, admin_type_id, email, firstname, familyname, created, last_access, stay_loged, wrong_logins, locked_until FROM " +
       database +
       '.users WHERE master_id="' +
       req.query.master_id +

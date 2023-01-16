@@ -224,7 +224,7 @@ export function checkDatum(refValue, elementId, setFocus = false) {
 };
 
 export function checkAmountIs0(refValue, elementId, printedText, setFocus = false) {
-  if (refValue === "0" || refValue === "") {
+  if (Number(refValue) === 0 || refValue === "") {
     alert(printedText + " can't be 0.");
     if (setFocus) document.getElementById(elementId).focus();
     return true;
@@ -233,7 +233,7 @@ export function checkAmountIs0(refValue, elementId, printedText, setFocus = fals
 };
 
 export function checkAmountIsTooBig(refValue, elementId, printedText, setFocus = false, maxValue) {
-  if (refValue > maxValue) {
+  if (Number(refValue) > Number(maxValue)) {
     alert(printedText + " can't be bigger than " + maxValue + "!\nFor the new entered only the value of first item can be reduced.");
     if (setFocus) document.getElementById(elementId).focus();
     return true;
