@@ -1,0 +1,152 @@
+/* 
+    Screen resolutions: There is no standard but here are often used sizes
+    320px — 480px: Mobile devices
+    481px — 768px: iPads, Tablets
+    769px — 1024px: Small screens, laptops
+    1025px — 1200px: Desktops, large screens
+    1201px and more —  Extra large screens, TV
+*/
+
+:root {
+    --side-width-left: 20%;
+    --content-width: 60%;
+    --side-width-right: 20%;
+    --div-standard-padding: 10px;
+    --standard-width-min: 320px;
+    --standard-width-mobile: 480px;
+    --standard-width-tablets: 768px;
+    --standard-width-laptops: 1024px;
+    --standard-width-desktops: 1200px;
+}
+
+main > div {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-width: var(--standard-width-min);
+}
+
+header {
+    background-color: lightblue;
+    padding: var(--div-standard-padding);
+}
+
+main {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.sidebar-left {
+    background-color: lightgreen;
+    width: var(--side-width-left);
+    padding: var(--div-standard-padding);
+}
+
+.content {
+    background-color: green;
+    width: var(--content-width);
+    padding: var(--div-standard-padding);
+}
+
+.sidebar-right {
+    background-color: greenyellow;
+    width: var(--side-width-right);
+    padding: var(--div-standard-padding);
+}
+
+footer {
+    background-color: skyblue;
+    padding: var(--div-standard-padding);
+}
+
+@media screen and (max-width: 480px) {
+    main {
+        flex-wrap: wrap;
+    }
+    .sidebar-left, .content, .sidebar-right {
+        width: 100%;
+    }
+    .content {
+        order: -1;
+    }
+}
+
+@media screen and ((min-width: 481px) and (max-width: 1024px)) {
+    main {
+        flex-wrap: wrap;
+    }
+    .sidebar-left, .sidebar-right {
+        width: 50%;
+    }
+    .content {
+        width: 100vw;
+        order: -1;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --default-theme: light;
+        background-color: yellow;
+    }
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --default-theme: dark;
+        background-color: black;
+    }
+}
+
+.menu {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #808080;
+    color: black;
+    border-left: 2px solid black;
+    border-bottom: 2px solid black;
+    border-radius: 0 0 0 10px;
+}
+
+.choose-theme > fieldset {
+    border: 0;
+    display: flex;
+    padding: 10px;
+}
+
+.choose-theme input[type="radio"] {
+    appearance: none;
+    width: 0.8rem;
+    height: 0.8rem;
+    border: 2px solid black;
+    border-radius: .3rem;
+    background-color: #808080;
+}
+
+.choose-theme input[type="radio"]:checked {
+    background-color: var(--default-theme);
+}
+
+.choose-theme input[type="radio"]#light {
+    --default-theme: white;
+}
+
+.choose-theme input[type="radio"]#dark {
+    --default-theme: black;
+}
+
+.test {
+    background-color: blueviolet;
+    width: 100px;
+    height: 100px;
+    padding: 10px;
+    border: 10px solid red;
+}
+
+.test-border-box {
+    box-sizing: border-box;
+}
+
